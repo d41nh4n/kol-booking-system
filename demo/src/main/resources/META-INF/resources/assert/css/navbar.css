@@ -59,6 +59,7 @@ header {
     width: 40px;
     height: 40px;
     border-radius: 50%;
+    border: 1px solid;
 }
 
 .suggestions {
@@ -85,4 +86,25 @@ header {
 }
 .suggestions-item:hover {
     background-color: #f3f4f6;
+}
+
+.notification-dot {
+    position: absolute;
+    right: 0;
+    bottom:0;
+    height: 10px;
+    width: 10px;
+    background-color: green;
+    border-radius: 50%;
+}
+
+.notification-container {
+    position: relative;
+    display: inline-block;
+}
+
+.notification-container {
+    position: relative;
+    display: inline-block;
+    padding: 3px; 
 }

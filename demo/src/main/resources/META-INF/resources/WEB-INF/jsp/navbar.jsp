@@ -25,9 +25,14 @@
             <button type="button" class="search-button">Search</button>
         </form>
         <c:if test="${not empty userInfo}">
-            <a href="/chatbox">
-                <i class="fa-solid fa-message fa-2x"></i>
-            </a>
+        <a href="/chatbox" class="notification-container">
+         <i class="fa-solid fa-message fa-2x"></i>
+        <span id="messageNotificationDot" class="notification-dot block"></span>
+        </a>
+        <div class="notification-container">
+            <i class="fa-solid fa-bell fa-2x"></i>
+        <span id="notificationDot" class="notification-dot block"></span>
+        </div>
         </c:if>
         <c:choose>
             <c:when test="${not empty userInfo}">
