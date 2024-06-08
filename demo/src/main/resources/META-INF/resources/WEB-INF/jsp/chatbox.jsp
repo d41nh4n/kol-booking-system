@@ -13,7 +13,6 @@
 <body>
 <%@include file="navbar.jsp" %>
 <!-- start: Chat -->
-<input type="text" id="senderId" value="${userInfo.id}" readonly="" hidden="">
 <input type="text" id="recipientId" value="" readonly="" hidden="">
 
 <section class="chat-section">

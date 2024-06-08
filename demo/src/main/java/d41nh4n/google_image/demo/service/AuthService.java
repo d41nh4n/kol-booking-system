@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
-import d41nh4n.google_image.demo.entity.User;
+import d41nh4n.google_image.demo.entity.User.User;
 import d41nh4n.google_image.demo.security.JwtDecoder;
 import d41nh4n.google_image.demo.security.JwtIssuer;
 import d41nh4n.google_image.demo.security.JwtToPrincipalConverter;

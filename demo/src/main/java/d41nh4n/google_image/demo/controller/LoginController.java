@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import d41nh4n.google_image.demo.dto.request.LoginDto;
-import d41nh4n.google_image.demo.entity.User;
+import d41nh4n.google_image.demo.entity.User.User;
 import d41nh4n.google_image.demo.security.UserPrincipal;
 import d41nh4n.google_image.demo.service.AuthService;
 import d41nh4n.google_image.demo.service.UserService;
-import d41nh4n.google_image.demo.validation.UserUtils;
+import d41nh4n.google_image.demo.validation.Utils;
+import d41nh4n.google_image.demo.validation.Utils;
 import d41nh4n.google_image.demo.validation.ValidTokenService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,8 +34,8 @@ public class LoginController {
     private final AuthService authService;
     private final ValidTokenService validTokenService;
     private final UserService userService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+    private final Utils utils;
 
     @PostMapping("/auth")
     public String login(@ModelAttribute LoginDto loginDto, Model model, HttpServletResponse response) {
@@ -61,7 +62,7 @@ public class LoginController {
             @RequestParam(value = "error", required = false) Boolean error,
             @RequestParam(value = "success", required = false) Boolean success,
             @RequestParam(value = "userExist", required = false) Boolean userExist) {
-        Optional<String> accessToken = UserUtils.getTokenFromCookies(request);
+        Optional<String> accessToken = utils.getTokenFromCookies(request);
 
         if (accessToken.isPresent() && !validTokenService.isTokenExpired(accessToken.get())) {
             return "redirect:/";
@@ -82,7 +83,7 @@ public class LoginController {
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
-        UserUtils.removeTokenCookie(response);
+        utils.removeTokenCookie(response);
         return "redirect:/login/form";
     }
 
@@ -98,7 +99,7 @@ public class LoginController {
         }
         String encodedPassword = passwordEncoder.encode(loginDto.getPassword());
         User user = new User();
-        user.setUserId(UserUtils.renderCode(8));
+        user.setUserId( utils.renderCode(10));
         user.setUsername(loginDto.getUsername());
         user.setPassword(encodedPassword);
         user.setRole("USER");

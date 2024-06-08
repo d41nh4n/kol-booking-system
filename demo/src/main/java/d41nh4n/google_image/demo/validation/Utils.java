@@ -6,13 +6,19 @@ import java.util.Random;
 
 import org.springframework.stereotype.Component;
 
+import d41nh4n.google_image.demo.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
-public class UserUtils {
-    public static String renderCode(int number) {
+@RequiredArgsConstructor
+public class Utils {
+
+    private final UserService service;
+
+    public String renderCode(int number) {
 
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder userID = new StringBuilder();
@@ -26,7 +32,17 @@ public class UserUtils {
         return userID.toString();
     }
 
-    public static String generateRandomCode() {
+    public String renderUserId(int number) {
+
+        while (true) {
+            String id = "USER" + renderCode(number);
+            if (service.getUserById(id) == null) {
+                return id;
+            }
+        }
+    }
+
+    public String generateRandomCode() {
         Random random = new Random();
         StringBuilder codeBuilder = new StringBuilder();
 
@@ -38,7 +54,7 @@ public class UserUtils {
         return codeBuilder.toString();
     }
 
-    public static Optional<String> getTokenFromCookies(HttpServletRequest request) {
+    public Optional<String> getTokenFromCookies(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
 
         if (cookies != null) {
@@ -52,7 +68,7 @@ public class UserUtils {
         return Optional.empty();
     }
 
-    public static void removeTokenCookie(HttpServletResponse response) {
+    public void removeTokenCookie(HttpServletResponse response) {
         Cookie cookie = new Cookie("accessToken", "");
         cookie.setHttpOnly(true);
         cookie.setPath("/");
@@ -60,18 +76,18 @@ public class UserUtils {
         response.addCookie(cookie);
     }
 
-    public static boolean isValidEmail(String email) {
+    public boolean isValidEmail(String email) {
         String regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
         return email.matches(regex);
     }
 
-    public static String getSiteURL(HttpServletRequest request) {
+    public String getSiteURL(HttpServletRequest request) {
         String siteURL = request.getRequestURL().toString();
         return siteURL.replace(request.getServletPath(), "");
     }
 
-    public static String generateChatRoomId(String userIdA, String userIdB){
-        String[] array = {userIdA,userIdB};
+    public String generateChatRoomId(String userIdA, String userIdB) {
+        String[] array = { userIdA, userIdB };
         Arrays.sort(array);
         String combie = array[0] + array[1];
         System.out.println(combie);

@@ -1,8 +1,11 @@
-package d41nh4n.google_image.demo.entity;
+package d41nh4n.google_image.demo.entity.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -12,6 +15,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.Date;
+import java.util.List;
+
+import d41nh4n.google_image.demo.entity.Notification.UserNotification;
 
 @Getter
 @Setter
@@ -64,7 +70,7 @@ public class User {
 
     @Column(name = "reset_password_token")
     private String resetPasswordToken;
-
+    
       @PrePersist
     protected void onCreate() {
         this.createAt = new Date();

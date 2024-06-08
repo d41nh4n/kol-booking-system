@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import d41nh4n.google_image.demo.dto.respone.ResponeUploadImage;
 import d41nh4n.google_image.demo.dto.respone.UserInfoRespone;
-import d41nh4n.google_image.demo.entity.User;
+import d41nh4n.google_image.demo.entity.User.User;
 import d41nh4n.google_image.demo.security.JwtDecoder;
 import d41nh4n.google_image.demo.security.JwtToPrincipalConverter;
 import d41nh4n.google_image.demo.security.UserPrincipal;
