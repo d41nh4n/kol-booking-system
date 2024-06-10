@@ -7,10 +7,11 @@
     <title>Navbar</title>
     <link rel="stylesheet" type="text/css" href="../../assert/css/navbar.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 </head>
 <body>
-<header>
+<header>   
+     <input type="text" id="userId" value="${userInfo.id}" readonly="" hidden="">
     <div class="container">
         <a href="/" class="logo">
             <img src="https://flowbite.com/docs/images/logo.svg" alt="Flowbite Logo" />
@@ -24,16 +25,19 @@
             </div>
             <button type="button" class="search-button">Search</button>
         </form>
+
         <c:if test="${not empty userInfo}">
         <a href="/chatbox" class="notification-container">
          <i class="fa-solid fa-message fa-2x"></i>
         <span id="messageNotificationDot" class="notification-dot block"></span>
         </a>
-        <div class="notification-container">
-            <i class="fa-solid fa-bell fa-2x"></i>
-        <span id="notificationDot" class="notification-dot block"></span>
+      <div class="notifi-box" id="box">
+        <i class="fa-solid fa-bell fa-2x" onclick="fetchNotifications()"></i>
+        <ul></ul>
         </div>
+
         </c:if>
+
         <c:choose>
             <c:when test="${not empty userInfo}">
                 <div class="user-info">
@@ -41,62 +45,16 @@
                         <img src="${userInfo.avatarUrl}" alt="user photo">
                     </a>
                     <div>
-                     <a href="/login/logout" class="logout-link">
-                        Logout
-                    </a>
+                     <a href="/login/logout" class="logout-link">Logout</a>
                     </div>
                 </div>
             </c:when>
-           
             <c:otherwise>
                 <a href="/login/form" class="login-link">Login</a>
             </c:otherwise>
         </c:choose>
     </div>
 </header>
-<script>
-  function searchByName(param) {
-      var search = param.value.trim(); 
-      if (search === "") {
-          removeElements();
-          return; 
-      } else {
-          $.ajax({
-              url: "/findUser",
-              type: "get",
-              data: {
-                  username: search
-              },
-              success: function (data) {
-                  displaySuggestions(data.list);
-              },
-              error: function (xhr) {
-                  // Handle error
-              }
-          });
-      }
-  }
-
-  function displaySuggestions(users) {
-      removeElements();
-      users.forEach(user => {
-          let listItem = document.createElement("li");
-          listItem.classList.add("suggestions-item");
-          listItem.textContent = user.username; 
-          listItem.setAttribute("data-id", user.id);
-          listItem.addEventListener("click", () => {
-              window.location.href = "/profile?userId=" + user.id;
-          });
-          document.querySelector(".suggestions-list").appendChild(listItem);
-      });
-  }
-
-  function removeElements() {
-      let items = document.querySelectorAll(".suggestions-item");
-      items.forEach((item) => {
-          item.remove();
-      });
-  }
-</script>
+<script src="../../assert/js/navbar.js"></script>
 </body>
 </html>

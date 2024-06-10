@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import d41nh4n.google_image.demo.entity.User;
+import d41nh4n.google_image.demo.entity.User.User;
 import d41nh4n.google_image.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 

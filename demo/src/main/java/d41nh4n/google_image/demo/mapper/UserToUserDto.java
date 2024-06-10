@@ -5,7 +5,7 @@ import java.util.Date;
 
 import d41nh4n.google_image.demo.dto.respone.UserFindedBySearch;
 import d41nh4n.google_image.demo.dto.respone.UserInfoRespone;
-import d41nh4n.google_image.demo.entity.User;
+import d41nh4n.google_image.demo.entity.User.User;
 
 public final class UserToUserDto {
     private UserToUserDto() {

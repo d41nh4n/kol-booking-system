@@ -17,9 +17,11 @@ if (accessToken) {
 
 // Hàm scrollToBottom để cuộn xuống cuối cuộc trò chuyện
 function scrollToBottom() {
-  var conversationWrapper = $(".conversation-wrapper");
-  var scrollHeight = conversationWrapper.prop("scrollHeight");
-  conversationWrapper.scrollTop(scrollHeight);
+  var conversationContainer = document.querySelector(".conversation-main");
+  conversationContainer.scrollTo({
+    top: conversationContainer.scrollHeight,
+    behavior: "smooth",
+  });
 }
 
 // Hàm lấy giá trị của cookie
@@ -117,7 +119,7 @@ function displayMessage(message) {
 
 // Hàm gửi tin nhắn
 function sendMessage(content) {
-  senderId = $("#senderId").val();
+  senderId = $("#userId").val();
   const chatMessage = {
     sender: senderId,
     recipient: recipientId,
@@ -176,7 +178,7 @@ $(document).ready(function () {
     // onConnect CallBack
     function onConnected() {
       console.log("Connected to WebSocket");
-      senderId = $("#senderId").val();
+      senderId = $("#userId").val();
       stompClient.subscribe(
         `/user/${senderId}/queue/messages`,
         onMessageReceived // Gọi hàm onMessageReceived khi nhận được tin nhắn mới
@@ -206,7 +208,7 @@ function handleConversationClick(event) {
   conversationId = $(this).data("conversation");
   recipientId = $(this).closest("li").data("recipient");
   currentlyDisplayedUserId = String(recipientId);
-  console.log("Clicked on conversation link")
+  console.log("Clicked on conversation link");
   // Ẩn dấu hiệu tin nhắn mới khi mở một cuộc trò chuyện mới
   var recipientListItem = $(this).closest("li");
   recipientListItem.find(".content-message-unread").hide();
@@ -247,8 +249,6 @@ function createConversationElement(conversation) {
     conversation.conversationId
   );
 
-
-
   const contentMessageImage = document.createElement("img");
   contentMessageImage.setAttribute("class", "content-message-image");
   contentMessageImage.setAttribute("src", conversation.avatarUrl);
@@ -285,7 +285,6 @@ function createConversationElement(conversation) {
   return listItem;
 }
 
-
 function renderUserConversations(conversations) {
   try {
     const conversationList = $(".content-messages-list");
@@ -310,12 +309,14 @@ $(document).ready(function () {
     conversationId = firstConversation.data("id");
     recipientId = firstConversation.data("recipient");
     currentlyDisplayedUserId = String(recipientId);
+    senderId = $("#userId").val();
     // Hiển thị cuộc trò chuyện và ẩn cuộc trò chuyện mặc định
     $("#conversation-default").removeClass("active");
     $("#conversation").addClass("active");
 
     // Hiển thị thông tin của người nhận
     getConversationTop(conversationId);
+    getMessage(conversationId);
   }
   // Lấy dữ liệu và hiển thị cuộc trò chuyện
 });

@@ -2,7 +2,7 @@ package d41nh4n.google_image.demo.service;
 
 import org.springframework.stereotype.Service;
 
-import d41nh4n.google_image.demo.entity.Conversation;
+import d41nh4n.google_image.demo.entity.Conversation.Conversation;
 import d41nh4n.google_image.demo.repository.ConversationRepository;
 import lombok.RequiredArgsConstructor;
 

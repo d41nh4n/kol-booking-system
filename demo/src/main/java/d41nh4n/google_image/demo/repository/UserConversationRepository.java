@@ -1,7 +1,7 @@
 package d41nh4n.google_image.demo.repository;
 
 import d41nh4n.google_image.demo.dto.respone.ConversationExsisted;
-import d41nh4n.google_image.demo.entity.UserConversation;
+import d41nh4n.google_image.demo.entity.Conversation.UserConversation;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

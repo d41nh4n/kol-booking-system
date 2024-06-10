@@ -16,22 +16,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import d41nh4n.google_image.demo.dto.ChatMessage;
 import d41nh4n.google_image.demo.dto.respone.ConversationExsisted;
-import d41nh4n.google_image.demo.entity.Conversation;
 import d41nh4n.google_image.demo.entity.Message;
-import d41nh4n.google_image.demo.entity.TypeConversation;
-import d41nh4n.google_image.demo.entity.User;
-import d41nh4n.google_image.demo.entity.UserConversation;
+import d41nh4n.google_image.demo.entity.Conversation.Conversation;
+import d41nh4n.google_image.demo.entity.Conversation.TypeConversation;
+import d41nh4n.google_image.demo.entity.Conversation.UserConversation;
+import d41nh4n.google_image.demo.entity.User.User;
 import d41nh4n.google_image.demo.mapper.MessageToMessageDto;
 import d41nh4n.google_image.demo.security.UserPrincipal;
 import d41nh4n.google_image.demo.service.ChatMessageService;
 import d41nh4n.google_image.demo.service.ConversationService;
 import d41nh4n.google_image.demo.service.UserConversationService;
 import d41nh4n.google_image.demo.service.UserService;
-import d41nh4n.google_image.demo.validation.UserUtils;
+import d41nh4n.google_image.demo.validation.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -47,12 +45,12 @@ public class ChatController {
     private final ConversationService conversationService;
     private final UserService userService;
     private final UserConversationService userConversationService;
-
+    private final Utils utils;
     @MessageMapping("/chat.sendMessage")
     public void processMessage(@Payload ChatMessage chatMessage) {
         String sender = chatMessage.getSender();
         String recipient = chatMessage.getRecipient();
-        String conversationId = UserUtils.generateChatRoomId(sender, recipient);
+        String conversationId = utils.generateChatRoomId(sender, recipient);
         System.out.println("conversation Id : "+conversationId);
         Conversation conversation = conversationService.findConversationById(conversationId);
         User userSender = userService.getUserById(sender);
@@ -103,7 +101,7 @@ public class ChatController {
         String userSender = principal.getUserId();
 
         if (userId != null && !userId.trim().isEmpty()) {
-            String conversationId = UserUtils.generateChatRoomId(userSender, userId);
+            String conversationId = utils.generateChatRoomId(userSender, userId);
             Conversation conversation = conversationService.findConversationById(conversationId);
             if (conversation == null) {
                 // create new conversation

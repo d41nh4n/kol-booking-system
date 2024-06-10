@@ -1,6 +1,5 @@
-package d41nh4n.google_image.demo.entity;
+package d41nh4n.google_image.demo.entity.Conversation;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 import jakarta.persistence.Column;

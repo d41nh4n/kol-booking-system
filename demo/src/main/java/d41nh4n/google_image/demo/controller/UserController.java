@@ -23,15 +23,16 @@ import d41nh4n.google_image.demo.dto.request.UserInfor;
 import d41nh4n.google_image.demo.dto.respone.UserFindedBySearch;
 import d41nh4n.google_image.demo.dto.respone.UserInfoRespone;
 import d41nh4n.google_image.demo.dto.respone.VerifyStatus;
-import d41nh4n.google_image.demo.entity.User;
 import d41nh4n.google_image.demo.entity.VerifyCode;
+import d41nh4n.google_image.demo.entity.User.User;
 import d41nh4n.google_image.demo.mapper.UserToUserDto;
 import d41nh4n.google_image.demo.model.Mail;
 import d41nh4n.google_image.demo.security.UserPrincipal;
 import d41nh4n.google_image.demo.service.MailService;
 import d41nh4n.google_image.demo.service.UserService;
 import d41nh4n.google_image.demo.service.VerifyCodeService;
-import d41nh4n.google_image.demo.validation.UserUtils;
+import d41nh4n.google_image.demo.validation.Utils;
+import d41nh4n.google_image.demo.validation.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
@@ -40,10 +41,10 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/")
 public class UserController {
 
-    @Autowired
-    private MailService mailService;
+    private final MailService mailService;
     private final UserService userService;
     private final VerifyCodeService verifyCodeService;
+    private final Utils utils;
 
     @GetMapping()
     public String index(Model model, HttpServletRequest request) {
@@ -92,7 +93,7 @@ public class UserController {
 
     @PostMapping("/verifyemail")
     public String checkCodeForm(@RequestParam String email, HttpServletRequest request, Model model) {
-        if (!UserUtils.isValidEmail(email)) {
+        if (!utils.isValidEmail(email)) {
             return "redirect:/infor?invalidEmail=true";
         }
 
@@ -104,8 +105,8 @@ public class UserController {
         if (authentication != null && authentication.isAuthenticated()
                 && !"anonymousUser".equals(authentication.getPrincipal())) {
             UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
-            String id = UserUtils.renderCode(8);
-            String code = UserUtils.generateRandomCode();
+            String id = utils.renderCode(8);
+            String code = utils.generateRandomCode();
             int numberOfAttempts = 0;
             VerifyCode verifyCode = new VerifyCode(id, userDetails.getUserId(), email, code, numberOfAttempts);
             verifyCodeService.save(verifyCode);
@@ -194,7 +195,7 @@ public class UserController {
         }
 
         String email = user.getEmail();
-        String code = UserUtils.renderCode(40);
+        String code = utils.renderCode(40);
         System.out.println(code);
         userService.updateResetPasswordToken(code, email);
         String resetPasswordLink = "http://localhost:8080/reset_password?token=" + code;
