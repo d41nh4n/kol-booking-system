@@ -1,41 +1,151 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
     <title>Thanh toán</title>
-</head>
-
-<body>
-<div class="container">
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <img th:src="@{/vnpay-logo.png}" style="width: 200px">
-                    <h2 class="card-title">Thanh Toán Đơn Hàng</h2>
-                    <form th:action="@{/submitOrder}" method="post">
-                        <div class="form-group">
-                            <label for="amount">Số tiền:</label>
-                            <input type="number" class="form-control" id="amount" name="amount" required value="299999">
-                        </div>
-                        <div class="form-group">
-                            <label for="orderInfo">Thông tin đơn hàng:</label>
-                            <input type="text" class="form-control" id="orderInfo" name="orderInfo" required value="Thanh toan don hang 2923">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Thanh toán</button>
-                    </form>
-                </div>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css" rel="stylesheet">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Montserrat', sans-serif;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #0C4160;
+        padding: 30px 10px;
+      }
+      .card {
+        max-width: 500px;
+        margin: auto;
+        color: black;
+        border-radius: 20px;
+      }
+      .h8 {
+        font-size: 30px;
+        font-weight: 800;
+        text-align: center;
+      }
+      .btn-primary {
+        width: 100%;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-image: linear-gradient(to right, #77A1D3 0%, #79CBCA 51%, #77A1D3 100%);
+        border: none;
+        transition: 0.5s;
+        background-size: 200% auto;
+      }
+      .btn-primary:hover {
+        background-position: right center;
+        color: #fff;
+        text-decoration: none;
+      }
+      .btn-primary:hover .fas.fa-arrow-right {
+        transform: translate(15px);
+        transition: transform 0.2s ease-in;
+      }
+      .form-control {
+        color: white;
+        background-color: #223C60;
+        border: 2px solid transparent;
+        height: 60px;
+        padding-left: 20px;
+        vertical-align: middle;
+      }
+      .form-control:focus {
+        color: white;
+        background-color: #0C4160;
+        border: 2px solid #2d4dda;
+        box-shadow: none;
+      }
+      .text {
+        font-size: 14px;
+        font-weight: 600;
+      }
+      ::placeholder {
+        font-size: 14px;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container p-0">
+      <div class="card px-4">
+        <p class="h8 py-3">Payment Details</p>
+        <div class="row gx-3" th:each="request : ${requests}">
+          <div class="col-12">
+            <div class="d-flex flex-column">
+              <p class="text mb-1">Request ID</p>
+              <input class="form-control mb-3" type="text" th:attr="value=${request.requestId}" placeholder="Request ID">
             </div>
+          </div>
+          <div class="col-12">
+            <div class="d-flex flex-column">
+              <p class="text mb-1">Requester ID</p>
+              <input class="form-control mb-3" type="text" th:attr="value=${request.requesterId}" placeholder="Requester ID">
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="d-flex flex-column">
+              <p class="text mb-1">Responder ID</p>
+              <input class="form-control mb-3" type="text" th:attr="value=${request.responderId}" placeholder="Responder ID">
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="d-flex flex-column">
+              <p class="text mb-1">Description</p>
+              <input class="form-control mb-3" type="text" th:attr="value=${request.requestDescription}" placeholder="Description">
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="d-flex flex-column">
+              <p class="text mb-1">Location</p>
+              <input class="form-control mb-3" type="text" th:attr="value=${request.requestLocation}" placeholder="Location">
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="d-flex flex-column">
+              <p class="text mb-1">Payment</p>
+              <input class="form-control mb-3" type="text" th:attr="value=${request.payment}" placeholder="Payment">
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="d-flex flex-column">
+              <p class="text mb-1">Request Date</p>
+              <input class="form-control mb-3" type="text" th:attr="value=${request.requestDate}" placeholder="Request Date">
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="d-flex flex-column">
+              <p class="text mb-1">Request Date End</p>
+              <input class="form-control mb-3" type="text" th:attr="value=${request.requestDateEnd}" placeholder="Request Date End">
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="d-flex flex-column">
+              <p class="text mb-1">Status</p>
+              <input class="form-control mb-3" type="text" th:attr="value=${request.requestStatus} ? 'Active' : 'Inactive'" placeholder="Status">
+            </div>
+          </div>
+          <div class="col-12" th:unless="${request.requestStatus}">
+            <a class="btn btn-primary mb-3" th:href="@{/order-save(amount=${request.payment}, info=${request.requestDescription}, requesterId=${request.requesterId}, responderId=${request.responderId}, requestId=${request.requestId}, requestStatus=${request.requestStatus})}">
+              <span>Payment with VNPAY</span>
+            </a>
+          </div>
         </div>
+      </div>
     </div>
-</div>
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-</body>
-
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  </body>
 </html>
