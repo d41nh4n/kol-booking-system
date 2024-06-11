@@ -1,7 +1,6 @@
-package d41nh4n.google_image.demo.entity;
+package d41nh4n.google_image.demo.entity.Conversation;
 import java.time.ZonedDateTime;
 
-import d41nh4n.google_image.demo.entity.Conversation.Conversation;
 import d41nh4n.google_image.demo.entity.User.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

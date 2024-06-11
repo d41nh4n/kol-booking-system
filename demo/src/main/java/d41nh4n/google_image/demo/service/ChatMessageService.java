@@ -9,8 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import d41nh4n.google_image.demo.entity.Message;
 import d41nh4n.google_image.demo.entity.Conversation.Conversation;
+import d41nh4n.google_image.demo.entity.Conversation.Message;
 import d41nh4n.google_image.demo.repository.ChatMessageRepository;
 import lombok.RequiredArgsConstructor;
 

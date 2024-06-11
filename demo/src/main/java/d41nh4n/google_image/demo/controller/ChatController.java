@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import d41nh4n.google_image.demo.dto.ChatMessage;
 import d41nh4n.google_image.demo.dto.respone.ConversationExsisted;
-import d41nh4n.google_image.demo.entity.Message;
 import d41nh4n.google_image.demo.entity.Conversation.Conversation;
+import d41nh4n.google_image.demo.entity.Conversation.Message;
 import d41nh4n.google_image.demo.entity.Conversation.TypeConversation;
 import d41nh4n.google_image.demo.entity.Conversation.UserConversation;
 import d41nh4n.google_image.demo.entity.User.User;
