@@ -13,23 +13,31 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
-import d41nh4n.google_image.demo.dto.ChatMessage;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import d41nh4n.google_image.demo.dto.chatdto.ChatMessage;
+import d41nh4n.google_image.demo.dto.chatdto.FileMessage;
 import d41nh4n.google_image.demo.dto.respone.ConversationExsisted;
-import d41nh4n.google_image.demo.entity.Conversation.Conversation;
-import d41nh4n.google_image.demo.entity.Conversation.Message;
-import d41nh4n.google_image.demo.entity.Conversation.TypeConversation;
-import d41nh4n.google_image.demo.entity.Conversation.UserConversation;
-import d41nh4n.google_image.demo.entity.User.User;
+import d41nh4n.google_image.demo.dto.respone.ResponeUpload;
+import d41nh4n.google_image.demo.entity.conversation.Conversation;
+import d41nh4n.google_image.demo.entity.conversation.TypeConversation;
+import d41nh4n.google_image.demo.entity.conversation.UserConversation;
+import d41nh4n.google_image.demo.entity.user.User;
 import d41nh4n.google_image.demo.mapper.MessageToMessageDto;
 import d41nh4n.google_image.demo.security.UserPrincipal;
 import d41nh4n.google_image.demo.service.ChatMessageService;
+import d41nh4n.google_image.demo.service.CloudinaryService;
 import d41nh4n.google_image.demo.service.ConversationService;
 import d41nh4n.google_image.demo.service.UserConversationService;
 import d41nh4n.google_image.demo.service.UserService;
 import d41nh4n.google_image.demo.validation.Utils;
+import d41nh4n.google_image.demo.entity.conversation.Message;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -46,51 +54,31 @@ public class ChatController {
     private final UserService userService;
     private final UserConversationService userConversationService;
     private final Utils utils;
+    private final CloudinaryService cloudinaryService;
+
     @MessageMapping("/chat.sendMessage")
-    public void processMessage(@Payload ChatMessage chatMessage) {
-        String sender = chatMessage.getSender();
-        String recipient = chatMessage.getRecipient();
-        String conversationId = utils.generateChatRoomId(sender, recipient);
-        System.out.println("conversation Id : "+conversationId);
-        Conversation conversation = conversationService.findConversationById(conversationId);
-        User userSender = userService.getUserById(sender);
-        User userRecipient = userService.getUserById(recipient);
-        if (conversation == null) {
-            // create new conversation
-            conversation = new Conversation();
-            conversation.setId(conversationId);
-            conversation.setCreatedAt(ZonedDateTime.now());
-            conversation.setUpdatedAt(ZonedDateTime.now());
-            conversation.setType(TypeConversation.PRIVATE);
-            conversationService.save(conversation);
+    public void processMessage(@Payload Map<String, Object> payload) throws IOException {
+        String typeMessage = (String) payload.get("typeMessage");
 
-            // add user to conversation
-            User userA = userService.getUserById(sender);
-            User userB = userService.getUserById(recipient);
+        ObjectMapper mapper = new ObjectMapper();
 
-            UserConversation userConversationSender = new UserConversation();
-            userConversationSender.setUser(userA);
-            userConversationSender.setConversation(conversation);
-            userConversationService.save(userConversationSender);
-
-            UserConversation userConversationRecipient = new UserConversation();
-            userConversationRecipient.setUser(userB);
-            userConversationRecipient.setConversation(conversation);
-            userConversationService.save(userConversationRecipient);
+        if (typeMessage.equals("TEXT")) {
+            ChatMessage chatMessage = mapper.convertValue(payload.get("chatMessage"), ChatMessage.class);
+            if (chatMessage != null && !chatMessage.getContent().isEmpty()) {
+                System.out.println("TEXT");
+                System.out.println(chatMessage);
+                handleChatMessage(chatMessage);
+            }
         }
-        
-        ZonedDateTime zonedDateTime = ZonedDateTime.parse(chatMessage.getTimeStamp(), DateTimeFormatter.ISO_DATE_TIME);
-        conversation.setLastMessage(chatMessage.getContent());
-        conversation.setUpdatedAt(zonedDateTime);
-        conversationService.save(conversation);
 
-        Message message = new Message(null, chatMessage.getContent(), zonedDateTime, userSender,
-                userRecipient, conversation);
-        chatMessageService.save(message);
-        chatMessage.setTimeStamp(zonedDateTime.toString());
-        messagingTemplate.convertAndSendToUser(
-                chatMessage.getRecipient(), "/queue/messages",
-                chatMessage);
+        if (typeMessage.equals("FILE")) {
+            FileMessage fileMessage = mapper.convertValue(payload.get("fileMessage"), FileMessage.class);
+            System.out.println("FILE");
+            System.out.println(fileMessage);
+            if (fileMessage != null && fileMessage.getContent() != null && !fileMessage.getContent().isEmpty()) {
+                handleFileMessage(fileMessage);
+            }
+        }
     }
 
     @GetMapping("/chatbox")
@@ -98,10 +86,9 @@ public class ChatController {
             Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
-        String userSender = principal.getUserId();
-
-        if (userId != null && !userId.trim().isEmpty()) {
-            String conversationId = utils.generateChatRoomId(userSender, userId);
+        int userSender = principal.getUserId();
+        if (userId != null) {
+            String conversationId = utils.generateChatRoomId(String.valueOf(userSender), userId);
             Conversation conversation = conversationService.findConversationById(conversationId);
             if (conversation == null) {
                 // create new conversation
@@ -113,7 +100,7 @@ public class ChatController {
                 conversationService.save(newConversation);
 
                 // add user to conversation
-                User userA = userService.getUserById(userId);
+                User userA = userService.getUserById(Integer.parseInt(userId));
                 User userB = userService.getUserById(userSender);
 
                 UserConversation userConversationSender = new UserConversation();
@@ -128,7 +115,6 @@ public class ChatController {
             }
         }
         List<ConversationExsisted> userConversations = userConversationService.findConversationByUserId(userSender);
-        System.out.println(userConversations.size());
         model.addAttribute("conversations", userConversations);
         return "chatbox";
     }
@@ -153,8 +139,92 @@ public class ChatController {
     }
 
     @GetMapping("/getUserChatted")
-    public ResponseEntity<Object> getUserChatted(@RequestParam String userId) {
+    public ResponseEntity<Object> getUserChatted(@RequestParam int userId) {
         List<ConversationExsisted> userConversations = userConversationService.findConversationByUserId(userId);
         return ResponseEntity.ok(userConversations);
+    }
+
+    private void handleChatMessage(ChatMessage chatMessage) {
+        String sender = chatMessage.getSender();
+        String recipient = chatMessage.getRecipient();
+        String conversationId = utils.generateChatRoomId(sender, recipient);
+        Conversation conversation = conversationService.findConversationById(conversationId);
+        User userSender = userService.getUserById(Integer.parseInt(sender));
+        User userRecipient = userService.getUserById(Integer.parseInt(recipient));
+
+        if (conversation == null) {
+            createNewConversation(Integer.parseInt(sender), Integer.parseInt(recipient), conversationId);
+        }
+
+        ZonedDateTime zonedDateTime = ZonedDateTime.parse(chatMessage.getTimeStamp(), DateTimeFormatter.ISO_DATE_TIME);
+        conversation.setLastMessage(chatMessage.getContent());
+        conversation.setUpdatedAt(zonedDateTime);
+        conversationService.save(conversation);
+
+        Message message = new Message(null, chatMessage.getContent(), chatMessage.getType(), zonedDateTime, userSender,
+                userRecipient, conversation);
+        chatMessageService.save(message);
+        chatMessage.setTimeStamp(zonedDateTime.toString());
+        messagingTemplate.convertAndSendToUser(String.valueOf(chatMessage.getRecipient()), "/queue/messages",
+                chatMessage);
+    }
+
+    private void handleFileMessage(FileMessage fileMessage) throws IOException {
+        int sender = Integer.parseInt(fileMessage.getSender());
+        int recipient = Integer.parseInt(fileMessage.getRecipient());
+        String conversationId = utils.generateChatRoomId(String.valueOf(sender), String.valueOf(recipient));
+        Conversation conversation = conversationService.findConversationById(conversationId);
+        User userSender = userService.getUserById(sender);
+        User userRecipient = userService.getUserById(recipient);
+
+        if (conversation == null) {
+            createNewConversation(sender, recipient, conversationId);
+        }
+
+        ZonedDateTime zonedDateTime = ZonedDateTime.parse(fileMessage.getTimeStamp(), DateTimeFormatter.ISO_DATE_TIME);
+        String fileType = fileMessage.getType();
+
+        if ("IMAGE".equals(fileType)) {
+            conversation.setLastMessage("A IMG");
+        } else if ("VIDEO".equals(fileType)) {
+            conversation.setLastMessage("A VIDEO");
+        } else if ("AUDIO".equals(fileType)) {
+            conversation.setLastMessage("A AUDIO");
+        } else if ("FILE".equals(fileType)) {
+            conversation.setLastMessage("A FILE");
+        }
+
+        conversation.setUpdatedAt(zonedDateTime);
+        conversationService.save(conversation);
+        String urlFile = cloudinaryService.handleFileMessage(fileMessage);
+        Message message = new Message(null, urlFile, fileMessage.getType(), zonedDateTime, userSender,
+                userRecipient, conversation);
+        chatMessageService.save(message);
+        fileMessage.setTimeStamp(zonedDateTime.toString());
+        fileMessage.setContent(urlFile);
+        messagingTemplate.convertAndSendToUser(String.valueOf(fileMessage.getRecipient()), "/queue/messages",
+                fileMessage);
+    }
+
+    private void createNewConversation(int sender, int recipient, String conversationId) {
+        Conversation conversation = new Conversation();
+        conversation.setId(conversationId);
+        conversation.setCreatedAt(ZonedDateTime.now());
+        conversation.setUpdatedAt(ZonedDateTime.now());
+        conversation.setType(TypeConversation.PRIVATE);
+        conversationService.save(conversation);
+
+        User userA = userService.getUserById(sender);
+        User userB = userService.getUserById(recipient);
+
+        UserConversation userConversationSender = new UserConversation();
+        userConversationSender.setUser(userA);
+        userConversationSender.setConversation(conversation);
+        userConversationService.save(userConversationSender);
+
+        UserConversation userConversationRecipient = new UserConversation();
+        userConversationRecipient.setUser(userB);
+        userConversationRecipient.setConversation(conversation);
+        userConversationService.save(userConversationRecipient);
     }
 }

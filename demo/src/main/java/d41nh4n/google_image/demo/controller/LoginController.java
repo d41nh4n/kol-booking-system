@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import d41nh4n.google_image.demo.dto.request.LoginDto;
-import d41nh4n.google_image.demo.entity.User.User;
+import d41nh4n.google_image.demo.dto.userdto.UserInfo;
+import d41nh4n.google_image.demo.entity.user.Profile;
+import d41nh4n.google_image.demo.entity.user.User;
 import d41nh4n.google_image.demo.security.UserPrincipal;
 import d41nh4n.google_image.demo.service.AuthService;
 import d41nh4n.google_image.demo.service.UserService;
-import d41nh4n.google_image.demo.validation.Utils;
 import d41nh4n.google_image.demo.validation.Utils;
 import d41nh4n.google_image.demo.validation.ValidTokenService;
 import jakarta.servlet.http.Cookie;
@@ -43,9 +44,10 @@ public class LoginController {
             String accessToken = authService.login(loginDto.getUsername(), loginDto.getPassword());
             UserPrincipal userPrincipal = validTokenService.principalFromToken(accessToken);
             if (userPrincipal != null) {
-                List<String> roles = userPrincipal.getAuthorityStrings();
-                model.addAttribute("username", userPrincipal.getUserId());
-                model.addAttribute("roles", roles);
+                UserInfo userInfo = new UserInfo(userPrincipal.getUserId(), userPrincipal.getFullName(),
+                        userPrincipal.getRoles(),
+                        userPrincipal.getAvatar());
+                model.addAttribute("userInfor", userInfo);
                 Cookie cookie = new Cookie("accessToken", accessToken);
                 cookie.setPath("/");
                 cookie.setMaxAge(24 * 60 * 60);
@@ -62,9 +64,9 @@ public class LoginController {
             @RequestParam(value = "error", required = false) Boolean error,
             @RequestParam(value = "success", required = false) Boolean success,
             @RequestParam(value = "userExist", required = false) Boolean userExist) {
-        Optional<String> accessToken = utils.getTokenFromCookies(request);
+        String accessToken = utils.getTokenFromCookies(request);
 
-        if (accessToken.isPresent() && !validTokenService.isTokenExpired(accessToken.get())) {
+        if (accessToken != null && !accessToken.isEmpty() && !validTokenService.isTokenExpired(accessToken)) {
             return "redirect:/";
         }
 
@@ -97,14 +99,26 @@ public class LoginController {
         if (userService.getUserByUsername(loginDto.getUsername()) != null || loginDto.getPassword().isEmpty()) {
             return "redirect:/login/form?userExist=true";
         }
+
         String encodedPassword = passwordEncoder.encode(loginDto.getPassword());
+
+        // Create and persist the User entity
         User user = new User();
-        user.setUserId( utils.renderCode(10));
         user.setUsername(loginDto.getUsername());
-        user.setPassword(encodedPassword);
+        user.setPasswordHash(encodedPassword);
         user.setRole("USER");
-        user.setAvatarUrl("https://png.pngtree.com/element_our/20200610/ourlarge/pngtree-default-avatar-image_2237213.jpg");
+        user = userService.save(user);
+        System.out.println(user);
+        Profile profile = new Profile();
+        profile.setUser(user);
+        profile.setProfileId(user.getUserId());
+        profile.setFullName(utils.renderUserName(10));
+        profile.setAvatarUrl(
+                "https://png.pngtree.com/element_our/20200610/ourlarge/pngtree-default-avatar-image_2237213.jpg");
+        user.setProfile(profile);
         userService.save(user);
+        userService.save(profile);
+
         return "redirect:/login/form?success=true";
     }
 }

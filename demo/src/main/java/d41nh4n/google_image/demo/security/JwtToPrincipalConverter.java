@@ -14,10 +14,11 @@ public class JwtToPrincipalConverter {
         List<SimpleGrantedAuthority> authorityList = getAuthorities(jwt);
 
         return UserPrincipal.builder()
-                .userId(jwt.getSubject())
-                .userName(jwt.getClaim("username").asString())
+                .userId(jwt.getClaim("id").asInt())
+                .fullName(jwt.getClaim("name").asString())
                 .authorities(authorityList)
                 .isLocked(jwt.getClaim("isLocked").asBoolean())
+                .avatar(jwt.getClaim("avatar").asString())
                 .build();
     }
 

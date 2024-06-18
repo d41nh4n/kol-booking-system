@@ -11,8 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ResponeUploadImage {
+public class ResponeUpload {
     private int status;
     private String message;
-    private String urlImg;
+    private String url;
 }

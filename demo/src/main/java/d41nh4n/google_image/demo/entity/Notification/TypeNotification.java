@@ -1,4 +1,4 @@
-package d41nh4n.google_image.demo.entity.Notification;
+package d41nh4n.google_image.demo.entity.notification;
 
 public enum TypeNotification {
     

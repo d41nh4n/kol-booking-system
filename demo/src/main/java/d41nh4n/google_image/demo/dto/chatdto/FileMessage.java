@@ -1,7 +1,6 @@
-package d41nh4n.google_image.demo.dto;
+package d41nh4n.google_image.demo.dto.chatdto;
 
-import java.time.LocalDateTime;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,10 +12,11 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatMessage {
-    
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class FileMessage {
     private String sender;
     private String recipient;
     private String content;
+    private String type;
     private String timeStamp;
 }

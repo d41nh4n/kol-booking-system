@@ -16,15 +16,20 @@ import lombok.Getter;
 @Builder
 public class UserPrincipal implements UserDetails {
 
-    private final String userId;
-
+    private final int userId;
+    
+    @JsonIgnore
     private final String userName;
     @JsonIgnore
     private final String password;
 
     private final Collection<? extends GrantedAuthority> authorities;
 
+    private String fullName;
+
     private boolean isLocked;
+
+    private String avatar;
 
     public List<String> getAuthorityStrings() {
         return authorities.stream()

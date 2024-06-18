@@ -8,7 +8,7 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 
-import d41nh4n.google_image.demo.dto.respone.ResponeUploadImage;
+import d41nh4n.google_image.demo.dto.respone.ResponeUpload;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,8 +33,8 @@ public class GoogleService {
         return filePath.toString();
     }
 
-    public ResponeUploadImage uploadImageToDrive(File file) throws GeneralSecurityException, IOException {
-        ResponeUploadImage res = new ResponeUploadImage();
+    public ResponeUpload uploadImageToDrive(File file) throws GeneralSecurityException, IOException {
+        ResponeUpload res = new ResponeUpload();
 
         try {
             String folderId = "152XLrESTzwE7Hj-0PbHWFKHavWZvHHU7";
@@ -49,7 +49,7 @@ public class GoogleService {
             System.out.println("IMAGE URL: " + imageUrl);
             res.setStatus(200);
             res.setMessage("Image Successfully Uploaded To Drive");
-            res.setUrlImg(imageUrl);
+            res.setUrl(imageUrl);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             res.setStatus(500);

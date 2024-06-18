@@ -1,4 +1,4 @@
-package d41nh4n.google_image.demo.entity.Notification;
+package d41nh4n.google_image.demo.entity.notification;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -25,7 +25,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "tb_notification")
+@Table(name = "notification")
 public class Notification {
 
     @Id

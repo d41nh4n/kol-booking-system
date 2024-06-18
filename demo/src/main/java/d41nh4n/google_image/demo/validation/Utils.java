@@ -4,8 +4,11 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.Random;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import d41nh4n.google_image.demo.security.UserPrincipal;
 import d41nh4n.google_image.demo.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,12 +35,12 @@ public class Utils {
         return userID.toString();
     }
 
-    public String renderUserId(int number) {
+    public String renderUserName(int number) {
 
         while (true) {
-            String id = "USER" + renderCode(number);
-            if (service.getUserById(id) == null) {
-                return id;
+            String name = "USER_" + renderCode(number);
+            if (service.getProfileByName(name) == null) {
+                return name;
             }
         }
     }
@@ -54,18 +57,18 @@ public class Utils {
         return codeBuilder.toString();
     }
 
-    public Optional<String> getTokenFromCookies(HttpServletRequest request) {
+    public String getTokenFromCookies(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
 
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("accessToken".equals(cookie.getName())) {
-                    return Optional.of(cookie.getValue());
+                    return cookie.getValue();
                 }
             }
         }
 
-        return Optional.empty();
+        return null;
     }
 
     public void removeTokenCookie(HttpServletResponse response) {
@@ -87,10 +90,18 @@ public class Utils {
     }
 
     public String generateChatRoomId(String userIdA, String userIdB) {
-        String[] array = { userIdA, userIdB };
+        String[] array = { String.valueOf(userIdA), String.valueOf(userIdB) };
         Arrays.sort(array);
-        String combie = array[0] + array[1];
-        System.out.println(combie);
+        String combie = array[0] + ":" + array[1];
         return combie;
+    }
+
+    public UserPrincipal getPrincipal() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()
+                && !"anonymousUser".equals(authentication.getPrincipal())) {
+            return (UserPrincipal) authentication.getPrincipal();
+        }
+        return null;
     }
 }

@@ -1,25 +1,29 @@
 package d41nh4n.google_image.demo.repository;
 
 import d41nh4n.google_image.demo.dto.respone.ConversationExsisted;
-import d41nh4n.google_image.demo.entity.Conversation.UserConversation;
-
+import d41nh4n.google_image.demo.entity.conversation.UserConversation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository
 public interface UserConversationRepository extends JpaRepository<UserConversation, Long> {
 
-    @Query("SELECT new d41nh4n.google_image.demo.dto.respone.ConversationExsisted( uc1.conversation.id, uc2.user.userId, u.username, u.avatarUrl, c.lastMessage) " +
+    @Query("SELECT NEW d41nh4n.google_image.demo.dto.respone.ConversationExsisted(" +
+           "c.id AS conversationId, " +
+           "uc2.user.id AS recipientId, " +
+           "p.fullName AS fullName, " +
+           "p.avatarUrl AS avatarUrl, " +
+           "c.lastMessage AS lastMessage) " +
            "FROM UserConversation uc1 " +
            "JOIN uc1.conversation c " +
            "JOIN UserConversation uc2 ON c.id = uc2.conversation.id " +
-           "JOIN User u ON uc2.user.userId = u.userId " +
-           "WHERE uc1.user.userId = :userId " +
-           "AND uc2.user.userId <> :userId " +
+           "JOIN User u ON uc2.user.id = u.id " +
+           "JOIN u.profile p " + 
+           "WHERE uc1.user.id = :userId " +
+           "AND uc2.user.id <> :userId " +
            "ORDER BY c.updatedAt DESC")
-    List<ConversationExsisted> findConversationsByUserId(@Param("userId") String userId);
+    List<ConversationExsisted> findConversationsByUserId(@Param("userId") int userId);
 }

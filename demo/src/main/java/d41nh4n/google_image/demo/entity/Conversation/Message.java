@@ -1,7 +1,8 @@
-package d41nh4n.google_image.demo.entity.Conversation;
+package d41nh4n.google_image.demo.entity.conversation;
+
 import java.time.ZonedDateTime;
 
-import d41nh4n.google_image.demo.entity.User.User;
+import d41nh4n.google_image.demo.entity.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,15 +22,18 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @ToString
-@Table(name = "tb_chatmessage")
+@Table(name = "tb_message")
 public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, columnDefinition = "ntext")
     private String content;
+
+    @Column(name = "type", nullable = false)
+    private String type;
 
     @Column(name = "timestamp", nullable = false)
     private ZonedDateTime timestamp;
@@ -49,10 +53,11 @@ public class Message {
     @Column(name = "is_read", nullable = false)
     private boolean isReaded;
 
-    public Message(Long id, String content, ZonedDateTime timestamp, User sender, User recipient,
+    public Message(Long id, String content, String type, ZonedDateTime timestamp, User sender, User recipient,
             Conversation conversation) {
         this.id = id;
         this.content = content;
+        this.type = type;
         this.timestamp = timestamp;
         this.sender = sender;
         this.recipient = recipient;

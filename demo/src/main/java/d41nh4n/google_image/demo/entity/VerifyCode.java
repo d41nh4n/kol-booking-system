@@ -20,21 +20,21 @@ public class VerifyCode {
     @Column(name = "id")
     private String id;
     @Column(name = "userid")
-    private String userId;
+    private int userId;
     @Column(name = "email")
     private String email;
     @Column(name = "code")
     private String code;
     @Column(name = "expiryDateTime")
-    private LocalDateTime expiryDateTime; 
+    private LocalDateTime expiryDateTime;
     @Column(name = "numberOfAttempts")
-    private int numberOfAttempts; 
+    private int numberOfAttempts;
 
     public VerifyCode() {
         this.expiryDateTime = LocalDateTime.now().plusMinutes(5);
     }
-    
-    public VerifyCode(String id, String userId, String email, String code, int numberOfAttempts) {
+
+    public VerifyCode(String id, int userId, String email, String code, int numberOfAttempts) {
         this.id = id;
         this.userId = userId;
         this.email = email;

@@ -1,6 +1,8 @@
 body{margin-top:20px;
-    background-color:#f2f6fc;
-    color:#69707a;
+    background:#eee;
+    }
+    .container-xl.mt-16 {
+        padding-top: 50px;
     }
     .img-account-profile {
         height: 10rem;

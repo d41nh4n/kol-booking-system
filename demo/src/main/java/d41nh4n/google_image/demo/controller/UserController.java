@@ -1,5 +1,7 @@
 package d41nh4n.google_image.demo.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,21 +21,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import d41nh4n.google_image.demo.dto.request.UserInfor;
-import d41nh4n.google_image.demo.dto.respone.UserFindedBySearch;
-import d41nh4n.google_image.demo.dto.respone.UserInfoRespone;
 import d41nh4n.google_image.demo.dto.respone.VerifyStatus;
+import d41nh4n.google_image.demo.dto.userdto.UserDto;
+import d41nh4n.google_image.demo.dto.userdto.UserFindedBySearch;
+import d41nh4n.google_image.demo.dto.userdto.UserProfileUpdate;
 import d41nh4n.google_image.demo.entity.VerifyCode;
-import d41nh4n.google_image.demo.entity.User.User;
-import d41nh4n.google_image.demo.mapper.UserToUserDto;
+import d41nh4n.google_image.demo.entity.user.Gender;
+import d41nh4n.google_image.demo.entity.user.Profile;
+import d41nh4n.google_image.demo.entity.user.User;
 import d41nh4n.google_image.demo.model.Mail;
+import d41nh4n.google_image.demo.security.JwtIssuer;
 import d41nh4n.google_image.demo.security.UserPrincipal;
 import d41nh4n.google_image.demo.service.MailService;
 import d41nh4n.google_image.demo.service.UserService;
 import d41nh4n.google_image.demo.service.VerifyCodeService;
 import d41nh4n.google_image.demo.validation.Utils;
-import d41nh4n.google_image.demo.validation.Utils;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -41,6 +46,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/")
 public class UserController {
 
+    private final JwtIssuer jwtIssuer;
     private final MailService mailService;
     private final UserService userService;
     private final VerifyCodeService verifyCodeService;
@@ -56,31 +62,77 @@ public class UserController {
             @RequestParam(value = "invalidEmail", required = false) Boolean invalidEmail,
             @RequestParam(value = "emailExist", required = false) Boolean emailExist) {
 
+        UserPrincipal principal = utils.getPrincipal();
+        User user = userService.getUserById(principal.getUserId());
+        UserDto userDto = new UserDto(user);
+        model.addAttribute("me", "me");
+        model.addAttribute("userInformation", userDto);
         if (Boolean.TRUE.equals(invalidEmail)) {
             model.addAttribute("invalidEmail", "Invalid email!");
         }
         if (Boolean.TRUE.equals(emailExist)) {
             model.addAttribute("emailExist", "Existed email!");
         }
-        return "infor";
+        System.out.println(principal.getRoles());
+        if (principal.getRoles().equals("USER")) {
+            return "infor-user";
+        } else {
+            return "infor-kol";
+        }
+
     }
 
     @PostMapping("/update")
-    public ResponseEntity<String> updateUser(@RequestBody UserInfor infor, HttpServletRequest request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()
-                && !"anonymousUser".equals(authentication.getPrincipal())) {
-            UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
-            User user = userService.getUserById(userDetails.getUserId());
-            user.setPhone(infor.getPhone());
-            user.setDob(infor.getDob());
-            user.setAddress(infor.getAddress());
-            user.setGender(infor.isGender());
-            user.setProfileDesc(infor.getDescription());
+    public ResponseEntity<Map<String, String>> updateUser(@RequestBody UserProfileUpdate infor,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+
+        UserPrincipal principal = utils.getPrincipal();
+        if (principal != null) {
+            int userId = principal.getUserId();
+            User user = userService.getUserById(userId);
+            Profile profile = userService.getProfileById(userId);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            profile.setFullName(infor.getFullName());
+            profile.setPhoneNumber(infor.getPhone());
+            try {
+                if (infor.getDob() != null && !infor.getDob().isEmpty()) {
+                    profile.setBirthday(dateFormat.parse(infor.getDob()));
+                }
+            } catch (ParseException e) {
+                Map<String, String> responseBody = new HashMap<>();
+                responseBody.put("message", "Invalid date format");
+                return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+            }
+            profile.setAddress(infor.getAddress());
+            profile.setBio(infor.getDescription());
+
+            // Cập nhật thông tin user
+            user.setGender(Gender.valueOf(infor.getGender().toUpperCase()));
             userService.save(user);
-            return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
+            userService.save(profile);
+
+            String newToken = jwtIssuer.createAccessToken(userId, profile.getFullName(), user.getRole(),
+                    user.isLocked(), profile.getAvatarUrl());
+
+            Map<String, String> responseBody = new HashMap<>();
+            responseBody.put("message", "User updated successfully");
+            responseBody.put("accessToken", newToken);
+            return new ResponseEntity<>(responseBody, HttpStatus.OK);
         }
-        return new ResponseEntity<>("No valid access token found", HttpStatus.UNAUTHORIZED);
+
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("message", "No valid access token found");
+        return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+    }
+
+    @GetMapping("/update-profile-form")
+    public String updateForm(Model model) {
+        UserPrincipal principal = utils.getPrincipal();
+        User user = userService.getUserById(principal.getUserId());
+        UserDto userDto = new UserDto(user);
+        model.addAttribute("userInformation", userDto);
+        return "information-update-form";
     }
 
     @GetMapping("/userexist")
@@ -127,8 +179,6 @@ public class UserController {
             @RequestParam(value = "verifyCode", required = false) String verifyCode) {
         VerifyCode code = verifyCodeService.getById(idCode);
         VerifyStatus status = new VerifyStatus();
-        System.out.println("Idcode:" + idCode);
-        System.out.println("verifyCode:" + verifyCode);
         if (code == null) {
             status.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             status.setMessage("Invalid code");
@@ -171,6 +221,7 @@ public class UserController {
     @GetMapping("/forgotpassword")
     public String showForgotPasswordPage(@RequestParam(value = "invalidUser", required = false) Boolean invalidUser,
             @RequestParam(value = "emailNotVerified", required = false) Boolean emailNotVerified,
+            @RequestParam(value = "confirmNotification", required = false) Boolean confirmNotification,
             Model model) {
         if (Boolean.TRUE.equals(invalidUser)) {
             model.addAttribute("invalidUser", "Invalid UserName!");
@@ -180,6 +231,9 @@ public class UserController {
             model.addAttribute("emailNotVerified", "Account not verify email yet!");
         }
 
+        if (Boolean.TRUE.equals(confirmNotification)) {
+            model.addAttribute("confirmNotification", "Check email to get link reset!");
+        }
         return "forgot_password";
     }
 
@@ -196,14 +250,13 @@ public class UserController {
 
         String email = user.getEmail();
         String code = utils.renderCode(40);
-        System.out.println(code);
         userService.updateResetPasswordToken(code, email);
-        String resetPasswordLink = "http://localhost:8080/reset_password?token=" + code;
+        String resetPasswordLink = "https://localhost:443/reset_password?token=" + code;
         Mail mail = new Mail();
         mail.setSubject("Reset Password:");
         mail.setMessage(resetPasswordLink);
         mailService.sendMail(email, mail);
-        return "redirect:/forgotpassword";
+        return "redirect:/forgotpassword?confirmNotification=true";
     }
 
     @GetMapping("/reset_password")
@@ -253,47 +306,48 @@ public class UserController {
     }
 
     @GetMapping("/findUser")
-    public ResponseEntity<Object> findUser(@RequestParam String username) {
-        if (username == null || username.isEmpty()) {
+    public ResponseEntity<Object> findUser(@RequestParam String name) {
+        if (name == null || name.isEmpty()) {
         }
-        System.out.println(username);
         Map<String, List<UserFindedBySearch>> res = new HashMap<>();
-        List<User> users = userService.searchUser(username);
+        List<UserFindedBySearch> users = userService.searchUser(name);
+        for (UserFindedBySearch userFindedBySearch : users) {
+        }
         if (users.isEmpty()) {
             res.put("list", null);
             return ResponseEntity.ok(res);
         }
-
-        List<UserFindedBySearch> userList = users.stream().map(user -> UserToUserDto.mapToUserFindedBySearch(user))
-                .collect(Collectors.toList());
-        res.put("list", userList);
+        res.put("list", users);
         return ResponseEntity.ok(res);
     }
 
     @GetMapping("/profile")
-    public String getProfileByUserId(@RequestParam String userId, Model model, HttpServletRequest request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object userPrincipal = authentication.getPrincipal();
+    public String getProfileByUserId(@RequestParam String userId, Model model,
+            HttpServletRequest request) {
+                System.out.println("PROFILE : "+userId );
+        int userIdNumber = Integer.parseInt(userId);
+        UserPrincipal principal = utils.getPrincipal();
 
         if (userId == null || userId.isEmpty() || userId.trim().isEmpty()) {
             model.addAttribute("error", "User ID is required!");
             return "error";
         }
-        if (userPrincipal instanceof UserPrincipal) {
-            UserPrincipal principal = (UserPrincipal) userPrincipal;
-            if(userId.equals(principal.getUserId()))
-            return "redirect:/infor";
+        if (principal != null) {
+            if (userIdNumber == principal.getUserId())
+                return "redirect:/infor";
         }
 
-        User user = userService.getUserById(userId);
+        User user = userService.getUserById(userIdNumber);
         if (user == null) {
             model.addAttribute("error", "User not found!");
             return "error";
         }
-        
-        UserInfoRespone userInfoRespone = UserToUserDto.mapToUserInfoResponse(user);
-        model.addAttribute("user", userInfoRespone);
-
-        return "profile";
+        UserDto userDto = userService.getUserInforById(userIdNumber);
+        model.addAttribute("userInformation", userDto);
+        if (user.getRole().equals("USER")) {
+            return "infor-user";
+        } else {
+            return "infor-kol";
+        }
     }
 }

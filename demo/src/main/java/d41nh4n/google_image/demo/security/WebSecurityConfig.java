@@ -36,12 +36,13 @@ public class WebSecurityConfig {
                                 .securityMatcher("/**")
                                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                                                 .requestMatchers("/", "/search", "/login/auth", "/login/error",
-                                                                "/login/form", "/register/form", "/register", "/findUser","/profile")
+                                                                "/login/form", "/register/form", "/register",
+                                                                "/findUser", "/profile")
                                                 .permitAll()
-                                                .requestMatchers("/infor").hasAnyAuthority("USER", "ADMIN")
-                                                .requestMatchers("/uploadToGoogleDrive", "/cloudinary/upload",
-                                                                "/update", "/checkAccount", "/ws","/chatbox","/chat.sendMessage")
-                                                .hasAnyAuthority("USER", "ADMIN")
+                                                .requestMatchers("/uploadToGoogleDrive",
+                                                                 "/checkAccount", "/ws", "/chatbox",
+                                                                "/chat.sendMessage","/infor")
+                                                .hasAnyAuthority("USER", "KOL")
                                                 .requestMatchers("/auth/admin").hasAuthority("ADMIN")
                                                 .anyRequest().permitAll())
                                 .formLogin(formLogin -> formLogin

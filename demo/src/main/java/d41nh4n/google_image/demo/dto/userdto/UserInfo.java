@@ -1,4 +1,6 @@
-package d41nh4n.google_image.demo.dto.respone;
+package d41nh4n.google_image.demo.dto.userdto;
+
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +13,9 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserFindedBySearch {
-    private String id;
-    private String username;
+public class UserInfo {
+    private int id;
+    private String fullName;
+    private String role;
+    private String avatar;
 }

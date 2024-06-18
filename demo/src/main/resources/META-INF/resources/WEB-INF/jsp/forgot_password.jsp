@@ -24,6 +24,10 @@ pageEncoding="US-ASCII" %>
     <c:if test="${not empty invalidUser}">
         <p id="errorMessage" class="text-red-500">Invalid username. Please try again.</p>
     </c:if>
+
+    <c:if test="${not empty confirmNotification}">
+        <p id="succesMessage" >Check email to get link reset!</p>
+    </c:if>
     <form id="forgotPasswordForm" action="/forgotpassword" method="post" class="mb-4">
         <input type="text" id="username" name="username" placeholder="Enter your username" required
                class="block w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500">
@@ -31,7 +35,6 @@ pageEncoding="US-ASCII" %>
             Reset Password
         </button>
     </form>
-    <p id="errorMessage" class="text-red-500"></p>
 </div>
 </body>
 </html>

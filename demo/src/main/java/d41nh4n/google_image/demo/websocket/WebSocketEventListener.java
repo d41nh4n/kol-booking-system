@@ -14,18 +14,20 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class WebSocketEventListener {
     private final ValidTokenService validTokenService;
-    private static ConcurrentHashMap<String, String> userSessionMap = new ConcurrentHashMap<>();
+
+    private static ConcurrentHashMap<Integer, String> userSessionMap = new ConcurrentHashMap<>();
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
-        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());    
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String token = accessor.getFirstNativeHeader("token");
-        String userId = validTokenService.principalFromToken(token).getUserId();
-        System.out.println("HandleConnect: " + userId);
-        String sessionId = accessor.getSessionId();
-        System.out.println(sessionId);
-        if (userId != null) {
-            userSessionMap.put(userId, sessionId);
+        if (token != null) {
+            Integer userId = validTokenService.principalFromToken(token).getUserId();
+            if (userId != null) {
+                String sessionId = accessor.getSessionId();
+                userSessionMap.put(userId, sessionId);
+                System.out.println("User connected: userId=" + userId + ", sessionId=" + sessionId);
+            }
         }
     }
 
@@ -33,9 +35,10 @@ public class WebSocketEventListener {
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         String sessionId = event.getSessionId();
         userSessionMap.entrySet().removeIf(entry -> sessionId.equals(entry.getValue()));
+        System.out.println("User disconnected: sessionId=" + sessionId);
     }
 
-    public static String getSessionIdByUserId(String userId) {
+    public static String getSessionIdByUserId(Integer userId) {
         return userSessionMap.get(userId);
     }
 }

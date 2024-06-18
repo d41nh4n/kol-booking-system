@@ -1,4 +1,4 @@
-package d41nh4n.google_image.demo.dto.request;
+package d41nh4n.google_image.demo.dto.userdto;
 
 import java.util.Date;
 
@@ -15,11 +15,15 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserInfor {
-    
+public class UserProfileUpdate {
+    private String fullName;
+    private String gender;
     private String phone;
-    private Date dob;
+    private String dob;
     private String address;
-    private boolean gender;
     private String description;
+    private String facebookUrl;
+    private String instagramUrl;
+    private String linkedinUrl;
+    private String tiktokUrl;
 }

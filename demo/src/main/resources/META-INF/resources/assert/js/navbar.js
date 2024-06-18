@@ -1,4 +1,4 @@
-    
+
 
   function searchByName(param) {
     var search = param.value.trim(); 
@@ -10,7 +10,7 @@
             url: "/findUser",
             type: "get",
             data: {
-                username: search
+                name: search
             },
             success: function (data) {
                 displaySuggestions(data.list);
@@ -27,11 +27,17 @@ function displaySuggestions(users) {
     users.forEach(user => {
         let listItem = document.createElement("li");
         listItem.classList.add("suggestions-item");
-        listItem.textContent = user.username; 
+
+        let userSpan = document.createElement("span");
+        userSpan.textContent = user.fullname;
+
         listItem.setAttribute("data-id", user.id);
         listItem.addEventListener("click", () => {
             window.location.href = "/profile?userId=" + user.id;
         });
+        listItem.appendChild(userSpan);
+
+        // Append listItem to suggestions list
         document.querySelector(".suggestions-list").appendChild(listItem);
     });
 }

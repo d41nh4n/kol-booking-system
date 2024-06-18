@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
-import d41nh4n.google_image.demo.entity.User.User;
+import d41nh4n.google_image.demo.dto.userdto.UserDto;
 import d41nh4n.google_image.demo.security.JwtDecoder;
 import d41nh4n.google_image.demo.security.JwtIssuer;
 import d41nh4n.google_image.demo.security.JwtToPrincipalConverter;
@@ -32,18 +32,11 @@ public class AuthService {
         try {
             var authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password));
-                   
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
             var principal = (UserPrincipal) authentication.getPrincipal();
-
-            String role = principal.getAuthorities()
-                    .stream().map(grantedAuthority -> grantedAuthority.getAuthority())
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("User has no roles assigned"));
-
-            var isLocked = principal.isLocked();
-
-            var token = issuer.createAccessToken(principal.getUserId(), principal.getUsername(), role, isLocked);
+            var token = issuer.createAccessToken(principal.getUserId(), principal.getFullName(), principal.getRoles(),
+                    principal.isLocked(), principal.getAvatar());
             return token;
         } catch (AuthenticationException e) {
             System.out.println("Authentication failed: " + e.getMessage());
@@ -51,17 +44,18 @@ public class AuthService {
         }
     }
 
-    public String generateAccessTokenFromRefreshToken(String refreshToken) throws JWTVerificationException {
+    // public String generateAccessTokenFromRefreshToken(String refreshToken) throws
+    // JWTVerificationException {
 
-        var principal = principalFromToken(refreshToken);
-        if (principal == null) {
-            return null;
-        }
-        String id = principal.getUserId();
-        User user = userService.getUserById(id);
-        return issuer.createAccessToken(id, user.getUsername(), user.getRole(),
-                !user.isLocked());
-    }
+    // var principal = principalFromToken(refreshToken);
+    // if (principal == null) {
+    // return null;
+    // }
+    // String id = principal.getUserId();
+    // User user = userService.getUserById(id);
+    // return issuer.createAccessToken(id, user.getUsername(), user.getRole(),
+    // !user.isLocked());
+    // }
 
     public UserPrincipal principalFromToken(String tokenString) {
         try {

@@ -1,6 +1,6 @@
-package d41nh4n.google_image.demo.entity.Conversation;
+package d41nh4n.google_image.demo.entity.conversation;
 
-import d41nh4n.google_image.demo.entity.User.User;
+import d41nh4n.google_image.demo.entity.user.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -13,12 +13,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 @Entity
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "tb_user_conversation")
+@Table(name = "user_conversation")
 public class UserConversation {
 
     @Id

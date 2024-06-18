@@ -4,9 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
-
 import d41nh4n.google_image.demo.dto.respone.ConversationExsisted;
-import d41nh4n.google_image.demo.entity.Conversation.UserConversation;
+import d41nh4n.google_image.demo.entity.conversation.UserConversation;
 import d41nh4n.google_image.demo.repository.UserConversationRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +24,7 @@ public class UserConversationService {
     // return userConversationRepository.findByConversationId(conversationId);
     // }
 
-    public List<ConversationExsisted> findConversationByUserId(String user) {
+    public List<ConversationExsisted> findConversationByUserId(int user) {
         return userConversationRepository.findConversationsByUserId(user);
     }
 }

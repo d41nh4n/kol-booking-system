@@ -71,8 +71,8 @@
         console.log(data)
         if (data.status === false) {
           openModal();
-        }else{
-          //nothing happen
+        } else {
+          // nothing happen
         }
       })
       .catch(error => {
