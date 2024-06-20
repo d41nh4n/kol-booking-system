@@ -68,31 +68,6 @@
                                 <label class="small mb-1" for="inputAddress">Address</label>
                                 <input name="address" class="form-control w-full p-2 border rounded" id="inputAddress" type="text" placeholder="Enter your address" value="<c:out value='${userInformation.address}'/>" />
                             </div>
-                            <div class="bg-secondary-soft px-4 py-5 rounded mt-4">
-                                <div class="row g-3">
-                                    <h4 class="mb-4 mt-0">Social Media Details</h4>
-                                    <!-- Facebook -->
-                                    <div class="col-md-6">
-                                        <label class="form-label"><i class="fab fa-fw fa-facebook me-2 text-facebook"></i>Facebook *</label>
-                                        <input name="facebookUrl" type="text" class="form-control" placeholder="" aria-label="Facebook" value="<c:out value='${userInformation.facebookUrl}'/>">
-                                    </div>
-                                    <!-- TikTok -->
-                                    <div class="col-md-6">
-                                        <label class="form-label"><i class="fa-brands fa-tiktok text-tiktok me-2"></i>Tiktok *</label>
-                                        <input name="tiktokUrl" type="text" class="form-control" placeholder="" aria-label="Tiktok" value="<c:out value='${userInformation.tiktokUrl}'/>">
-                                    </div>
-                                    <!-- Linkedin -->
-                                    <div class="col-md-6">
-                                        <label class="form-label"><i class="fab fa-fw fa-linkedin-in text-linkedin me-2"></i>Linkedin *</label>
-                                        <input name="linkedinUrl" type="text" class="form-control" placeholder="" aria-label="Linkedin" value="<c:out value='${userInformation.linkedinUrl}'/>">
-                                    </div>
-                                    <!-- Instagram -->
-                                    <div class="col-md-6">
-                                        <label class="form-label"><i class="fab fa-fw fa-instagram text-instagram me-2"></i>Instagram *</label>
-                                        <input name="instagramUrl" type="text" class="form-control" placeholder="" aria-label="Instagram" value="<c:out value='${userInformation.instagramUrl}'/>">
-                                    </div>
-                                </div>
-                            </div>
                             <button class="btn btn-primary mb-3 w-full md:w-auto" type="submit">Save changes</button>
                         </form>
                     </div>
@@ -118,11 +93,6 @@
         </div>
     </div>
 </div>
-
-
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../assert/js/information-update-form.js"></script>
 </body>
 </html>

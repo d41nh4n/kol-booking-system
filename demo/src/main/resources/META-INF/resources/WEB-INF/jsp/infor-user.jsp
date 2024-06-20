@@ -4,18 +4,10 @@
     <meta charset="utf-8" />
     <title>User profile with friends and chat - Bootdey.com</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      href="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="../../assert/css/infor-user.css" />
   </head>
   <%@include file="navbar.jsp" %>
   <body>
-    <link
-      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
-      rel="stylesheet"
-    />
     <div class="container bootstrap snippets bootdeys">
       <div class="row" id="user-profile">
         <div class="col-lg-3 col-md-4 col-sm-4">
@@ -101,36 +93,6 @@
               </div>
               <div class="col-sm-4 profile-social">
                <ul class="fa-ul">
-  <!-- LinkedIn -->
-  <c:if test="${not empty userInformation.linkedinUrl}">
-    <li>
-      <i class="fa-li fa fa-linkedin-square"></i>
-      <a href="${userInformation.linkedinUrl}">Linkedin</a>
-    </li>
-  </c:if>
-
-  <!-- Facebook -->
-  <c:if test="${not empty userInformation.facebookUrl}">
-    <li>
-      <i class="fa-li fa fa-facebook-square"></i>
-      <a href="${userInformation.facebookUrl}">Facebook</a>
-    </li>
-  </c:if>
-
-  <!-- Instagram -->
-  <c:if test="${not empty userInformation.instagramUrl}">
-    <li>
-      <i class="fa-li fa fa-instagram"></i>
-      <a href="${userInformation.instagramUrl}">Instagram</a>
-    </li>
-  </c:if>
-
-   <c:if test="${not empty userInformation.tiktokUrl}">
-    <li>
-      <i class="fa-li fa fa-tiktok"></i>
-      <a href="${userInformation.tiktokUrl}" class="text-decoration-none">TikTok</a>
-    </li>
-  </c:if>
 </ul>
 
               </div>
@@ -416,8 +378,6 @@
       data-cfasync="false"
       src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"
     ></script>
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript"></script>
   </body>
 </html>

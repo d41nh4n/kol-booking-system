@@ -3,7 +3,6 @@ package d41nh4n.google_image.demo.entity.notification;
 import d41nh4n.google_image.demo.entity.user.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;

@@ -31,17 +31,13 @@
   </head>
   <%@include file="navbar.jsp" %>
   <body>
-    <link
-      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
-      rel="stylesheet"
-    />
     <section id="content" class="container">
       <div class="page-heading">
         <div class="media clearfix">
           <div class="media-left pr30">
             <a href="#">
               <img
-                class="media-object mw150"
+                class="media-object"
                 src="${userInformation.avatarUrl}"
                 alt="..."
               />
@@ -142,21 +138,18 @@
     </div>
     <div class="panel-body pb5">
         <h6>Name</h6>
-        <h4>John Doe</h4>
+        <h4>${userInformation.fullName}</h4>
+        <hr class="short br-lighter" />       
+        <h6>Day Of Birth</h6>
+        <h4>${userInformation.birthday}</h4>
         <hr class="short br-lighter" />
-        
-        <h6>Age</h6>
-        <h4>30</h4>
-        <hr class="short br-lighter" />
-        
         <h5>Description</h5>
         <p class="text-muted">
-            Experienced software engineer with a background in web development and data analysis. Passionate about building scalable software and improving user experience.
+        ${userInformation.bio}
         </p>
         <hr class="short br-lighter" />
-        
         <h5>Location</h5>
-        <h4>University of Missouri, Columbia</h4>
+        <h4>${userInformation.address}</h4>
     </div>
 </div>
 
@@ -702,6 +695,7 @@
     </div>
 
 <!-- Main Modal -->
+ <input type="hidden" id="user-recipient-request" value="${userInformation.userId}">
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -746,9 +740,16 @@
                     <label for="postDescription">Description:</label>
                     <textarea class="form-control" id="postDescription"></textarea>
                 </div>
+                <div class="form-group">
+                    <label for="postLocation">Location:</label>
+                    <select class="form-control" id="postLocation">
+                        <option value="Quang Nam">Quang Nam</option>
+                    </select>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+               <button type="button" class="btn btn-primary" onclick="submitPostRequest()">Send</button>
             </div>
         </div>
     </div>
@@ -771,10 +772,16 @@
                     <label for="videoDescription">Description:</label>
                     <textarea class="form-control" id="videoDescription"></textarea>
                 </div>
+                <div class="form-group">
+                    <label for="videoLocation">Location:</label>
+                    <select class="form-control" id="videoLocation">
+                        <option value="Quang Nam">Quang Nam</option>
+                    </select>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onclick="submitVideoRequest()">Send</button>
             </div>
         </div>
     </div>
@@ -806,14 +813,25 @@
                     </div>
                     <div class="days" id="days"></div>
                 </div>
-                <button class="submit" onclick="submitSelection()">Submit</button>
+                <div class="form-group">
+                    <label for="hireDescription">Description:</label>
+                    <textarea class="form-control" id="hireDescription"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="hireLocation">Location:</label>
+                    <select class="form-control" id="hireLocation">
+                        <option value="Quang Nam">Quang Nam</option>
+                    </select>
+                </div>
             </div>
             <div class="modal-footer">
+           <button type="button" class="btn btn-primary" onclick="submitHiretRequest()">Send</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
+
 
 <!-- Representative Modal -->
 <div class="modal fade" id="representativeModal" tabindex="-1" role="dialog" aria-labelledby="representativeModalLabel">
@@ -831,19 +849,30 @@
                 <div class="form-group">
                     <label for="representativeMonths">Month Number:</label>
                     <select class="form-control" id="representativeMonths">
-                        <option value="3">3 Tháng</option>
-                        <option value="6">6 Tháng</option>
-                        <option value="9">9 Tháng</option>
+                        <option value="3">3 Months</option>
+                        <option value="6">6 Months</option>
+                        <option value="9">9 Months</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="videoDeadline">Start Day:</label>
+                    <input type="date" class="form-control" id="representativeStart">
+                </div>
+                <div class="form-group">
+                    <label for="representativeLocation">Location:</label>
+                    <select class="form-control" id="representativeLocation">
+                        <option value="Quang Nam">Quang Nam</option>
                     </select>
                 </div>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="submitRepresentativetRequest()">Send</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
 </div>
+
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>

@@ -1,6 +1,4 @@
-
-
-  function searchByName(param) {
+function searchByName(param) {
     var search = param.value.trim(); 
     if (search === "") {
         removeElements();
@@ -48,48 +46,3 @@ function removeElements() {
         item.remove();
     });
 }
-
-function fetchNotifications() {
-    
-    
-
-    $.ajax({
-        url: "/notifications",
-        type: "get",
-        success: function (data) {
-            displayNotifications(data.notifications);
-        },
-        error: function (xhr) {
-            // Handle error
-        }
-    });
-}
-
-function displayNotifications(notifications) {
-    removeNotificationElements();
-    notifications.forEach(notification => {
-        let listItem = document.createElement("li");
-        listItem.classList.add("notifications-item");
-        listItem.textContent = notification.message;
-        listItem.setAttribute("data-id", notification.id);
-        document.querySelector(".notifications").appendChild(listItem);
-    });
-    document.querySelector(".notifications").style.display = "block";
-}
-
-function removeNotificationElements() {
-    let items = document.querySelectorAll(".notifications-item");
-    items.forEach((item) => {
-        item.remove();
-    });
-}
-
-$(document).ready(function(){
-    $(document).click(function(event) { 
-        if(!$(event.target).closest('.notification-container').length) {
-            if($('.notifications').is(":visible")) {
-                $('.notifications').hide();
-            }
-        }        
-    });
-});

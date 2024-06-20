@@ -79,7 +79,6 @@ public class UserController {
         } else {
             return "infor-kol";
         }
-
     }
 
     @PostMapping("/update")
@@ -324,7 +323,6 @@ public class UserController {
     @GetMapping("/profile")
     public String getProfileByUserId(@RequestParam String userId, Model model,
             HttpServletRequest request) {
-                System.out.println("PROFILE : "+userId );
         int userIdNumber = Integer.parseInt(userId);
         UserPrincipal principal = utils.getPrincipal();
 
@@ -349,5 +347,10 @@ public class UserController {
         } else {
             return "infor-kol";
         }
+    }
+
+    @GetMapping("/find-user")
+    public String findUserByName(@RequestParam(name = "name", required = false) String name) {
+        return "list-find-user";
     }
 }

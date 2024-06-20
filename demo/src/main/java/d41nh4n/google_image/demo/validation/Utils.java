@@ -1,6 +1,12 @@
 package d41nh4n.google_image.demo.validation;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
 
@@ -20,6 +26,9 @@ import lombok.RequiredArgsConstructor;
 public class Utils {
 
     private final UserService service;
+
+    private static final String DATE_FORMAT_1 = "MM/dd/yyyy";
+    private static final String DATE_FORMAT_2 = "yyyy-MM-dd";
 
     public String renderCode(int number) {
 
@@ -103,5 +112,55 @@ public class Utils {
             return (UserPrincipal) authentication.getPrincipal();
         }
         return null;
+    }
+
+    public Date stringToDate(String dateString) {
+        Date date = null;
+        SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT_1);
+
+        try {
+            // Thử phân tích chuỗi ngày với định dạng DATE_FORMAT_1
+            date = formatter.parse(dateString);
+        } catch (ParseException e1) {
+            // Nếu không thành công, thử với định dạng DATE_FORMAT_2
+            formatter.applyPattern(DATE_FORMAT_2);
+            try {
+                date = formatter.parse(dateString);
+            } catch (ParseException e2) {
+                // Nếu vẫn không thành công, in ra lỗi và trả về null
+                e2.printStackTrace();
+            }
+        }
+        return date;
+    }
+
+    public LocalDate stringToLocalDate(String dateString) {
+        LocalDate localDate = null;
+
+        // Cố gắng phân tích chuỗi ngày với định dạng DATE_FORMAT_1
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT_1);
+            localDate = LocalDate.parse(dateString, formatter);
+        } catch (DateTimeParseException e1) {
+            // Nếu không thành công, thử với định dạng DATE_FORMAT_2
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT_2);
+                localDate = LocalDate.parse(dateString, formatter);
+            } catch (DateTimeParseException e2) {
+                // Nếu vẫn không thành công, in ra lỗi và trả về null
+                e2.printStackTrace();
+            }
+        }
+
+        return localDate;
+    }
+
+    public String dateToString(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT_1);
+        return formatter.format(date);
+    }
+
+    public int stringToInt(String number) {
+        return Integer.parseInt(number);
     }
 }

@@ -65,16 +65,12 @@ public class ChatController {
         if (typeMessage.equals("TEXT")) {
             ChatMessage chatMessage = mapper.convertValue(payload.get("chatMessage"), ChatMessage.class);
             if (chatMessage != null && !chatMessage.getContent().isEmpty()) {
-                System.out.println("TEXT");
-                System.out.println(chatMessage);
                 handleChatMessage(chatMessage);
             }
         }
 
         if (typeMessage.equals("FILE")) {
             FileMessage fileMessage = mapper.convertValue(payload.get("fileMessage"), FileMessage.class);
-            System.out.println("FILE");
-            System.out.println(fileMessage);
             if (fileMessage != null && fileMessage.getContent() != null && !fileMessage.getContent().isEmpty()) {
                 handleFileMessage(fileMessage);
             }

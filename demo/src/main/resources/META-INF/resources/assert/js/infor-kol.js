@@ -148,11 +148,121 @@ function nextMonth() {
   updateCalendar();
 }
 
-function submitSelection() {
+async function submitPostRequest() {
+  console.log("Function submitPostRequest() is called");
+  const recipientId = document.getElementById("user-recipient-request").value; // Lấy giá trị từ input có id là userId
+  const location = document.getElementById("postLocation").value;
+  const dateRequire = new Date().toISOString().split("T")[0]; // Ngày hiện tại
+  const deadline = document.getElementById("postDeadline").value;
+  const description = document.getElementById("postDescription").value;
+  const requestData = {
+    typeRequest: "POST",
+    request: {
+      recipientId: recipientId,
+      location: location,
+      type: "POST",
+      dateRequire: dateRequire,
+      deadline: deadline,
+      decription: description,
+    },
+  };
+
+  await sendRequest(requestData);
+}
+
+
+async function submitVideoRequest() {
+  const recipientId = document.getElementById("user-recipient-request").value; // Bạn có thể lấy giá trị này từ input nếu cần
+  const location = document.getElementById("videoLocation").value;
+  const dateRequire = new Date().toISOString().split("T")[0]; // Ngày hiện tại
+  const deadline = document.getElementById("videoDeadline").value;
+  const description = document.getElementById("videoDescription").value;
+
+  const requestData = {
+    typeRequest: "VIDEO",
+    request: {
+      recipientId: recipientId,
+      location: location,
+      type: "VIDEO",
+      dateRequire: dateRequire,
+      deadline: deadline,
+      decription: description,
+    },
+  };
+
+  await sendRequest(requestData);
+}
+
+async function submitHiretRequest() {
   if (selectedDaysList.length > 0) {
-    alert("Selected days: " + selectedDaysList.join(", "));
+    const recipientId = document.getElementById("user-recipient-request").value; // Bạn có thể lấy giá trị này từ input nếu cần
+    const location = document.getElementById("hireLocation").value;
+    const dateRequire = selectedDaysList[0]; // Giả sử ngày yêu cầu là ngày đầu tiên được chọn
+    const description = document.getElementById("hireDescription").value;
+
+    const requestData = {
+      typeRequest: "HIREBYDAY",
+      request: {
+        recipientId: recipientId,
+        location: location,
+        type: "HIREBYDAY",
+        dateRequire: dateRequire,
+        daysRequire: selectedDaysList,
+        decription: description,
+      },
+    };
+
+    await sendRequest(requestData);
   } else {
     alert("No days selected");
+  }
+}
+
+async function submitRepresentativetRequest() {
+  const recipientId = document.getElementById("user-recipient-request").value; // Bạn có thể lấy giá trị này từ input nếu cần
+  const location = document.getElementById("representativeLocation").value;
+  const dateRequire = new Date().toISOString().split("T")[0]; // Ngày hiện tại
+  const dateStart = document.getElementById("representativeStart").value; // Ngày bắt đầu
+  const numberMonths = document.getElementById("representativeMonths").value;
+  const description = document.getElementById(
+    "representativeDescription"
+  ).value;
+
+  const requestData = {
+    typeRequest: "REPRESENTATIVE",
+    request: {
+      recipientId: recipientId,
+      location: location,
+      type: "REPRESENTATIVE",
+      dateRequire: dateRequire,
+      dateStart: dateStart,
+      numberMonths: numberMonths,
+      decription: description,
+    },
+  };
+
+  await sendRequest(requestData);
+}
+
+async function sendRequest(data) {
+  console.log(data);
+  try {
+    const response = await fetch("/request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    alert(result);
+  } catch (error) {
+    alert("An error occurred: " + error.message);
   }
 }
 

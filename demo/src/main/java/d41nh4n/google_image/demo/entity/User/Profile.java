@@ -27,7 +27,7 @@ public class Profile {
     @Column(name = "user_id")
     private int profileId;
 
-    @Column(name = "full_name", length = 100)
+    @Column(name = "full_name", length = 100, columnDefinition = "NVARCHAR(MAX)")
     private String fullName;
 
     @Column(columnDefinition = "NVARCHAR(MAX)")

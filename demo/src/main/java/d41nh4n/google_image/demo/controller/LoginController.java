@@ -108,7 +108,6 @@ public class LoginController {
         user.setPasswordHash(encodedPassword);
         user.setRole("USER");
         user = userService.save(user);
-        System.out.println(user);
         Profile profile = new Profile();
         profile.setUser(user);
         profile.setProfileId(user.getUserId());
