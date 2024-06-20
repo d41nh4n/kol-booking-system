@@ -32,6 +32,7 @@ import d41nh4n.google_image.demo.entity.user.User;
 import d41nh4n.google_image.demo.model.Mail;
 import d41nh4n.google_image.demo.security.JwtIssuer;
 import d41nh4n.google_image.demo.security.UserPrincipal;
+import d41nh4n.google_image.demo.service.CategoryService;
 import d41nh4n.google_image.demo.service.MailService;
 import d41nh4n.google_image.demo.service.UserService;
 import d41nh4n.google_image.demo.service.VerifyCodeService;
@@ -51,9 +52,12 @@ public class UserController {
     private final UserService userService;
     private final VerifyCodeService verifyCodeService;
     private final Utils utils;
+    private final CategoryService categoryService;
 
     @GetMapping()
     public String index(Model model, HttpServletRequest request) {
+        List<String> categoies = categoryService.getAllCategoryNames();
+        model.addAttribute("categories", categoies);
         return "home";
     }
 

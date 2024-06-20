@@ -161,3 +161,11 @@ header {
     max-width: 300px;
     height: auto;
   }
+
+  .card.search-form{
+    margin-top: 20px;
+  }
+
+  .row.top-kol{
+    margin-top: 20px;
+  }

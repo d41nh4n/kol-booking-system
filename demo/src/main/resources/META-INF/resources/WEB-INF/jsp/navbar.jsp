@@ -51,9 +51,11 @@
         border-width: 0 0 2px;
         font-weight: 800;
     }    
-    .dropdown-menu{
+     .dropdown-menu {
         min-width: 250px;
-
+    }
+    .dropdown-menu.user {
+        min-width: 150px;
     }
     .navbar-nav .dropdown-menu{
         position:absolute;
@@ -101,10 +103,12 @@
                         </ul>
                     </li>
                 </c:if>
+                <c:if test="${not empty userInfor}">
                 <li><a id="btnToggle" href="/chatbox"><i class="fa-solid fa-message"></i></a></li>
+                </c:if>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i></a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu user">
                         <c:choose>
                             <c:when test="${not empty userInfor}">
                                 <li><a href="/infor">Profile</a></li>

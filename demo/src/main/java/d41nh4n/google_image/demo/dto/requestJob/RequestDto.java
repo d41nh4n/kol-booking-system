@@ -12,7 +12,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class RequestDto {
-
     private String recipientId;
     private String location;
     private String type;

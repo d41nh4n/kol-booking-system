@@ -60,6 +60,12 @@ public class Profile {
     @Column(name = "representativePrice", nullable = false)
     private long representativePrice;
 
+    @Column(name = "rating")
+    private double averageRating;
+
+    @Column(name = "money")
+    private double money;
+
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId("userId")
     @JoinColumn(name = "user_id")
