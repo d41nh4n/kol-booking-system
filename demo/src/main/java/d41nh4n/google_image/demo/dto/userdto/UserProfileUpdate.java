@@ -18,7 +18,6 @@ import lombok.ToString;
 public class UserProfileUpdate {
     private String fullName;
     private String gender;
-    private String phone;
     private String dob;
     private String location;
     private String description;

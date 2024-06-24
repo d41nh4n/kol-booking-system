@@ -12,7 +12,7 @@
     <div class="homepage-body">
         <div class="sidenav">
             <c:forEach var="category" items="${categories}">
-                <a href="#">${category}</a>
+                <a href="/search-page?category=${category}">${category}</a>
             </c:forEach>
         </div>
         <div class="container">
@@ -129,19 +129,19 @@
                                         <div class="price">
                                             <div class="price-item">
                                                 <span class="dot"></span>
-                                                <span class="price-down">${user.pricePost}</span> <h6>(A Post)</h6>
+                                                <span class="price-down"><fmt:formatNumber value="${user.pricePost}" type="number" pattern="###0" /></span> <h6>(A Post)</h6>
                                             </div>
                                             <div class="price-item">
                                                 <span class="dot"></span>
-                                                <span class="price-down">${user.priceVideo}</span> <h6>(A Video)</h6>
+                                                <span class="price-down"><fmt:formatNumber value="${user.priceVideo}" type="number" pattern="###0" /></span> <h6>(A Video)</h6>
                                             </div>
                                             <div class="price-item">
                                                 <span class="dot"></span>
-                                                <span class="price-down">${user.priceHireByDay}</span> <h6>(Hire Per Day)</h6>
+                                                <span class="price-down"><fmt:formatNumber value="${user.priceHireByDay}" type="number" pattern="###0" /></span> <h6>(Per Day)</h6>
                                             </div>
                                             <div class="price-item">
                                                 <span class="dot"></span>
-                                                <span class="price-down">${user.representativePrice}</span> <h6>(Representative)</h6>
+                                                <span class="price-down"><fmt:formatNumber value="${user.representativePrice}" type="number" pattern="###0" /></span> <h6>(Representative)</h6>
                                             </div>
                                         </div> 
                                         <div class="rating-location">
@@ -181,24 +181,29 @@
                                         <div class="price">
                                             <div class="price-item">
                                                 <span class="dot"></span>
-                                                <span class="price-down">${user.pricePost}</span> <h6>(A Post)</h6>
+                                                <span class="price-down"><fmt:formatNumber value="${user.pricePost}" type="number" pattern="###0" /></span> <h6>(A Post)</h6>
                                             </div>
                                             <div class="price-item">
                                                 <span class="dot"></span>
-                                                <span class="price-down">${user.priceVideo}</span> <h6>(A Video)</h6>
+                                                <span class="price-down"><fmt:formatNumber value="${user.priceVideo}" type="number" pattern="###0" /></span> <h6>(A Video)</h6>
                                             </div>
                                             <div class="price-item">
                                                 <span class="dot"></span>
-                                                <span class="price-down">${user.priceHireByDay}</span> <h6>(Hire Per Day)</h6>
+                                                <span class="price-down"><fmt:formatNumber value="${user.priceHireByDay}" type="number" pattern="###0" /></span> <h6>(Per Day)</h6>
                                             </div>
                                             <div class="price-item">
                                                 <span class="dot"></span>
-                                                <span class="price-down">${user.representativePrice}</span> <h6>(Representative)</h6>
+                                                <span class="price-down"><fmt:formatNumber value="${user.representativePrice}" type="number" pattern="###0" /></span> <h6>(Representative)</h6>
                                             </div>
-                                        </div>
+                                        </div> 
+                                       <div class="rating-location">
                                         <div class="rating">
                                             <i class="ace-icon fa fa-star"></i>
                                             <span>${user.rating}</span>
+                                        </div>
+                                         <div class="location">
+                                            <span>${user.location}</span>
+                                        </div>
                                         </div>
                                     </div>
                                 </div>

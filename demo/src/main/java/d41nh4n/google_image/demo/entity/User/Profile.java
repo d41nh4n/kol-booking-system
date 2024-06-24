@@ -39,7 +39,7 @@ public class Profile {
     @Column(name = "birthday")
     private Date birthday;
 
-    @Column(length = 50)
+    @Column(length = 50, columnDefinition = "NVARCHAR(155)")
     private String location;
 
     @Column(name = "priceAPost", nullable = false)

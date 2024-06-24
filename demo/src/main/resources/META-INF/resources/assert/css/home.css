@@ -101,8 +101,21 @@
     }
   }
   .box-product {
-    margin-bottom: 20px; /* Khoảng cách dưới giữa các sản phẩm */
-  }
+    min-height: 480px; /* Thay đổi giá trị này theo nhu cầu của bạn */
+    max-height: 480px; /* Thay đổi giá trị này theo nhu cầu của bạn */
+    max-width: 200px;
+    
+}
+
+.img-wrapper img {
+    max-height: 200px; /* Thiết lập chiều cao tối đa cho hình ảnh */
+    width: 100%; /* Đảm bảo hình ảnh chiếm toàn bộ chiều rộng của container */
+    object-fit: cover; /* Đảm bảo hình ảnh bao phủ container mà không bị biến dạng */
+}
+
+.price-item, .rating, .location {
+    margin-top: 10px; /* Thêm khoảng cách giữa các phần tử */
+}
 
   .row .hot-kol{
      margin-top: 20px;
@@ -198,7 +211,6 @@ h2.my-4 {
 .tags {
   max-height: 20px;
   min-height: 20px;
-  display: inline-block; /* Đảm bảo phần tử có khoảng trống ngay cả khi không có nội dung */
   width: 100%; /* Đảm bảo phần tử chiếm toàn bộ chiều rộng của khối chứa nó */
 }
 

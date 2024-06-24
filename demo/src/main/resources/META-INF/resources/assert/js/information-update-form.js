@@ -8,20 +8,21 @@ async function submitForm(event) {
     fullName: formData.get("fullName"),
     gender: formData.get("gender"),
     description: formData.get("description"),
-    phone: formData.get("phone"),
     dob: formData.get("dob"),
-    address: formData.get("address"),
+    location: formData.get("location"),
     facebookUrl: formData.get("facebookUrl"),
     tiktokUrl: formData.get("tiktokUrl"),
     linkedinUrl: formData.get("linkedinUrl"),
     instagramUrl: formData.get("instagramUrl"),
   };
 
+  console.log('Location:', userProfileUpdate.location); // Kiểm tra giá trị location
+
   try {
     const response = await fetch("/update", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json; charset=UTF-8", // Đảm bảo sử dụng UTF-8
         Accept: "application/json",
       },
       body: JSON.stringify(userProfileUpdate),

@@ -56,7 +56,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
                         @Param("representativePrice") String representativePrice,
                         @Param("maxPrice") Long maxPrice,
                         @Param("minPrice") Long minPrice,
-                        @Param("categoryName") String categoryName,
+                        @Param("categoryName") String categoryName, 
                         @Param("gender") Gender gender);
 
 }

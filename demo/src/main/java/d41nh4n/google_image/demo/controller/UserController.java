@@ -99,7 +99,7 @@ public class UserController {
     public ResponseEntity<Map<String, String>> updateUser(@RequestBody UserProfileUpdate infor,
             HttpServletRequest request,
             HttpServletResponse response) {
-
+        System.out.println(infor);
         UserPrincipal principal = utils.getPrincipal();
         if (principal != null) {
             int userId = principal.getUserId();
@@ -127,6 +127,11 @@ public class UserController {
             String newToken = jwtIssuer.createAccessToken(userId, profile.getFullName(), user.getRole(),
                     user.isLocked(), profile.getAvatarUrl());
 
+            Cookie newTokenCookie = new Cookie("accessToken", newToken);
+            newTokenCookie.setPath("/");
+            newTokenCookie.setMaxAge(24 * 60 * 60);
+            response.addCookie(newTokenCookie);
+            
             Map<String, String> responseBody = new HashMap<>();
             responseBody.put("message", "User updated successfully");
             responseBody.put("accessToken", newToken);
@@ -143,6 +148,8 @@ public class UserController {
         UserPrincipal principal = utils.getPrincipal();
         User user = userService.getUserById(principal.getUserId());
         UserDto userDto = new UserDto(user);
+        List<String> provinces = provinceService.getProvinceNames();
+        model.addAttribute("provinces", provinces);
         model.addAttribute("userInformation", userDto);
         return "information-update-form";
     }
@@ -411,22 +418,22 @@ public class UserController {
         List<String> categories = categoryService.getAllCategoryNames();
         List<String> provinces = provinceService.getProvinceNames();
 
-        if(maxPriceNumber == MAX_PRICE){
+        if (maxPriceNumber == MAX_PRICE) {
             model.addAttribute("maxPrice", null);
-        }else{
+        } else {
             model.addAttribute("maxPrice", maxPriceNumber);
         }
 
-        if(minPriceNumber == MIN_PRICE){
+        if (minPriceNumber == MIN_PRICE) {
             model.addAttribute("minPrice", null);
-        }else{
+        } else {
             model.addAttribute("minPrice", minPriceNumber);
         }
 
         model.addAttribute("location", location);
         model.addAttribute("nameSearch", nameSearch);
-        model.addAttribute("gender", gender);
-        model.addAttribute("category", category);
+        model.addAttribute("gender", genderEnum);
+        model.addAttribute("categoryName", category);
         model.addAttribute("aPost", aPost);
         model.addAttribute("hireADay", hireADay);
         model.addAttribute("aVideo", aVideo);

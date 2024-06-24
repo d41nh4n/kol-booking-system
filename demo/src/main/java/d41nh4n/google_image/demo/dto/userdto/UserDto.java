@@ -27,7 +27,6 @@ public class UserDto {
     private String avatarUrl;
     private String birthday;
     private String location;
-
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     public UserDto(User user) {
