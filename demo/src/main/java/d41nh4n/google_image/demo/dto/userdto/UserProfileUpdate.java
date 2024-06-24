@@ -20,10 +20,6 @@ public class UserProfileUpdate {
     private String gender;
     private String phone;
     private String dob;
-    private String address;
+    private String location;
     private String description;
-    private String facebookUrl;
-    private String instagramUrl;
-    private String linkedinUrl;
-    private String tiktokUrl;
 }

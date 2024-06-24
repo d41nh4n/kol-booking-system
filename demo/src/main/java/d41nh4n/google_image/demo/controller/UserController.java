@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import d41nh4n.google_image.demo.dto.respone.VerifyStatus;
 import d41nh4n.google_image.demo.dto.userdto.UserDto;
+import d41nh4n.google_image.demo.dto.userdto.UserDtoFilter;
 import d41nh4n.google_image.demo.dto.userdto.UserFindedBySearch;
 import d41nh4n.google_image.demo.dto.userdto.UserProfileUpdate;
 import d41nh4n.google_image.demo.entity.VerifyCode;
@@ -34,6 +35,7 @@ import d41nh4n.google_image.demo.security.JwtIssuer;
 import d41nh4n.google_image.demo.security.UserPrincipal;
 import d41nh4n.google_image.demo.service.CategoryService;
 import d41nh4n.google_image.demo.service.MailService;
+import d41nh4n.google_image.demo.service.ProvinceService;
 import d41nh4n.google_image.demo.service.UserService;
 import d41nh4n.google_image.demo.service.VerifyCodeService;
 import d41nh4n.google_image.demo.validation.Utils;
@@ -46,18 +48,26 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/")
 public class UserController {
-
+    public static final Long MAX_PRICE = 999999999999L;
+    public static final Long MIN_PRICE = 0L;
     private final JwtIssuer jwtIssuer;
     private final MailService mailService;
     private final UserService userService;
     private final VerifyCodeService verifyCodeService;
     private final Utils utils;
     private final CategoryService categoryService;
+    private final ProvinceService provinceService;
 
     @GetMapping()
     public String index(Model model, HttpServletRequest request) {
         List<String> categoies = categoryService.getAllCategoryNames();
+        List<UserDtoFilter> listUser = userService.getUserListHomePage();
+        List<UserDtoFilter> listTop = userService.getTop6UsersForHomePage();
+        List<String> provinces = provinceService.getProvinceNames();
+        model.addAttribute("topUsers", listTop);
+        model.addAttribute("users", listUser);
         model.addAttribute("categories", categoies);
+        model.addAttribute("provinces", provinces);
         return "home";
     }
 
@@ -97,7 +107,6 @@ public class UserController {
             Profile profile = userService.getProfileById(userId);
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             profile.setFullName(infor.getFullName());
-            profile.setPhoneNumber(infor.getPhone());
             try {
                 if (infor.getDob() != null && !infor.getDob().isEmpty()) {
                     profile.setBirthday(dateFormat.parse(infor.getDob()));
@@ -107,7 +116,7 @@ public class UserController {
                 responseBody.put("message", "Invalid date format");
                 return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
             }
-            profile.setAddress(infor.getAddress());
+            profile.setLocation(infor.getLocation());
             profile.setBio(infor.getDescription());
 
             // Cập nhật thông tin user
@@ -353,8 +362,91 @@ public class UserController {
         }
     }
 
+    @GetMapping("/search-page")
+    public String search(
+            @RequestParam(name = "location", required = false) String location,
+            @RequestParam(name = "nameSearch", required = false) String nameSearch,
+            @RequestParam(name = "gender", required = false) String gender,
+            @RequestParam(name = "category", required = false) String category,
+            @RequestParam(name = "maxPrice", required = false) String maxPrice,
+            @RequestParam(name = "minPrice", required = false) String minPrice,
+            @RequestParam(name = "aPost", required = false) String aPost,
+            @RequestParam(name = "hireADay", required = false) String hireADay,
+            @RequestParam(name = "aVideo", required = false) String aVideo,
+            @RequestParam(name = "representative", required = false) String representative,
+            Model model) {
+
+        // Xử lý các giá trị filter
+        location = "".equals(location) ? null : location;
+        nameSearch = "".equals(nameSearch) ? null : nameSearch;
+        gender = "".equals(gender) ? null : gender;
+        category = "".equals(category) ? null : category;
+        maxPrice = "".equals(maxPrice) ? null : maxPrice;
+        minPrice = "".equals(minPrice) ? null : minPrice;
+        aPost = "".equals(aPost) ? null : aPost;
+        hireADay = "".equals(hireADay) ? null : hireADay;
+        aVideo = "".equals(aVideo) ? null : aVideo;
+        representative = "".equals(representative) ? null : representative;
+
+        // Chuyển đổi giá trị chuỗi thành số
+        Long maxPriceNumber = utils.stringParseToLong(maxPrice, MAX_PRICE);
+        Long minPriceNumber = utils.stringParseToLong(minPrice, MIN_PRICE);
+
+        // Xử lý giá trị giới tính
+        Gender genderEnum = null;
+        if (gender != null) {
+            if (gender.equalsIgnoreCase("male")) {
+                genderEnum = Gender.MALE;
+            } else if (gender.equalsIgnoreCase("female")) {
+                genderEnum = Gender.FEMALE;
+            } else if (gender.equalsIgnoreCase("other")) {
+                genderEnum = Gender.OTHER;
+            }
+        }
+        // Lấy danh sách người dùng theo bộ lọc
+        List<UserDtoFilter> list = userService.getUserByFilter(null, nameSearch, null, location, aPost, hireADay,
+                aVideo, representative, maxPriceNumber, minPriceNumber, category, genderEnum);
+
+        // Lấy danh sách categories và provinces
+        List<String> categories = categoryService.getAllCategoryNames();
+        List<String> provinces = provinceService.getProvinceNames();
+
+        if(maxPriceNumber == MAX_PRICE){
+            model.addAttribute("maxPrice", null);
+        }else{
+            model.addAttribute("maxPrice", maxPriceNumber);
+        }
+
+        if(minPriceNumber == MIN_PRICE){
+            model.addAttribute("minPrice", null);
+        }else{
+            model.addAttribute("minPrice", minPriceNumber);
+        }
+
+        model.addAttribute("location", location);
+        model.addAttribute("nameSearch", nameSearch);
+        model.addAttribute("gender", gender);
+        model.addAttribute("category", category);
+        model.addAttribute("aPost", aPost);
+        model.addAttribute("hireADay", hireADay);
+        model.addAttribute("aVideo", aVideo);
+        model.addAttribute("representative", representative);
+        model.addAttribute("listSearch", list);
+        model.addAttribute("categories", categories);
+        model.addAttribute("provinces", provinces);
+
+        return "search-page";
+    }
+
     @GetMapping("/find-user")
     public String findUserByName(@RequestParam(name = "name", required = false) String name) {
         return "list-find-user";
     }
+
+    @GetMapping("/getUserHomePage")
+    public ResponseEntity<?> getUserHomePage() {
+        List<UserDtoFilter> list = userService.getTop6UsersForHomePage();
+        return ResponseEntity.ok(list);
+    }
+
 }

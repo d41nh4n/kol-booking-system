@@ -169,15 +169,6 @@
   margin-right: 5px; /* Khoảng cách phía bên phải */
 }
 
-
-h2.my-4 {
-  text-align: center; /* Căn giữa nội dung */
-  margin-top: 4rem; /* Khoảng cách từ phía trên */
-  margin-bottom: 4rem; /* Khoảng cách từ phía dưới */
-  font-weight: bold;
-  color: #f86161;
-}
-
 .box-product-outer {
   border: 1px solid #ccc; /* Đường viền 1px dày và màu xám */
   margin-bottom: 10px; /* Khoảng cách dưới giữa các sản phẩm */
@@ -185,6 +176,9 @@ h2.my-4 {
   
 }
 
+.rating{
+  padding: 5px;
+}
 .rating .fa-star {
   font-size: 18px; /* Kích thước biểu tượng sao */
 }
@@ -195,24 +189,6 @@ h2.my-4 {
   font-weight: bold; /* Độ đậm của chữ */
 }
 
-.tags {
+.tags{
   max-height: 20px;
-  min-height: 20px;
-  display: inline-block; /* Đảm bảo phần tử có khoảng trống ngay cả khi không có nội dung */
-  width: 100%; /* Đảm bảo phần tử chiếm toàn bộ chiều rộng của khối chứa nó */
-}
-
-.rating-location{
-  display: flex;
-  font-size: 14px; /* Kích thước chữ */
-  font-weight: bold; /* Độ đậm của chữ */
-  padding: 5px;
-  justify-content: space-between;
-}
-
-.location{
-  display: inline-block;
-  background-color: #c5c3c3;
-  padding: 3px;
-  border-radius: 1  0%;
 }

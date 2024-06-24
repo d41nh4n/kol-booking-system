@@ -39,12 +39,6 @@ public class Profile {
     @Column(name = "birthday")
     private Date birthday;
 
-    @Column(name = "phonenumber", length = 15)
-    private String phoneNumber;
-
-    @Column(length = 50)
-    private String address;
-
     @Column(length = 50)
     private String location;
 

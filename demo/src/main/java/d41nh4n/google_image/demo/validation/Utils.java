@@ -163,4 +163,16 @@ public class Utils {
     public int stringToInt(String number) {
         return Integer.parseInt(number);
     }
+
+    public Long stringParseToLong(String numberStr, Long defaultValue) {
+        try {
+            Long result = Long.parseLong(numberStr);
+            if (result < 0L) {
+                return defaultValue;
+            }
+            return result;
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
 }

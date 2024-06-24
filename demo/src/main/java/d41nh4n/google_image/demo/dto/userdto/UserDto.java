@@ -26,8 +26,7 @@ public class UserDto {
     private String gender;
     private String avatarUrl;
     private String birthday;
-    private String phoneNumber;
-    private String address;
+    private String location;
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -54,8 +53,7 @@ public class UserDto {
             } else {
                 this.birthday = null;
             }
-            this.phoneNumber = user.getProfile().getPhoneNumber();
-            this.address = user.getProfile().getAddress();
+            this.location = user.getProfile().getLocation();
         }
     }
 }

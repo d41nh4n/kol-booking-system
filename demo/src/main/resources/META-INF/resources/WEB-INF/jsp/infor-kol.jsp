@@ -149,7 +149,7 @@
         </p>
         <hr class="short br-lighter" />
         <h5>Location</h5>
-        <h4>${userInformation.address}</h4>
+        <h4>${userInformation.location}</h4>
     </div>
 </div>
 

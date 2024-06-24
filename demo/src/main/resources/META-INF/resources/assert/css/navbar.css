@@ -166,6 +166,18 @@ header {
     margin-top: 20px;
   }
 
-  .row.top-kol{
-    margin-top: 20px;
-  }
+  .price {
+    display: flex;
+    flex-direction: column;
+}
+.price-item {
+    display: flex;
+    align-items: center;
+}
+.dot {
+    width: 10px;
+    height: 10px;
+    background-color: #28a745;
+    border-radius: 50%;
+    margin-right: 10px;
+}
