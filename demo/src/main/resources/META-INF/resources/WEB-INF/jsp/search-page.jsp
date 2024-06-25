@@ -54,12 +54,12 @@
                                                     <option value="male" <c:if test="${gender == 'MALE'}">selected</c:if>>Male</option>
                                                     <option value="female" <c:if test="${gender == 'FEMALE'}">selected</c:if>>Female</option>
                                                     <option value="other" <c:if test="${gender == 'OTHER'}">selected</c:if>>Other</option>
-                                                    </select>
-                                                </div>
-                                                <!-- Category Dropdown -->
-                                                <div class="col-lg-5 col-md-6 col-sm-12 p-0">
-                                                    <select class="form-control" id="category" name="category">
-                                                        <option value="">Select Category</option>
+                                                </select>
+                                            </div>
+                                            <!-- Category Dropdown -->
+                                            <div class="col-lg-5 col-md-6 col-sm-12 p-0">
+                                                <select class="form-control" id="category" name="category">
+                                                    <option value="">Select Category</option>
                                                     <c:forEach var="category" items="${categories}">
                                                         <option value="${category}" <c:if test="${category eq categoryName}">selected</c:if>>${category}</option>
                                                     </c:forEach>
@@ -76,31 +76,31 @@
                                             <div class="col-lg-3 col-md-3 col-sm-12 p-0">
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" id="aPost" name="aPost" value="True" <c:if test="${aPost == 'True'}">checked</c:if>>
-                                                        <label class="form-check-label" for="aPost">aPost</label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" id="hireADay" name="hireADay" value="True" <c:if test="${hireADay == 'True'}">checked</c:if>>
-                                                        <label class="form-check-label" for="hireADay">hireADay</label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" id="aVideo" name="aVideo" value="True" <c:if test="${aVideo == 'True'}">checked</c:if>>
-                                                        <label class="form-check-label" for="aVideo">aVideo</label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" id="representative" name="representative" value="True" <c:if test="${representative == 'True'}">checked</c:if>>
-                                                        <label class="form-check-label" for="representative">representative</label>
-                                                    </div>
+                                                    <label class="form-check-label" for="aPost">aPost</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="hireADay" name="hireADay" value="True" <c:if test="${hireADay == 'True'}">checked</c:if>>
+                                                    <label class="form-check-label" for="hireADay">hireADay</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="aVideo" name="aVideo" value="True" <c:if test="${aVideo == 'True'}">checked</c:if>>
+                                                    <label class="form-check-label" for="aVideo">aVideo</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="representative" name="representative" value="True" <c:if test="${representative == 'True'}">checked</c:if>>
+                                                    <label class="form-check-label" for="representative">representative</label>
                                                 </div>
                                             </div>
-                                        </form>
-                                    </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
-                        <div class="section-margin">
-                            <div class="row bg-color-1 product-row">
-                                <!-- Example Product -->
-                                <h4>Result</h4>
+                    </div>
+                    <div class="section-margin">
+                        <div class="row bg-color-1 product-row">
+                            <!-- Example Product -->
+                            <h4>Result</h4>
                             <c:forEach var="user" items="${listSearch}">
                                 <div class="col-12 col-lg-2 box-product-outer">
                                     <div class="box-product">
@@ -112,7 +112,7 @@
                                                 <div class="tags">
                                                     <c:forEach var="category" items="${user.catgories}">
                                                         <span class="label-tags"><span class="label label-danger">${category}</span></span>
-                                                        </c:forEach>
+                                                    </c:forEach>
                                                 </div>
                                             </c:if>
                                         </div>
@@ -135,19 +135,39 @@
                                                 <span class="price-down"><fmt:formatNumber value="${user.representativePrice}" type="number" pattern="###0" /></span> <h6>(Representative)</h6>
                                             </div>
                                         </div> 
-                                         <div class="rating-location">
-                                        <div class="rating">
-                                            <i class="ace-icon fa fa-star"></i>
-                                            <span>${user.rating}</span>
-                                        </div>
-                                         <div class="location">
-                                            <span>${user.location}</span>
-                                        </div>
+                                        <div class="rating-location">
+                                            <div class="rating">
+                                                <i class="ace-icon fa fa-star"></i>
+                                                <span>${user.rating}</span>
+                                            </div>
+                                            <div class="location">
+                                                <span>${user.location}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </c:forEach>    
                         </div>
+                        <c:if test="${not empty listSearch}">
+                            <div class="text-align-center">
+                                <ul class="pagination pagination-sm">
+                                    <li class="${currentPage == 0 ? 'disabled' : ''}">
+                                        <a href="/search-page?page=${currentPage - 1}">Prev</a>
+                                    </li>
+                                    <c:if test="${totalPages > 0}">
+                                        <c:forEach begin="0" end="${totalPages - 1}" var="i">
+                                            <li class="${i == currentPage ? 'active' : ''}">
+                                                <a href="/search-page?page=${i}">${i + 1}</a>
+                                            </li>
+                                        </c:forEach>
+                                    </c:if>
+                                    <li class="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                                        <a href="/search-page?page=${currentPage + 1}">Next</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </c:if>
+
                     </div>
                 </div>        
             </div>

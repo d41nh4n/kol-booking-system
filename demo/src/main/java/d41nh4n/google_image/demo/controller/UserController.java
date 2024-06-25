@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -131,7 +132,7 @@ public class UserController {
             newTokenCookie.setPath("/");
             newTokenCookie.setMaxAge(24 * 60 * 60);
             response.addCookie(newTokenCookie);
-            
+
             Map<String, String> responseBody = new HashMap<>();
             responseBody.put("message", "User updated successfully");
             responseBody.put("accessToken", newToken);
@@ -361,6 +362,8 @@ public class UserController {
             return "error";
         }
         UserDto userDto = userService.getUserInforById(userIdNumber);
+        List<String> provinces = provinceService.getProvinceNames();
+        model.addAttribute("provinces", provinces);
         model.addAttribute("userInformation", userDto);
         if (user.getRole().equals("USER")) {
             return "infor-user";
@@ -371,6 +374,7 @@ public class UserController {
 
     @GetMapping("/search-page")
     public String search(
+            @RequestParam(name = "page", required = false) String page,
             @RequestParam(name = "location", required = false) String location,
             @RequestParam(name = "nameSearch", required = false) String nameSearch,
             @RequestParam(name = "gender", required = false) String gender,
@@ -410,9 +414,16 @@ public class UserController {
                 genderEnum = Gender.OTHER;
             }
         }
-        // Lấy danh sách người dùng theo bộ lọc
-        List<UserDtoFilter> list = userService.getUserByFilter(null, nameSearch, null, location, aPost, hireADay,
-                aVideo, representative, maxPriceNumber, minPriceNumber, category, genderEnum);
+
+        int pageNumber = 0; 
+        if (page != null && !page.isEmpty()) {
+            pageNumber = Integer.parseInt(page);
+        }
+        int pageSize = 18; 
+
+        Page<UserDtoFilter> userPage = userService.getUserByFilter(
+                null, nameSearch, null, location, aPost, hireADay, aVideo, representative,
+                maxPriceNumber, minPriceNumber, category, genderEnum, pageNumber, pageSize);
 
         // Lấy danh sách categories và provinces
         List<String> categories = categoryService.getAllCategoryNames();
@@ -438,7 +449,9 @@ public class UserController {
         model.addAttribute("hireADay", hireADay);
         model.addAttribute("aVideo", aVideo);
         model.addAttribute("representative", representative);
-        model.addAttribute("listSearch", list);
+        model.addAttribute("listSearch", userPage.getContent());
+        model.addAttribute("currentPage", pageNumber);
+        model.addAttribute("totalPages", userPage.getTotalPages());
         model.addAttribute("categories", categories);
         model.addAttribute("provinces", provinces);
 
@@ -455,5 +468,4 @@ public class UserController {
         List<UserDtoFilter> list = userService.getTop6UsersForHomePage();
         return ResponseEntity.ok(list);
     }
-
 }

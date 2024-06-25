@@ -112,6 +112,9 @@
                     <ul class="dropdown-menu user">
                         <c:choose>
                             <c:when test="${not empty userInfor}">
+                                <c:if test="${userInfor.role == 'KOL'}">                           
+                                    <li><a href="/request/pending">Jobs</a></li>
+                                </c:if> 
                                 <li><a href="/infor">Profile</a></li>
                                 <li class="divider"></li>
                                 <li><a href="/login/logout">Logout</a></li>

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.*;
 import d41nh4n.google_image.demo.dto.userdto.UserDto;
 import d41nh4n.google_image.demo.dto.userdto.UserDtoFilter;
 import d41nh4n.google_image.demo.dto.userdto.UserFindedBySearch;
@@ -176,33 +176,23 @@ public class UserService {
         return userDtoList;
     }
 
-    public List<UserDtoFilter> getUserByFilter(Double averageRating, String fullName, String username,
+    public Page<UserDtoFilter> getUserByFilter(Double averageRating, String fullName, String username,
             String location, String requestAPost, String priceAVideo, String priceAToHireADay,
-            String representativePrice,
-            Long maxPrice, Long minPrice,
-            String categoryName, Gender gender) {
+            String representativePrice, Long maxPrice, Long minPrice,
+            String categoryName, Gender gender, int pageNumber, int pageSize) {
 
-        System.out.println(fullName);
-        System.out.println(location);
-        System.out.println(requestAPost);
-        System.out.println(priceAVideo);
-        System.out.println(priceAToHireADay);
-        System.out.println(representativePrice);
-        System.out.println(gender);
-        List<User> users = userRepository.findByFilters(averageRating, fullName, username, location, requestAPost,
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<User> users = userRepository.findByFilters(averageRating, fullName, username, location, requestAPost,
                 priceAVideo, priceAToHireADay, representativePrice, maxPrice, minPrice,
-                categoryName, gender);
+                categoryName, gender, pageable);
 
         List<UserDtoFilter> userDtoList = new ArrayList<>();
 
         for (User user : users) {
             UserDtoFilter dto = new UserDtoFilter();
             dto.setUserId(user.getUserId());
-            dto.setRating(user.getProfile().getAverageRating());
-
-            // Fetch Profile
-            Profile profile = user.getProfile();
-            if (profile != null) {
+            if (user.getProfile() != null) {
+                Profile profile = user.getProfile();
                 dto.setFullName(profile.getFullName());
                 dto.setAvatarUrl(profile.getAvatarUrl());
                 dto.setLocation(profile.getLocation());
@@ -224,7 +214,7 @@ public class UserService {
 
             userDtoList.add(dto);
         }
-        return userDtoList;
-    }
 
+        return new PageImpl<>(userDtoList, pageable, users.getTotalElements());
+    }
 }

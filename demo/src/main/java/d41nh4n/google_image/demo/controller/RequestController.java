@@ -1,5 +1,6 @@
 package d41nh4n.google_image.demo.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.data.domain.*;
@@ -34,8 +35,10 @@ public class RequestController {
     private final ObjectMapper mapper = new ObjectMapper();
     private final RequestDtoToRequest requestDtoToRequest;
     private final Utils utils;
+
     @PostMapping
     public ResponseEntity<?> requestJob(@RequestBody Map<String, Object> request) {
+        Map<String, String> res = new HashMap<>();
         String typeRequest = (String) request.get("typeRequest");
 
         if (typeRequest == null) {
@@ -57,26 +60,28 @@ public class RequestController {
                 System.out.println(requestDto);
                 handleRepresentative(requestDto, typeRequest);
             } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid typeRequest value");
+                res.put("result", "Invalid typeRequest value");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
             }
         } catch (Exception e) {
+            res.put("result", "An error occurred while processing the request: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred while processing the request: " + e.getMessage());
+                    .body(res);
         }
-
-        return ResponseEntity.ok("Success");
+        res.put("result", "Success");
+        return ResponseEntity.ok(res);
     }
 
     @GetMapping("/pending")
     public String listRequestPending(Model model, @RequestParam(name = "page", required = false) String page) {
-        int userId = utils.getPrincipal().getUserId();
         int pageNumber = 0;
+        int userId = utils.getPrincipal().getUserId();
         if (page != null && page.trim() != "" && !page.isEmpty()) {
             pageNumber = Integer.parseInt(page);
         }
         int pageSize = 5;
-        Page<RequestPending> requestPage = requestService.getListRequestIsPending(userId,pageNumber, pageSize);
-        System.out.println("REQ LIST: "+requestPage.getSize());
+        Page<RequestPending> requestPage = requestService.getListRequestIsPending(userId, pageNumber, pageSize);
+        System.out.println("REQ LIST: " + requestPage.getSize());
         int totalPages = requestPage.getTotalPages();
 
         model.addAttribute("currentPage", page);

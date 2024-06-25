@@ -3,6 +3,7 @@ package d41nh4n.google_image.demo.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -46,7 +47,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
                         + "AND (:representativePrice IS NULL OR (p.representativePrice <= :maxPrice AND p.representativePrice >= :minPrice)) "
                         + "AND (:categoryName IS NULL OR c.categoryName = :categoryName) "
                         + "AND (:gender IS NULL OR u.gender = :gender)")
-        List<User> findByFilters(@Param("averageRating") Double averageRating,
+        Page<User> findByFilters(@Param("averageRating") Double averageRating,
                         @Param("fullName") String fullName,
                         @Param("username") String username,
                         @Param("location") String location,
@@ -56,7 +57,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
                         @Param("representativePrice") String representativePrice,
                         @Param("maxPrice") Long maxPrice,
                         @Param("minPrice") Long minPrice,
-                        @Param("categoryName") String categoryName, 
-                        @Param("gender") Gender gender);
+                        @Param("categoryName") String categoryName,
+                        @Param("gender") Gender gender,
+                        Pageable pageable);
 
 }

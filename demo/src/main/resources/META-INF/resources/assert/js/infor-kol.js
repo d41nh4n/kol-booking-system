@@ -172,7 +172,7 @@ async function submitPostRequest() {
 
 
 async function submitVideoRequest() {
-  const recipientId = document.getElementById("user-recipient-request").value; // Bạn có thể lấy giá trị này từ input nếu cần
+  const recipientId = document.getElementById("user-recipient-request").value // Bạn có thể lấy giá trị này từ input nếu cần
   const location = document.getElementById("videoLocation").value;
   const dateRequire = new Date().toISOString().split("T")[0]; // Ngày hiện tại
   const deadline = document.getElementById("videoDeadline").value;
@@ -245,7 +245,6 @@ async function submitRepresentativetRequest() {
 }
 
 async function sendRequest(data) {
-  console.log(data);
   try {
     const response = await fetch("/request", {
       method: "POST",
@@ -260,7 +259,10 @@ async function sendRequest(data) {
     }
 
     const result = await response.json();
-    alert(result);
+    console.log(result.result);
+    alert(result.result);
+    const recipientId = document.getElementById("user-recipient-request").value;
+    window.location.href = `https://localhost:443/chatbox?userId=${recipientId}`
   } catch (error) {
     alert("An error occurred: " + error.message);
   }

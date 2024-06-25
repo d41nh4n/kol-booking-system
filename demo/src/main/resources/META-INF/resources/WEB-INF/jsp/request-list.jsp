@@ -72,7 +72,7 @@
                                 </li>
                         </ul>
                 </div>
-</c:if>
+                </c:if>
 <c:if test="${empty list}">
     <h2 style="text-align: center;">Not Yet</h2>
 </c:if>

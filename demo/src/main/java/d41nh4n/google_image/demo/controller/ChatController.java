@@ -119,7 +119,7 @@ public class ChatController {
     public ResponseEntity<Map<String, Object>> getMessages(
             @RequestParam String conversationId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(defaultValue = "50") int size) {
         System.out.println(conversationId);
         Map<String, Object> res = new HashMap<>();
         Page<Message> messages = chatMessageService.getMessagesInConversation(conversationId, page, size);

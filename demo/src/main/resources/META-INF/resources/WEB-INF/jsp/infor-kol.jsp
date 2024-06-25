@@ -52,7 +52,7 @@
               <i class="fa fa-pencil-square fa-lg"></i> Edit profile
             </a>
           </c:if>
-          <c:if test="${empty me}">
+          <c:if test="${empty me && userInfor.role == 'USER'}">
            <button id="hire-button" type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#myModal">$ Hire</button>
           </c:if>
           </div>
@@ -743,7 +743,9 @@
                 <div class="form-group">
                     <label for="postLocation">Location:</label>
                     <select class="form-control" id="postLocation">
-                        <option value="Quang Nam">Quang Nam</option>
+                        <c:forEach var="province" items="${provinces}">
+                            <option value="${province}">${province}</option>
+                        </c:forEach>
                     </select>
                 </div>
             </div>
@@ -775,7 +777,9 @@
                 <div class="form-group">
                     <label for="videoLocation">Location:</label>
                     <select class="form-control" id="videoLocation">
-                        <option value="Quang Nam">Quang Nam</option>
+                        <c:forEach var="province" items="${provinces}">
+                            <option value="${province}">${province}</option>
+                        </c:forEach>
                     </select>
                 </div>
             </div>
@@ -820,7 +824,9 @@
                 <div class="form-group">
                     <label for="hireLocation">Location:</label>
                     <select class="form-control" id="hireLocation">
-                        <option value="Quang Nam">Quang Nam</option>
+                         <c:forEach var="province" items="${provinces}">
+                            <option value="${province}">${province}</option>
+                        </c:forEach>
                     </select>
                 </div>
             </div>
@@ -861,7 +867,9 @@
                 <div class="form-group">
                     <label for="representativeLocation">Location:</label>
                     <select class="form-control" id="representativeLocation">
-                        <option value="Quang Nam">Quang Nam</option>
+                         <c:forEach var="province" items="${provinces}">
+                            <option value="${province}">${province}</option>
+                        </c:forEach>
                     </select>
                 </div>
             </div>
