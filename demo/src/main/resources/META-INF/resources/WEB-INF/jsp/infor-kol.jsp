@@ -27,6 +27,19 @@
     .footer {
         flex-shrink: 0;
     }
+    .superbox-list.add {
+      display: inline-block;
+      border: 2px dashed #ccc;
+      text-align: center;
+      line-height: 80px;
+      cursor: pointer;
+    }
+    .superbox-list input[type="file"] {
+      display: none;
+    }
+    .superbox-list.add:hover {
+      border-color: #000;
+    }
 </style>
   </head>
   <%@include file="navbar.jsp" %>
@@ -172,343 +185,22 @@
             <div class="tab-content p30" style="height: 1200px">
               <div id="tab1" class="tab-pane active">
                 <div class="container-image_list">
-                  <div class="superbox">
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar6.png"
+               <c:if test="${not empty me}">
+                    <div class="superbox">
+                    <div class="superbox-list add" onclick="document.getElementById('file-input').click();">
+                     <img
+                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAclBMVEX///8AAADc3NyWlpaamporKyvBwcE3Nzd0dHR5eXn19fXe3t68vLzr6+uenp6jo6MJCQmzs7OLi4uCgoJubm7Hx8eQkJDt7e1QUFAXFxdEREQ/Pz/R0dHm5uZbW1scHBwkJCRiYmIxMTEbGxurq6tVVVUawSspAAAE0klEQVR4nO2d61bqMBBGLTe1gAiICFLFy3n/VzwelUvJZJI2kyZz1rd/SlaSLYVOJ5NwdQUAAAAAkA3Vw80FD5PUc5KlVxgMUs9JFhjqB4b6gaF+YKgfGOoHhvqBoX5gqB8Y6geG+oGhfmCon//fcGwa3sUbrVrNBv1QiPmNH62tB0vT8IWZRMiaxm55bw7Wglez65FIx9/ctPabXEvNYRjV8Lal3/pJbg5ZGk7kZpCnYV9uAkWWhrKCGRqKXqJFhoZTudF/yM5Q8Fv0h9wMBQf/JTdDsRv9kcwMd3JjH8jM8FZu7AOZGcoE2zXyMhS/VRS5Ga7khj6Sl+Gn3NBH8jK8kxv6yL05jGBg+NDQcGB2MRn3whibw5RMa8J+yUyhCjckJhiVyJkowrAn2L0PkbOJMOwAGAYCww6AYSAw7AAYBgLDDoBhIDDsABgGAsMwev2n1/vN/mXA9anYcD48dfq8sjZTa1i917t9Ki0NtRoSqeYd3VKpIZlLp3vWaUhkCP9BXqg6DTe04RPVVqWhda1gRDRWaWgTLK6JxoRhP3wKRxoa+pU+MuswxKpDORldIrmw0Mzwtpj7dPpgN+y++reR4ePXq/bY5ASzcv4iN3VPmhh+Oi/iH0q7YLEXnLsfDQwP67hrV59cbQCxehoZf8Nj4c3GFmAeYKsfxA1ceBtWpwbEOn0N7irdyCs48DVcn7cgQ5MzmG+abQQHHk/D8qPW5I3vlLlbLKJYcHgaPjea6NxuaHmCioif4YvRiK0lsH8Qu/8Y+hlSVx0b3Cxshp/RRKz4GD6Sk2WvN4vgezwRKx6GM8t0ueDGUi7XtNpHArehvbaPC27IJ0SfmFYcpyHx9HaADW4IxTQn6bkMK/P1E+zH6vK9/+g6l/6Lw7DkS4jZ4KasbSyMuGmSx2E4NF+uwZdClp9v3602KY965A23DsGiWLoGKKup41lkvL++YDgL1TqDNXxzCkpcfQlzbX4bFbwyNxzpDOlQxiT0LpfM0L/GPTD3l8qwSXX9NGgKiQwbbYdyZm5Y0hiyoYxJ0DNDEsO1+VceV+aGI4nha1NDV+aGo3vDsZGV8cEZ3GRkWJlZGR9aBzfdG7qDUZq2wU33hq1pmSlUZNhy9ViToXtZSr1hq+BGlaFzWUq/oSu4WVeVcSUrM2SCm9Hi9/iG7aL2SKnN0BLclBdLGYvTJ1adIRncEEs1x6ogfYZmcDPeU82GlVrDy8yNNV2wUmtYD26YGrCRWsPzzA17LsVKreEpuGHWrv7R02p4zNw4Ez5TrYa/wY1j7eqL+5KomFZh+BPcuNauvnjW+h5+Bzde6QLiv6DEsLhjaqN4tBi2B4YwhGF6YAhDGKYHhjCEYXpgCEMYpgeGMIRhemAIQximB4YwhGF6YAhDGKYHhk2wbbZPi+QeUuaQjoQE79o8I8JPdgkgeQJK4z1cnRC02+8SsvQzMW3q4e1YD1pJiOxBRI7awSQIny/RZiteXKRPy4rxy2thiB/y8ie10QXyRyvmdsNotT2MR/r3gMOgjqkNRvg3nYOIdI5NPorRDurJ5UKNeFbWut0GblneInzJnLFKfevfxj9TcXfb/CwFKfbLjo4CK3fzWb9rZvOd6OMSAAAAAAAAAAAAAAAAAAAAAAAAAIA8fwFbdGGIFPgtJQAAAABJRU5ErkJggg=="
                         alt
-                        class="superbox-img"
+                        class="superbox-img-add"
                       />
+                    <input type="file" id="file-input" accept="image/*,video/*" onchange="handleFileSelect(event)">
                     </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                        alt
-                        class="superbox-img"
-                      />
+                    </c:if>
+                    <c:forEach items="${medias}" var="media">
+                    <div class="superbox-list" data-id="${media.id}">
+                      <img src="${media.url}" alt="" class="superbox-img" />
                     </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar4.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar5.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar5.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar4.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar4.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar5.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar4.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar5.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar4.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar5.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar6.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar5.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar4.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar4.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
-                    <div class="superbox-list">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                        alt
-                        class="superbox-img"
-                      />
-                    </div>
+                    </c:forEach>
                   </div>
                 </div>
               </div>
@@ -689,6 +381,7 @@
             <button type="button" class="btn btn-default" data-dismiss="modal">
               Close
             </button>
+            <button type="button" class="btn btn-danger" onclick="deleteImage()">Delete Image</button>
           </div>
         </div>
       </div>

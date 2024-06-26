@@ -192,7 +192,7 @@ public class ChatController {
 
         conversation.setUpdatedAt(zonedDateTime);
         conversationService.save(conversation);
-        String urlFile = cloudinaryService.handleFileMessage(fileMessage);
+        String urlFile = cloudinaryService.handleFileMessage(fileMessage.getContent());
         Message message = new Message(null, urlFile, fileMessage.getType(), zonedDateTime, userSender,
                 userRecipient, conversation);
         chatMessageService.save(message);

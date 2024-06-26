@@ -599,15 +599,27 @@ background:#eee;
 }
 
 
+.container-image_list {
+  display: flex;
+  flex-wrap: wrap;
+}
 .superbox {
-    font-size: 0
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .superbox-list {
-    display: inline-block;
-    width: 12.5%;
-    margin: 0;
-    position: relative
+  width: 100px; /* Điều chỉnh kích thước box tùy ý */
+  height: 100px;
+  margin: 10px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid #ccc;
+}
+.superbox-list img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .superbox-list.active:after {
@@ -632,6 +644,12 @@ background:#eee;
 
 .superbox-img {
     padding: 2px 2px 0 2px; 
+    max-width: 100%;
+    width: 100%;
+    cursor: pointer
+}
+.superbox-img-add{
+  padding: 2px 2px 0 2px; 
     max-width: 100%;
     width: 100%;
     cursor: pointer

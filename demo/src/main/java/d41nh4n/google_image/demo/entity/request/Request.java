@@ -40,7 +40,7 @@ public class Request {
     @Column(name = "request_description", columnDefinition = "NVARCHAR(MAX)", nullable = true)
     private String requestDescription;
 
-    @Column(name = "request_location", length = 80, nullable = true)
+    @Column(name = "request_location", length = 80, nullable = true,columnDefinition = "NVARCHAR(155)")
     private String requestLocation;
 
     @Column(name = "payment", nullable = true)

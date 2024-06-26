@@ -73,7 +73,7 @@
                     <button type="button" class="conversation-form-button"><i class="ri-emotion-line"></i></button>
                     <button type="button" id="fileInputButton" class="conversation-form-button"><i class="fa-solid fa-file-import"></i></button>
                     <div class="conversation-form-group">
-                        <input type="file" id="fileInput" class="conversation-form-file" accept="image/*,video/*,audio/*" hidden>
+                        <input type="file" id="fileInput" class="conversation-form-file" accept="image/*,video/*,audio/*">
                         <textarea id="messageInput" class="conversation-form-input" rows="1" placeholder="Type here..."></textarea>
                     </div>
                     <button type="button" class="conversation-form-button conversation-form-submit"><i class="ri-send-plane-2-line"></i></button>

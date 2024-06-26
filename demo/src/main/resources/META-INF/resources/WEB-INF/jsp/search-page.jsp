@@ -138,7 +138,7 @@
                                         <div class="rating-location">
                                             <div class="rating">
                                                 <i class="ace-icon fa fa-star"></i>
-                                                <span>${user.rating}</span>
+                                                <span><fmt:formatNumber value="${user.rating}" type="number" pattern="###0.0" /></span>
                                             </div>
                                             <div class="location">
                                                 <span>${user.location}</span>

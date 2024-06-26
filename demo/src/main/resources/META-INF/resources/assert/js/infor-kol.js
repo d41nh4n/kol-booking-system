@@ -1,10 +1,56 @@
 const button = $("#hire-button");
+let imageId = null;
 $(function () {
-  $(".superbox-img").click(function () {
-    $("#showPhoto .modal-body").html($(this).clone());
-    $("#showPhoto").modal("show");
-  });
+  $(".superbox-img").click(showImgage);
 });
+function showImgage() {
+  const clickedImage = $(this);
+
+  const dataId = clickedImage.closest(".superbox-list").data("id");
+  imageId = dataId;
+
+  $("#showPhoto .modal-body").html(clickedImage.clone());
+
+  $("#showPhoto .modal-title").text(clickedImage.attr("alt") || "Image");
+
+  $("#showPhoto").modal("show");
+}
+
+function deleteImage() {
+  if (confirm("Are you sure you want to delete this image?")) {
+    fetch(`https://localhost:443/profile-media-delete?id=${imageId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === 200) {
+          $("#showPhoto").modal("hide");
+
+          const imageToDelete = $(".superbox-list[data-id='" + imageId + "']");
+          if (imageToDelete.length) {
+            imageToDelete.remove();
+          } else {
+            console.error(
+              "Image element not found in the DOM (might be a loading issue or already removed)"
+            );
+          }
+        } else {
+          console.error(
+            "Error deleting image:",
+            data.message || "Server error"
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+}
+
+$("#deleteButton").click(deleteImage);
 
 $(document).ready(function () {
   $(".nav-tabs li").click(function (event) {
@@ -170,9 +216,8 @@ async function submitPostRequest() {
   await sendRequest(requestData);
 }
 
-
 async function submitVideoRequest() {
-  const recipientId = document.getElementById("user-recipient-request").value // Bạn có thể lấy giá trị này từ input nếu cần
+  const recipientId = document.getElementById("user-recipient-request").value; // Bạn có thể lấy giá trị này từ input nếu cần
   const location = document.getElementById("videoLocation").value;
   const dateRequire = new Date().toISOString().split("T")[0]; // Ngày hiện tại
   const deadline = document.getElementById("videoDeadline").value;
@@ -262,7 +307,7 @@ async function sendRequest(data) {
     console.log(result.result);
     alert(result.result);
     const recipientId = document.getElementById("user-recipient-request").value;
-    window.location.href = `https://localhost:443/chatbox?userId=${recipientId}`
+    window.location.href = `https://localhost:443/chatbox?userId=${recipientId}`;
   } catch (error) {
     alert("An error occurred: " + error.message);
   }
@@ -294,3 +339,65 @@ function showContent(type) {
 document.addEventListener("DOMContentLoaded", () => {
   updateCalendar(); // Call this function to initialize the calendar for 'by_date' modal
 });
+document.getElementById("add-button").addEventListener("click", function () {
+  document.getElementById("file-input").click();
+});
+
+document
+  .getElementById("file-input")
+  .addEventListener("change", handleFileSelect);
+
+function handleFileSelect(event) {
+  const file = event.target.files[0];
+  if (file) {
+    console.log("Send");
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const uploadData = {
+        content: e.target.result,
+        createAt: new Date().toISOString(),
+      };
+
+      fetch("https://localhost:443/profile-media-add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(uploadData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          alert("Add Image Success");
+
+          const mediaElement = document.createElement(
+            file.type.startsWith("image/") ? "img" : "video"
+          );
+          mediaElement.src = e.target.result;
+          mediaElement.className = "superbox-img";
+          if (file.type.startsWith("video/")) {
+            mediaElement.controls = true;
+          }
+
+          const newSuperboxList = document.createElement("div");
+          newSuperboxList.className = "superbox-list";
+          newSuperboxList.appendChild(mediaElement);
+
+          const superbox = document.querySelector(".superbox");
+          const secondChild = superbox.children[1]; // Get the second child
+          if (secondChild) {
+            superbox.insertBefore(newSuperboxList, secondChild);
+          } else {
+            superbox.appendChild(newSuperboxList); // If no second child, append to end
+          }
+          $(".superbox-img").click(showImgage);
+        })
+        .catch((error) => {
+          alert("Add Image Fail!");
+        });
+
+      event.target.value = "";
+    };
+
+    reader.readAsDataURL(file); // Move this line outside fetch
+  }
+}

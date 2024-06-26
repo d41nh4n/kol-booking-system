@@ -62,28 +62,25 @@ public class CloudinaryService {
         }
     }
 
-    public ResponeUpload uploadFileFromMessage(MultipartFile file) throws IOException {
+    public ResponeUpload uploadFile(String file) throws IOException {
         if (file.isEmpty()) {
             throw new IllegalArgumentException("File is empty");
         }
-
-        String fileType = file.getContentType();
-        long fileSize = file.getSize();
-
-        if (fileType.startsWith("video/") && fileSize > MAX_VIDEO_SIZE) {
-            throw new IllegalArgumentException("Video size exceeds the limit");
-        }
-
-        if (fileType.startsWith("image/") && fileSize > MAX_IMAGE_SIZE) {
-            throw new IllegalArgumentException("Image size exceeds the limit");
-        }
-
-        if (fileType.startsWith("audio/") && fileSize > MAX_AUDIO_SIZE) {
-            throw new IllegalArgumentException("Audio size exceeds the limit");
-        }
-
         try {
-            return uploadAndGetUrl(file);
+            String urlImg = handleFileMessage(file);
+            if (urlImg != null && !urlImg.isEmpty()) {
+                return ResponeUpload.builder()
+                        .status(200)
+                        .message("Upload successful")
+                        .url(urlImg)
+                        .build();
+            } else {
+                return ResponeUpload.builder()
+                        .status(500)
+                        .message("Upload failed")
+                        .url("")
+                        .build();
+            }
         } catch (IOException e) {
             throw new RuntimeException("Image upload failed", e);
         }
@@ -97,17 +94,27 @@ public class CloudinaryService {
         return convFile;
     }
 
-    public String handleFileMessage(FileMessage fileMessage) throws IOException {
-        String base64Data = fileMessage.getContent().split(",")[1];
+    public String handleFileMessage(String content) throws IOException {
+        String base64Data = content.split(",")[1];
         byte[] decodedBytes = Base64.getDecoder().decode(base64Data);
+        long fileSize = decodedBytes.length;
+
+        if (base64Data.startsWith("video/") && fileSize > MAX_VIDEO_SIZE) {
+            throw new IllegalArgumentException("Video size exceeds the limit");
+        }
+
+        if (base64Data.startsWith("image/") && fileSize > MAX_IMAGE_SIZE) {
+            throw new IllegalArgumentException("Image size exceeds the limit");
+        }
+
+        if (base64Data.startsWith("audio/") && fileSize > MAX_AUDIO_SIZE) {
+            throw new IllegalArgumentException("Audio size exceeds the limit");
+        }
 
         Map uploadResult = cloudinary.uploader().upload(decodedBytes, ObjectUtils.asMap(
                 "resource_type", "auto"));
-
         // Lấy URL của file đã tải lên
         String fileUrl = uploadResult.get("url").toString();
-        System.out.println("File uploaded to: " + fileUrl);
-
         return fileUrl;
     }
 }

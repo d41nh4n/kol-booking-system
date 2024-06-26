@@ -11,6 +11,8 @@ package d41nh4n.google_image.demo.entity.user;
 
 import jakarta.persistence.*;
 import java.util.Date;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -65,4 +67,6 @@ public class Profile {
     @JoinColumn(name = "user_id")
     private User user;
     // Getters and setters
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MediaProfile> mediaProfile;
 }

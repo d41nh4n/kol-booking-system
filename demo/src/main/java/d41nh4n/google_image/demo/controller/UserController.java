@@ -2,6 +2,9 @@ package d41nh4n.google_image.demo.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,14 +24,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import d41nh4n.google_image.demo.dto.respone.ResponeJson;
+import d41nh4n.google_image.demo.dto.respone.ResponeUpload;
 import d41nh4n.google_image.demo.dto.respone.VerifyStatus;
 import d41nh4n.google_image.demo.dto.userdto.UserDto;
 import d41nh4n.google_image.demo.dto.userdto.UserDtoFilter;
 import d41nh4n.google_image.demo.dto.userdto.UserFindedBySearch;
 import d41nh4n.google_image.demo.dto.userdto.UserProfileUpdate;
+import d41nh4n.google_image.demo.dto.userdto.MediaProfileDto;
+import d41nh4n.google_image.demo.dto.userdto.MediaProfileUpload;
 import d41nh4n.google_image.demo.entity.VerifyCode;
 import d41nh4n.google_image.demo.entity.user.Gender;
+import d41nh4n.google_image.demo.entity.user.MediaProfile;
 import d41nh4n.google_image.demo.entity.user.Profile;
 import d41nh4n.google_image.demo.entity.user.User;
 import d41nh4n.google_image.demo.model.Mail;
@@ -36,7 +45,9 @@ import d41nh4n.google_image.demo.security.JwtIssuer;
 import d41nh4n.google_image.demo.security.UserPrincipal;
 import d41nh4n.google_image.demo.service.CategoryService;
 import d41nh4n.google_image.demo.service.MailService;
+import d41nh4n.google_image.demo.service.MediaProfileService;
 import d41nh4n.google_image.demo.service.ProvinceService;
+import d41nh4n.google_image.demo.service.CloudinaryService;
 import d41nh4n.google_image.demo.service.UserService;
 import d41nh4n.google_image.demo.service.VerifyCodeService;
 import d41nh4n.google_image.demo.validation.Utils;
@@ -58,6 +69,8 @@ public class UserController {
     private final Utils utils;
     private final CategoryService categoryService;
     private final ProvinceService provinceService;
+    private final CloudinaryService cloudinaryService;
+    private final MediaProfileService mediaProfileService;
 
     @GetMapping()
     public String index(Model model, HttpServletRequest request) {
@@ -88,7 +101,9 @@ public class UserController {
         if (Boolean.TRUE.equals(emailExist)) {
             model.addAttribute("emailExist", "Existed email!");
         }
-        System.out.println(principal.getRoles());
+        List<MediaProfileDto> mediaProfile = mediaProfileService.getAllByProfileId(getUserId()).stream()
+                .map(media -> new MediaProfileDto(media)).collect(Collectors.toList());
+        model.addAttribute("medias", mediaProfile);
         if (principal.getRoles().equals("USER")) {
             return "infor-user";
         } else {
@@ -363,8 +378,12 @@ public class UserController {
         }
         UserDto userDto = userService.getUserInforById(userIdNumber);
         List<String> provinces = provinceService.getProvinceNames();
+        List<MediaProfileDto> mediaProfile = mediaProfileService.getAllByProfileId(userIdNumber).stream()
+                .map(media -> new MediaProfileDto(media)).collect(Collectors.toList());
+        System.out.println(mediaProfile.size());
         model.addAttribute("provinces", provinces);
         model.addAttribute("userInformation", userDto);
+        model.addAttribute("medias", mediaProfile);
         if (user.getRole().equals("USER")) {
             return "infor-user";
         } else {
@@ -415,11 +434,11 @@ public class UserController {
             }
         }
 
-        int pageNumber = 0; 
+        int pageNumber = 0;
         if (page != null && !page.isEmpty()) {
             pageNumber = Integer.parseInt(page);
         }
-        int pageSize = 18; 
+        int pageSize = 18;
 
         Page<UserDtoFilter> userPage = userService.getUserByFilter(
                 null, nameSearch, null, location, aPost, hireADay, aVideo, representative,
@@ -463,9 +482,82 @@ public class UserController {
         return "list-find-user";
     }
 
-    @GetMapping("/getUserHomePage")
-    public ResponseEntity<?> getUserHomePage() {
-        List<UserDtoFilter> list = userService.getTop6UsersForHomePage();
-        return ResponseEntity.ok(list);
+    @PostMapping("/profile-media-add")
+    public ResponseEntity<?> handleProfileMediaUpload(@RequestBody MediaProfileUpload content) {
+        System.out.println(content.getContent());
+        try {
+            ResponeUpload responeUpload = cloudinaryService.uploadFile(content.getContent());
+            Profile profile = userService.getProfileById(getUserId());
+            if (responeUpload.getStatus() == 200) {
+                MediaProfile mediaProfile = new MediaProfile();
+                mediaProfile.setUrl(responeUpload.getUrl());
+                String contentType = content.getContent().split(",")[0];
+                if (contentType.contains("video") || contentType.contains("mp4")) {
+                    mediaProfile.setType("VIDEO");
+                } else if (contentType.contains("image")) {
+                    mediaProfile.setType("IMAGE");
+                }
+                ZonedDateTime zonedDateTime = ZonedDateTime.parse(content.getCreateAt(),
+                        DateTimeFormatter.ISO_DATE_TIME);
+                mediaProfile.setCreateAt(zonedDateTime);
+                if (profile.getMediaProfile() == null) {
+                    profile.setMediaProfile(new ArrayList<>());
+                    userService.save(profile);
+                }
+                mediaProfile.setProfile(profile);
+                mediaProfileService.save(mediaProfile);
+                Map<String, Object> responseMap = new HashMap<>();
+                responseMap.put("status", 200);
+                responseMap.put("result", "Media uploaded successfully.");
+                return ResponseEntity.ok(responseMap);
+            } else {
+                // Prepare response
+                Map<String, Object> responseMap = new HashMap<>();
+                responseMap.put("status", responeUpload.getStatus());
+                responseMap.put("result", "Failed to upload media: " + responeUpload.getMessage());
+                return ResponseEntity.badRequest().body(responseMap);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Prepare response
+            Map<String, Object> responseMap = new HashMap<>();
+            responseMap.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseMap.put("result", "Error uploading media.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseMap);
+        }
+    }
+
+    @PostMapping("/profile-media-delete")
+    public ResponseEntity<ResponeJson> handleProfileMediaDelete(@RequestParam(name = "id") String id) {
+        try {
+            Long idImg = Long.parseLong(id);
+            MediaProfile mediaProfile = mediaProfileService.getById(idImg);
+
+            if (mediaProfile == null) {
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponeJson(HttpStatus.OK.value(), "Image not found in database"));
+            }
+
+            mediaProfileService.delete(mediaProfile);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponeJson(HttpStatus.OK.value(), "Image deleted successfully"));
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new ResponeJson(HttpStatus.BAD_REQUEST.value(), "Invalid image ID format"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ResponeJson(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Error deleting image"));
+        }
+    }
+
+    @GetMapping("/getimg")
+    public ResponseEntity<?> bla() {
+        List<MediaProfileDto> mediaProfile = mediaProfileService.getAllByProfileId(getUserId()).stream()
+                .map(media -> new MediaProfileDto(media)).collect(Collectors.toList());
+        return ResponseEntity.ok(mediaProfile);
+    }
+
+    private int getUserId() {
+        return utils.getPrincipal().getUserId();
     }
 }

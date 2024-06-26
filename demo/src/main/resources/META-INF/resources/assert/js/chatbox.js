@@ -206,7 +206,6 @@ function sendMessage() {
   }
 
   if (messageFile !== undefined) {
-    console.log("Send File");
     const reader = new FileReader();
     reader.onload = function (event) {
       let fileType;
@@ -229,6 +228,7 @@ function sendMessage() {
         type: fileType,
         timeStamp: new Date().toISOString(),
       };
+      console.log(fileMessage);
       let typeMessage = "FILE";
       stompClient.send(
         "/app/chat.sendMessage",
