@@ -9,13 +9,17 @@ import d41nh4n.google_image.demo.dto.userdto.UserDto;
 import d41nh4n.google_image.demo.dto.userdto.UserDtoFilter;
 import d41nh4n.google_image.demo.dto.userdto.UserFindedBySearch;
 import d41nh4n.google_image.demo.entity.Category;
+import d41nh4n.google_image.demo.entity.request.Request;
+import d41nh4n.google_image.demo.entity.request.RequestWaitList;
 import d41nh4n.google_image.demo.entity.user.Gender;
 import d41nh4n.google_image.demo.entity.user.Profile;
 import d41nh4n.google_image.demo.entity.user.ProfileCategories;
 import d41nh4n.google_image.demo.entity.user.User;
+import d41nh4n.google_image.demo.mapper.UserToUserDto;
 import d41nh4n.google_image.demo.repository.CategoryRepository;
 import d41nh4n.google_image.demo.repository.ProfileCategoriesRepository;
 import d41nh4n.google_image.demo.repository.ProfileRepository;
+import d41nh4n.google_image.demo.repository.RequestWaitListRepository;
 import d41nh4n.google_image.demo.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -89,7 +93,18 @@ public class UserService {
     public UserDto getUserInforById(int id) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
-            return new UserDto(user);
+            UserDto userDto = UserToUserDto.mapToUserInfoResponse(user);
+
+            List<ProfileCategories> profileCategories = user.getProfile().getProfileCategories();
+            List<String> categoryNames = new ArrayList<>();
+            for (ProfileCategories profileCategory : profileCategories) {
+                Category category = categoryRepository.findById(profileCategory.getCategoryId()).orElse(null);
+                if (category != null) {
+                    categoryNames.add(category.getCategoryName());
+                }
+            }
+            userDto.setCategories(categoryNames);
+            return userDto;
         }
         return null;
     }
@@ -200,6 +215,7 @@ public class UserService {
                 dto.setPriceVideo(profile.getPriceAVideo());
                 dto.setPriceHireByDay(profile.getPriceAToHireADay());
                 dto.setRepresentativePrice(profile.getRepresentativePrice());
+                dto.setRating(profile.getAverageRating());
             }
 
             // Fetch Categories
@@ -217,4 +233,5 @@ public class UserService {
 
         return new PageImpl<>(userDtoList, pageable, users.getTotalElements());
     }
+
 }

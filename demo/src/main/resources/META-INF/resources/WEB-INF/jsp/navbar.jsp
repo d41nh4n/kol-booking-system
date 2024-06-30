@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="utf-8">
 <title>Google plus navbar style - Bootdey.com</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet">
@@ -53,10 +53,13 @@
         font-weight: 800;
     }    
      .dropdown-menu {
-        min-width: 250px;
+        max-width: 300px;
+        min-width: 300px;
+        max-height: 300px; 
+        overflow-y: auto; 
     }
     .dropdown-menu.user {
-        min-width: 150px;
+        min-width: 300px;
     }
     .navbar-nav .dropdown-menu{
         position:absolute;
@@ -67,7 +70,10 @@
   }           
   .navbar-nav > li > a > i {
         font-size: 1.5em; /* Tăng kích thước icon */
-    }         
+    }  
+    .dropdown-menu>li>a {
+    height: 40px;
+}     
 </style>
 </head>
 <body>
@@ -92,15 +98,13 @@
                 </div>
             </form>
             <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="/request/job-market"><i class="fa-solid fa-shop"></i></a>
+                </li>
                 <c:if test="${not empty userInfor}">
                     <li>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="glyphicon glyphicon-bell"></i></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#"><span class="badge pull-right">40</span>Link</a></li>
-                            <li><a href="#"><span class="badge pull-right">2</span>Link</a></li>
-                            <li><a href="#"><span class="badge pull-right">0</span>Link</a></li>
-                            <li><a href="#"><span class="label label-info pull-right">1</span>Link</a></li>
-                            <li><a href="#"><span class="badge pull-right">13</span>Link</a></li>
+                        <ul class="dropdown-menu" id="notificationDropdown">
                         </ul>
                     </li>
                 </c:if>
@@ -114,6 +118,9 @@
                             <c:when test="${not empty userInfor}">
                                 <c:if test="${userInfor.role == 'KOL'}">                           
                                     <li><a href="/request/pending">Jobs</a></li>
+                                </c:if> 
+                                 <c:if test="${userInfor.role == 'USER'}">                           
+                                    <li><a href="/request/my-request">Jobs</a></li>
                                 </c:if> 
                                 <li><a href="/infor">Profile</a></li>
                                 <li class="divider"></li>
@@ -133,6 +140,5 @@
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
 <script src="../../assert/js/navbar.js"></script>
-</script>
 </body>
 </html>

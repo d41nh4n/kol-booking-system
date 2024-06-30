@@ -1,7 +1,4 @@
 
-body{margin-top:20px;
-background:#eee;
-}
 
 .container{
     padding-top: 75px;
@@ -888,4 +885,124 @@ button.submit:hover {
     font-size: 16px;
     width: 50px;
     text-align: center;
+}
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+#content {
+  flex: 1;
+  margin-top: 30px;
+}
+
+.footer {
+  flex-shrink: 0;
+}
+.superbox-list.add {
+  display: inline-block;
+  border: 2px dashed #ccc;
+  text-align: center;
+  line-height: 80px;
+  cursor: pointer;
+}
+.superbox-list input[type="file"] {
+  display: none;
+}
+.superbox-list.add:hover {
+  border-color: #000;
+}
+
+.media {
+  display: flex;
+  align-items: flex-start; /* Căn tất cả nội dung lên đỉnh */
+}
+
+.media-left, .media-body, .media-right {
+  padding: 0 10px 0 10px;
+}
+
+.media-left {
+  flex: 1; /* Chiếm 1 phần của không gian */
+}
+
+.media-body {
+  flex: 2; /* Chiếm 2 phần của không gian */
+  display: flex;
+  align-items: flex-start; /* Căn nội dung bên trong .media-body lên đỉnh */
+  flex-direction: column; /* Để h2 được căn chỉnh đúng */
+}
+
+.media-right {
+  width: 60%; /* Điều chỉnh chiều rộng của media-right */
+  display: flex;
+
+
+}
+
+.right-container {
+  display: flex;
+  flex-direction: row; /* Chia làm 2 cột */
+  width: 50%; /* Điều chỉnh chiều rộng của container */
+  max-width: 1000px; /* Giới hạn chiều rộng tối đa nếu cần */
+  justify-content: space-between;
+  background-color: white;
+  border-radius: 10%;
+  border: 1px solid #ccc;
+
+}
+
+.right-player-profile {
+  flex: 2; /* Chiếm 2 phần không gian */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin: 20px;
+}
+
+.edit-profile{
+  margin-right: 10px;
+}
+#hire-button{
+  margin-right: 10px;
+}
+.hire-container {
+  flex: 1; /* Chiếm 1 phần không gian */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: end; /* Căn giữa theo chiều ngang */
+}
+
+.price-player-profile, .rateting-style {
+  margin: 10px 0; /* Thêm khoảng cách giữa các phần tử */
+}
+
+.rateting-style {
+  margin-bottom: 15px; /* Khoảng cách dưới của phần đánh giá */
+  display: flex; /* Dùng flexbox để canh giữa */
+  align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+.rateting-style i {
+  color: #ffc107; /* Màu của ngôi sao */
+}
+
+.btn-my-style {
+  margin: 5px; /* Khoảng cách giữa các nút */
+}
+
+.red {
+  background-color: #dc3545; /* Màu nền đỏ */
+  color: white; /* Màu chữ trắng */
+}
+
+.white {
+  background-color: white; /* Màu nền trắng */
+  color: #007bff; /* Màu chữ xanh */
+  border: 1px solid #007bff; /* Đường viền xanh */
 }

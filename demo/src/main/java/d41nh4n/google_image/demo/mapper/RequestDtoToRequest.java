@@ -2,24 +2,19 @@ package d41nh4n.google_image.demo.mapper;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import d41nh4n.google_image.demo.dto.requestJob.RequesPostOrVideotDto;
 import d41nh4n.google_image.demo.dto.requestJob.RequestByDay;
 import d41nh4n.google_image.demo.dto.requestJob.RequestDto;
-import d41nh4n.google_image.demo.dto.requestJob.RequestPending;
 import d41nh4n.google_image.demo.dto.requestJob.RequestRepresentativeDto;
 import d41nh4n.google_image.demo.dto.userdto.UserInfo;
 import d41nh4n.google_image.demo.entity.request.Request;
 import d41nh4n.google_image.demo.entity.request.RequestRepresentative;
 import d41nh4n.google_image.demo.entity.user.User;
-import d41nh4n.google_image.demo.service.RequestService;
 import d41nh4n.google_image.demo.service.UserService;
 import d41nh4n.google_image.demo.validation.Utils;
 import lombok.RequiredArgsConstructor;
@@ -34,15 +29,19 @@ public class RequestDtoToRequest {
     public Request requestByDayToRequest(RequestByDay requestByDay) {
         Request request = new Request();
         int senderId = utils.getPrincipal().getUserId();
-        int recipientId = Integer.parseInt(requestByDay.getRecipientId());
+        if (requestByDay.getRecipientId() != null) {
+            int recipientId = Integer.parseInt(requestByDay.getRecipientId());
+            User recipient = userService.getUserById(recipientId);
+            request.setResponder(recipient);
+        } else {
+            request.setResponder(null);
+        }
 
         User sender = userService.getUserById(senderId);
-        User recipient = userService.getUserById(recipientId);
 
         Date requireDate = utils.stringToDate(requestByDay.getDateRequire());
 
         request.setRequester(sender);
-        request.setResponder(recipient);
         request.setRequestDescription(requestByDay.getDecription());
         request.setRequestLocation(requestByDay.getLocation());
         request.setRequestDate(requireDate);
@@ -55,8 +54,11 @@ public class RequestDtoToRequest {
         RequestByDay requestByDay = new RequestByDay();
 
         // Thiết lập các giá trị cho RequestByDay từ Request
-        requestByDay.setRecipientId(String.valueOf(request.getResponder().getUserId())); // Ví dụ: Lấy ID của người phản
-                                                                                         // hồi
+        if (request.getResponder() != null) {
+            requestByDay.setRecipientId(String.valueOf(request.getResponder().getUserId()));
+        } else {
+            requestByDay.setRecipientId(null);
+        }
         requestByDay.setLocation(request.getRequestLocation());
         requestByDay.setType(request.getRequestType());
         requestByDay.setDateRequire(utils.dateToString(request.getRequestDate()));
@@ -67,19 +69,24 @@ public class RequestDtoToRequest {
         return requestByDay;
     }
 
-    public Request requestDtoToRequest(RequestDto requestDto) {
+    public Request requestDtoToRequest(RequesPostOrVideotDto requestDto) {
         Request request = new Request();
         int senderId = utils.getPrincipal().getUserId();
-        int recipientId = Integer.parseInt(requestDto.getRecipientId());
+        if (requestDto.getRecipientId() != null) {
+            int recipientId = Integer.parseInt(requestDto.getRecipientId());
+            User recipient = userService.getUserById(recipientId);
+            request.setResponder(recipient);
+        } else {
+            request.setResponder(null);
+        }
 
         User sender = userService.getUserById(senderId);
-        User recipient = userService.getUserById(recipientId);
 
         Date requireDate = utils.stringToDate(requestDto.getDateRequire());
         Date deadline = utils.stringToDate(requestDto.getDeadline());
 
         request.setRequester(sender);
-        request.setResponder(recipient);
+
         request.setRequestDescription(requestDto.getDecription());
         request.setRequestLocation(requestDto.getLocation());
         request.setRequestDate(requireDate);
@@ -87,14 +94,16 @@ public class RequestDtoToRequest {
         return request;
     }
 
-    public RequestDto requestToRequestDto(Request request) {
-        RequestDto requestDto = new RequestDto();
+    public RequesPostOrVideotDto requestToRequesPostOrVideotDto(Request request) {
+        RequesPostOrVideotDto requestDto = new RequesPostOrVideotDto();
 
-        // Lấy thông tin về người gửi và người nhận từ Request
         User responder = request.getResponder();
 
-        // Thiết lập các thuộc tính của RequestDto từ Request
-        requestDto.setRecipientId(String.valueOf(responder.getUserId())); // ID của người nhận
+        if (responder != null) {
+            requestDto.setRecipientId(String.valueOf(responder.getUserId()));
+        } else {
+            requestDto.setRecipientId(null);
+        }
         requestDto.setLocation(request.getRequestLocation());
         requestDto.setDateRequire(utils.dateToString(request.getRequestDate()));
         requestDto.setDeadline(utils.dateToString(request.getRequestDateEnd()));
@@ -106,15 +115,18 @@ public class RequestDtoToRequest {
     }
 
     public Request requestRepresentativeToRequest(RequestRepresentativeDto requestRepDto) {
-        int senderId = utils.getPrincipal().getUserId();
-        int recipientId = Integer.parseInt(requestRepDto.getRecipientId());
-        User sender = userService.getUserById(senderId);
-        User recipient = userService.getUserById(recipientId);
-        Date requireDate = utils.stringToDate(requestRepDto.getDateRequire());
         Request request = new Request();
-
+        int senderId = utils.getPrincipal().getUserId();
+        if (requestRepDto.getRecipientId() != null) {
+            int recipientId = Integer.parseInt(requestRepDto.getRecipientId());
+            User recipient = userService.getUserById(recipientId);
+            request.setResponder(recipient);
+        } else {
+            request.setResponder(null);
+        }
+        User sender = userService.getUserById(senderId);
+        Date requireDate = utils.stringToDate(requestRepDto.getDateRequire());
         request.setRequester(sender);
-        request.setResponder(recipient);
         request.setRequestDescription(requestRepDto.getDecription());
         request.setRequestLocation(requestRepDto.getLocation());
         request.setRequestDate(requireDate);
@@ -140,8 +152,11 @@ public class RequestDtoToRequest {
 
         // Chuyển đổi thông tin người gửi và người nhận
         User recipient = request.getResponder();
-        requestRepDto.setRecipientId(String.valueOf(recipient.getUserId()));
-
+        if (recipient != null) {
+            requestRepDto.setRecipientId(String.valueOf(recipient.getUserId()));
+        } else {
+            requestRepDto.setRecipientId(null);
+        }
         // Thiết lập thông tin cơ bản của yêu cầu đại diện
         requestRepDto.setLocation(request.getRequestLocation());
         requestRepDto.setType(request.getRequestType());
@@ -158,8 +173,8 @@ public class RequestDtoToRequest {
         return requestRepDto;
     }
 
-    public RequestPending requestToRequestPending(Request request) {
-        RequestPending requestPending = new RequestPending();
+    public RequestDto requestToRequestDto(Request request) {
+        RequestDto requestPending = new RequestDto();
 
         UserInfo userSender = new UserInfo(request.getRequester().getUserId(),
                 request.getRequester().getProfile().getFullName(), request.getRequester().getRole(),
@@ -167,11 +182,11 @@ public class RequestDtoToRequest {
 
         requestPending.setSender(userSender);
         if ("VIDEO".equalsIgnoreCase(request.getRequestType())) {
-            RequestDto requestDto = requestToRequestDto(request);
+            RequesPostOrVideotDto requestDto = requestToRequesPostOrVideotDto(request);
             requestPending.setRequestDto(requestDto);
         }
         if ("POST".equalsIgnoreCase(request.getRequestType())) {
-            RequestDto requestDto = requestToRequestDto(request);
+            RequesPostOrVideotDto requestDto = requestToRequesPostOrVideotDto(request);
             requestPending.setRequestDto(requestDto);
         }
         if ("HIREBYDAY".equalsIgnoreCase(request.getRequestType())) {
@@ -184,6 +199,8 @@ public class RequestDtoToRequest {
         }
         requestPending.setRequestId(request.getRequestId());
         requestPending.setPrice(request.getPayment());
+        requestPending.setStatus(request.getRequestStatus().name());
+        ;
         return requestPending;
     }
 }

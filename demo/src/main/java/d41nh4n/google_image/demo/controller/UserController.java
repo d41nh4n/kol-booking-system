@@ -91,8 +91,7 @@ public class UserController {
             @RequestParam(value = "emailExist", required = false) Boolean emailExist) {
 
         UserPrincipal principal = utils.getPrincipal();
-        User user = userService.getUserById(principal.getUserId());
-        UserDto userDto = new UserDto(user);
+        UserDto userDto = userService.getUserInforById(principal.getUserId());
         model.addAttribute("me", "me");
         model.addAttribute("userInformation", userDto);
         if (Boolean.TRUE.equals(invalidEmail)) {
@@ -162,8 +161,7 @@ public class UserController {
     @GetMapping("/update-profile-form")
     public String updateForm(Model model) {
         UserPrincipal principal = utils.getPrincipal();
-        User user = userService.getUserById(principal.getUserId());
-        UserDto userDto = new UserDto(user);
+        UserDto userDto = userService.getUserInforById(getUserId());
         List<String> provinces = provinceService.getProvinceNames();
         model.addAttribute("provinces", provinces);
         model.addAttribute("userInformation", userDto);
@@ -380,7 +378,6 @@ public class UserController {
         List<String> provinces = provinceService.getProvinceNames();
         List<MediaProfileDto> mediaProfile = mediaProfileService.getAllByProfileId(userIdNumber).stream()
                 .map(media -> new MediaProfileDto(media)).collect(Collectors.toList());
-        System.out.println(mediaProfile.size());
         model.addAttribute("provinces", provinces);
         model.addAttribute("userInformation", userDto);
         model.addAttribute("medias", mediaProfile);

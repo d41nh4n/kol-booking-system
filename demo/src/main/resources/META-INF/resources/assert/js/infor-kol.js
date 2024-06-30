@@ -1,5 +1,6 @@
 const button = $("#hire-button");
 let imageId = null;
+let userId = null;
 $(function () {
   $(".superbox-img").click(showImgage);
 });
@@ -52,6 +53,7 @@ function deleteImage() {
 
 $("#deleteButton").click(deleteImage);
 
+// ================================================
 $(document).ready(function () {
   $(".nav-tabs li").click(function (event) {
     event.preventDefault();
@@ -62,8 +64,10 @@ $(document).ready(function () {
     $(this).addClass("active");
     $(".tab-pane").eq($(this).index()).addClass("active");
   });
+  getComment(0);
 });
 
+// ================================================
 function openModal() {
   $("#myModal").modal("show");
 }
@@ -71,18 +75,8 @@ function openModal() {
 button.on("click", openModal);
 
 const monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
 ];
 const currentDate = new Date();
 let currentMonth = currentDate.getMonth();
@@ -100,32 +94,34 @@ function updateCalendar() {
   const monthDays = new Date(currentYear, currentMonth + 1, 0).getDate();
 
   for (let i = 0; i < firstDay; i++) {
-    const emptyDiv = document.createElement("div");
-    daysContainer.appendChild(emptyDiv);
+      const emptyDiv = document.createElement("div");
+      daysContainer.appendChild(emptyDiv);
   }
 
   for (let day = 1; day <= monthDays; day++) {
-    const dayDiv = document.createElement("div");
-    dayDiv.className = "day";
+      const dayDiv = document.createElement("div");
+      dayDiv.className = "day";
 
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.id = `day${day}`;
-    checkbox.dataset.date = `${currentYear}-${currentMonth + 1}-${day}`;
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.id = `day${day}`;
+      checkbox.dataset.date = `${currentYear}-${currentMonth + 1}-${day}`;
 
-    const label = document.createElement("label");
-    label.setAttribute("for", checkbox.id);
-    label.innerText = day;
+      const label = document.createElement("label");
+      label.setAttribute("for", checkbox.id);
+      label.innerText = day;
 
-    if (selectedDaysList.includes(checkbox.dataset.date)) {
-      checkbox.checked = true;
-    }
+      if (selectedDaysList.includes(checkbox.dataset.date)) {
+          checkbox.checked = true;
+          label.style.backgroundColor = "#007bff";
+          label.style.color = "white";
+      }
 
-    checkbox.addEventListener("change", handleCheckboxChange);
+      checkbox.addEventListener("change", handleCheckboxChange);
 
-    dayDiv.appendChild(checkbox);
-    dayDiv.appendChild(label);
-    daysContainer.appendChild(dayDiv);
+      dayDiv.appendChild(checkbox);
+      dayDiv.appendChild(label);
+      daysContainer.appendChild(dayDiv);
   }
 
   enforceMaxDaysSelection();
@@ -138,73 +134,80 @@ function handleCheckboxChange(event) {
   const selectedDate = new Date(currentYear, currentMonth, day);
 
   if (selectedDate < currentDate) {
-    alert("You cannot select a date earlier than today.");
-    event.target.checked = false;
-    return;
+      alert("You cannot select a date earlier than today.");
+      event.target.checked = false;
+      return;
   }
 
   const dateStr = event.target.dataset.date;
   if (event.target.checked) {
-    selectedDaysList.push(dateStr);
+      selectedDaysList.push(dateStr);
+      event.target.nextElementSibling.style.backgroundColor = "#007bff";
+      event.target.nextElementSibling.style.color = "white";
   } else {
-    const index = selectedDaysList.indexOf(dateStr);
-    if (index > -1) {
-      selectedDaysList.splice(index, 1);
-    }
+      const index = selectedDaysList.indexOf(dateStr);
+      if (index > -1) {
+          selectedDaysList.splice(index, 1);
+          event.target.nextElementSibling.style.backgroundColor = "";
+          event.target.nextElementSibling.style.color = "";
+      }
   }
 
   if (selectedDaysList.length > maxDays) {
-    alert("The maximum number of days you can select is " + maxDays);
-    event.target.checked = false;
-    const lastSelectedDate = selectedDaysList.pop();
-    document.querySelector(
-      `input[data-date='${lastSelectedDate}']`
-    ).checked = false;
+      alert("The maximum number of days you can select is " + maxDays);
+      event.target.checked = false;
+      const lastSelectedDate = selectedDaysList.pop();
+      document.querySelector(`input[data-date='${lastSelectedDate}']`).checked = false;
+      document.querySelector(`input[data-date='${lastSelectedDate}']`).nextElementSibling.style.backgroundColor = "";
+      document.querySelector(`input[data-date='${lastSelectedDate}']`).nextElementSibling.style.color = "";
   }
 }
 
 function enforceMaxDaysSelection() {
-  const maxDays = parseInt(document.getElementById("max-days").value);
-
+  const maxDays = 15;
   while (selectedDaysList.length > maxDays) {
-    const lastSelectedDate = selectedDaysList.pop();
-    document.querySelector(
-      `input[data-date='${lastSelectedDate}']`
-    ).checked = false;
+      const lastSelectedDate = selectedDaysList.pop();
+      document.querySelector(`input[data-date='${lastSelectedDate}']`).checked = false;
+      document.querySelector(`input[data-date='${lastSelectedDate}']`).nextElementSibling.style.backgroundColor = "";
+      document.querySelector(`input[data-date='${lastSelectedDate}']`).nextElementSibling.style.color = "";
   }
 }
 
 function prevMonth() {
   if (currentMonth === 0) {
-    currentMonth = 11;
-    currentYear--;
+      currentMonth = 11;
+      currentYear--;
   } else {
-    currentMonth--;
+      currentMonth--;
   }
   updateCalendar();
 }
 
 function nextMonth() {
   if (currentMonth === 11) {
-    currentMonth = 0;
-    currentYear++;
+      currentMonth = 0;
+      currentYear++;
   } else {
-    currentMonth++;
+      currentMonth++;
   }
   updateCalendar();
 }
 
+document.addEventListener("DOMContentLoaded", updateCalendar);
+
+function replaceNewLinesWithBr(text) {
+  return text.replace(/\n/g, '<br>');
+}
+
 async function submitPostRequest() {
   console.log("Function submitPostRequest() is called");
-  const recipientId = document.getElementById("user-recipient-request").value; // Lấy giá trị từ input có id là userId
   const location = document.getElementById("postLocation").value;
   const dateRequire = new Date().toISOString().split("T")[0]; // Ngày hiện tại
   const deadline = document.getElementById("postDeadline").value;
-  const description = document.getElementById("postDescription").value;
+  const description = replaceNewLinesWithBr(document.getElementById("postDescription").value);
   const requestData = {
     typeRequest: "POST",
     request: {
-      recipientId: recipientId,
       location: location,
       type: "POST",
       dateRequire: dateRequire,
@@ -217,16 +220,14 @@ async function submitPostRequest() {
 }
 
 async function submitVideoRequest() {
-  const recipientId = document.getElementById("user-recipient-request").value; // Bạn có thể lấy giá trị này từ input nếu cần
   const location = document.getElementById("videoLocation").value;
   const dateRequire = new Date().toISOString().split("T")[0]; // Ngày hiện tại
   const deadline = document.getElementById("videoDeadline").value;
-  const description = document.getElementById("videoDescription").value;
+  const description = replaceNewLinesWithBr(document.getElementById("videoDescription").value);
 
   const requestData = {
     typeRequest: "VIDEO",
     request: {
-      recipientId: recipientId,
       location: location,
       type: "VIDEO",
       dateRequire: dateRequire,
@@ -240,15 +241,13 @@ async function submitVideoRequest() {
 
 async function submitHiretRequest() {
   if (selectedDaysList.length > 0) {
-    const recipientId = document.getElementById("user-recipient-request").value; // Bạn có thể lấy giá trị này từ input nếu cần
     const location = document.getElementById("hireLocation").value;
-    const dateRequire = selectedDaysList[0]; // Giả sử ngày yêu cầu là ngày đầu tiên được chọn
-    const description = document.getElementById("hireDescription").value;
+    const dateRequire = new Date().toISOString().split("T")[0]; // Ngày hiện tại
+    const description = replaceNewLinesWithBr(document.getElementById("hireDescription").value);
 
     const requestData = {
       typeRequest: "HIREBYDAY",
       request: {
-        recipientId: recipientId,
         location: location,
         type: "HIREBYDAY",
         dateRequire: dateRequire,
@@ -264,19 +263,15 @@ async function submitHiretRequest() {
 }
 
 async function submitRepresentativetRequest() {
-  const recipientId = document.getElementById("user-recipient-request").value; // Bạn có thể lấy giá trị này từ input nếu cần
   const location = document.getElementById("representativeLocation").value;
   const dateRequire = new Date().toISOString().split("T")[0]; // Ngày hiện tại
   const dateStart = document.getElementById("representativeStart").value; // Ngày bắt đầu
   const numberMonths = document.getElementById("representativeMonths").value;
-  const description = document.getElementById(
-    "representativeDescription"
-  ).value;
+  const description = replaceNewLinesWithBr(document.getElementById("representativeDescription").value);
 
   const requestData = {
     typeRequest: "REPRESENTATIVE",
     request: {
-      recipientId: recipientId,
       location: location,
       type: "REPRESENTATIVE",
       dateRequire: dateRequire,
@@ -288,6 +283,7 @@ async function submitRepresentativetRequest() {
 
   await sendRequest(requestData);
 }
+
 
 async function sendRequest(data) {
   try {
@@ -306,8 +302,6 @@ async function sendRequest(data) {
     const result = await response.json();
     console.log(result.result);
     alert(result.result);
-    const recipientId = document.getElementById("user-recipient-request").value;
-    window.location.href = `https://localhost:443/chatbox?userId=${recipientId}`;
   } catch (error) {
     alert("An error occurred: " + error.message);
   }
@@ -336,9 +330,8 @@ function showContent(type) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  updateCalendar(); // Call this function to initialize the calendar for 'by_date' modal
-});
+
+// ================================================
 document.getElementById("add-button").addEventListener("click", function () {
   document.getElementById("file-input").click();
 });
@@ -398,6 +391,100 @@ function handleFileSelect(event) {
       event.target.value = "";
     };
 
-    reader.readAsDataURL(file); // Move this line outside fetch
+    reader.readAsDataURL(file);
   }
+}
+// ================================================
+function getTotalComment(totalNumber) {
+  const totalComment = $(".total-comment");
+  totalComment.empty();
+  var totalCommentHtml = `<h3>Total Comments: ${totalNumber}</h3>`;
+  totalComment.append(totalCommentHtml);
+}
+function getComment(numberPage) {
+  userId = document.getElementById("user-recipient-request").value;
+  $("#comments-list").empty();
+  var apiUrlGetComments = `https://localhost/comment?userId=${userId}&&page=${numberPage}`;
+  console.log(apiUrlGetComments);
+  fetch(apiUrlGetComments)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      getTotalComment(data.totalElements);
+      if (data.content && data.content.length > 0) {
+        data.content.forEach(function (comment) {
+          // Tạo cấu trúc HTML cho comment
+          var commentHtml = `
+            <div class="media">
+              <a class="pull-left" href="#">
+                <img class="media-object" src="${
+                  comment.urlAvatarSender
+                }" alt="Avatar">
+              </a>
+              <div class="media-body">
+                <h4 class="media-heading">${comment.nameSender}</h4>
+                <p>${comment.content}</p>
+                <ul class="list-unstyled list-inline media-detail pull-left">
+                  <li><i class="fa fa-calendar"></i>${new Date(
+                    comment.createAt
+                  ).toLocaleDateString()}</li>
+                </ul>
+              </div>
+            </div>
+          `;
+          // Chèn comment vào container
+          $("#comments-list").append(commentHtml);
+        });
+        createPagination(data.totalPages, data.number);
+      } else {
+        $("#comments-list").append("<p>No comments available.</p>");
+      }
+    })
+    .catch((error) => {
+      console.error("Failed to load comments:", error);
+      $("#comments-list").append("<p>Failed to load comments.</p>");
+    });
+}
+function createPagination(totalPages, currentPage) {
+  const pagination = $("#pagination");
+  pagination.empty();
+  console.log(totalPages, currentPage);
+  var prevButton = `<li class="page-item ${
+    currentPage === 0 ? "disabled" : ""
+  }">
+                      <a class="page-link" href="#" data-page="${
+                        currentPage - 1
+                      }">Previous</a>
+                    </li>`;
+  pagination.append(prevButton);
+
+  for (var i = 0; i <= totalPages - 1; i++) {
+    var pageButton = `<li class="page-item ${
+      i === currentPage ? "active" : ""
+    }">
+                        <a class="page-link" href="#" data-page="${i}">${
+      i + 1
+    }</a>
+                      </li>`;
+    pagination.append(pageButton);
+  }
+
+  var nextButton = `<li class="page-item ${
+    currentPage + 1 === totalPages ? "disabled" : ""
+  }">
+                      <a class="page-link" href="#" data-page="${
+                        currentPage + 1
+                      }">Next</a>
+                    </li>`;
+  pagination.append(nextButton);
+
+  pagination.find(".page-link").click(function (event) {
+    event.preventDefault();
+    var page = parseInt($(this).attr("data-page"));
+    getComment(page);
+  });
 }

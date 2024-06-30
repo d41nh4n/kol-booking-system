@@ -102,3 +102,41 @@ body{
             margin: 0
         }
     }
+    .bg-gray {
+        background-color: gray;
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+    .bg-green {
+        background-color: green;
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+    .bg-blue {
+        background-color: blue;
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+    .bg-red {
+        background-color: red;
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+    .status {
+        margin-top: 10px;
+        display: inline-block;
+    }
+
+    .description {
+        max-height: 70px;
+        overflow: hidden;
+        position: relative;
+      }

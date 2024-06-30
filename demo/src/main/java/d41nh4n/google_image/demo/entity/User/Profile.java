@@ -62,6 +62,9 @@ public class Profile {
     @Column(name = "money")
     private double money;
 
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ProfileCategories> profileCategories;
+
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId("userId")
     @JoinColumn(name = "user_id")

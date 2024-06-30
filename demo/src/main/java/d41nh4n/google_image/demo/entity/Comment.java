@@ -8,8 +8,9 @@ package d41nh4n.google_image.demo.entity;
  *
  * @author DAO
  */
-import jakarta.persistence.Entity;
 import jakarta.persistence.*;
+
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 import d41nh4n.google_image.demo.entity.user.User;
@@ -27,11 +28,11 @@ import lombok.Setter;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer commentId;
+    private int commentId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "NVARCHAR(MAX)")
     private String commentContent;
-
+    
     @ManyToOne
     @JoinColumn(name = "commenter_id", nullable = false)
     private User commenter;
@@ -41,11 +42,10 @@ public class Comment {
     private User receiver;
 
     @Column(nullable = false)
-    private Date createdAt = new Date();
+    private ZonedDateTime createdAt = ZonedDateTime.now();
 
     @Column(nullable = false)
     private Boolean isViolation = false;
 
     // Getters and setters
 }
-

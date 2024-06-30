@@ -48,7 +48,7 @@
                         <div class="profile-header">
                             <h3><span>User info</span></h3>
                             <c:if test="${not empty me}">
-                                <a href="/update-profile-form" class="btn btn-primary edit-profile">
+                                <a href="/update-profile-form" class="btn btn-primary btn-lg edit-profile">
                                     <i class="fa fa-pencil-square fa-lg"></i> Edit profile
                                 </a>
                             </c:if>

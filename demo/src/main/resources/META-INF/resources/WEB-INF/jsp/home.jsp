@@ -196,7 +196,7 @@
                                         <c:if test="${not empty user.catgories}">
                                             <div class="tags">
                                                 <c:forEach var="category" items="${user.catgories}">
-                                                    <span class="label-tags"><span class="label label-danger">${category}</span></span>
+                                                    <span class="label-tags"><span class="label label-success">${category}</span></span>
                                                 </c:forEach>
                                             </div>
                                         </c:if>
@@ -243,12 +243,12 @@
                                 <div class="box-product">
                                     <div class="img-wrapper">
                                         <a href="/profile?userId=${user.userId}">
-                                            <img alt="Product" src="${user.avatarUrl}" class="img-fluid" />
+                                            <img  alt="Product" src="${user.avatarUrl}" class="img-responsive" style="width :100%"/>
                                         </a>
                                         <c:if test="${not empty user.catgories}">
                                             <div class="tags">
                                                 <c:forEach var="category" items="${user.catgories}">
-                                                    <span class="label-tags"><span class="label label-danger">${category}</span></span>
+                                                    <span class="label-tags"><span class="label label-success">${category}</span></span>
                                                 </c:forEach>
                                             </div>
                                         </c:if>
