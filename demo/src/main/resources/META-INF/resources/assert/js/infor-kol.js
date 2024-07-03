@@ -200,7 +200,7 @@ function replaceNewLinesWithBr(text) {
 }
 
 async function submitPostRequest() {
-  console.log("Function submitPostRequest() is called");
+  const recipientId = document.getElementById("user-recipient-request").value;
   const location = document.getElementById("postLocation").value;
   const dateRequire = new Date().toISOString().split("T")[0]; // Ngày hiện tại
   const deadline = document.getElementById("postDeadline").value;
@@ -208,6 +208,7 @@ async function submitPostRequest() {
   const requestData = {
     typeRequest: "POST",
     request: {
+      recipientId: recipientId,
       location: location,
       type: "POST",
       dateRequire: dateRequire,
@@ -220,6 +221,7 @@ async function submitPostRequest() {
 }
 
 async function submitVideoRequest() {
+  const recipientId = document.getElementById("user-recipient-request").value;
   const location = document.getElementById("videoLocation").value;
   const dateRequire = new Date().toISOString().split("T")[0]; // Ngày hiện tại
   const deadline = document.getElementById("videoDeadline").value;
@@ -228,6 +230,7 @@ async function submitVideoRequest() {
   const requestData = {
     typeRequest: "VIDEO",
     request: {
+      recipientId: recipientId,
       location: location,
       type: "VIDEO",
       dateRequire: dateRequire,
@@ -241,6 +244,7 @@ async function submitVideoRequest() {
 
 async function submitHiretRequest() {
   if (selectedDaysList.length > 0) {
+    const recipientId = document.getElementById("user-recipient-request").value;
     const location = document.getElementById("hireLocation").value;
     const dateRequire = new Date().toISOString().split("T")[0]; // Ngày hiện tại
     const description = replaceNewLinesWithBr(document.getElementById("hireDescription").value);
@@ -248,6 +252,7 @@ async function submitHiretRequest() {
     const requestData = {
       typeRequest: "HIREBYDAY",
       request: {
+        recipientId: recipientId,
         location: location,
         type: "HIREBYDAY",
         dateRequire: dateRequire,
@@ -263,6 +268,7 @@ async function submitHiretRequest() {
 }
 
 async function submitRepresentativetRequest() {
+  const recipientId = document.getElementById("user-recipient-request").value;
   const location = document.getElementById("representativeLocation").value;
   const dateRequire = new Date().toISOString().split("T")[0]; // Ngày hiện tại
   const dateStart = document.getElementById("representativeStart").value; // Ngày bắt đầu
@@ -272,6 +278,7 @@ async function submitRepresentativetRequest() {
   const requestData = {
     typeRequest: "REPRESENTATIVE",
     request: {
+      recipientId: recipientId,
       location: location,
       type: "REPRESENTATIVE",
       dateRequire: dateRequire,
@@ -287,7 +294,7 @@ async function submitRepresentativetRequest() {
 
 async function sendRequest(data) {
   try {
-    const response = await fetch("/request", {
+    const response = await fetch("/request/private", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

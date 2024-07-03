@@ -9,9 +9,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import d41nh4n.google_image.demo.entity.request.Request;
+import d41nh4n.google_image.demo.entity.request.RequestStatus;
+
 import java.util.List;
 import d41nh4n.google_image.demo.entity.user.User;
-
 
 public interface RequestRepository extends JpaRepository<Request, Integer> {
 
@@ -20,16 +21,19 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
     @Query("UPDATE Request r SET r.requestStatus = :status WHERE r.requestId = :requestId")
     void updateStatusById(@Param("requestId") Long requestId, @Param("status") boolean status);
 
-    @Query(value = "SELECT * FROM Requests r WHERE r.request_status = 0 AND r.responder_id = :userId", nativeQuery = true)
-    Page<Request> findRequestIsPending(@Param("userId") int userId, Pageable pageable);
+    @Query("SELECT r FROM Request r WHERE r.requestStatus = :requestStatus AND r.responder = :user")
+    Page<Request> findRequestByResponderAndStatus(@Param("user") User user,
+            @Param("requestStatus") RequestStatus requestStatus,
+            Pageable pageable);
 
     long countByRequestStatus(int status);
 
     @Query(value = "SELECT * FROM Requests r WHERE r.request_status = 0 AND r.is_Public = 1", nativeQuery = true)
     Page<Request> findRequestPublicIsPending(Pageable pageable);
 
-    List<Request> findByRequester(User requester, Sort sort);
-
+    @Query(value = "SELECT r FROM Request r WHERE r.requester = :requester AND r.requestStatus = :status")
+    Page<Request> findByRequesterAndStatus(@Param("requester") User requester, @Param("status") RequestStatus status,
+            Pageable pageable);
 
     @Modifying
     @Transactional

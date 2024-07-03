@@ -9,6 +9,7 @@
     <style>
         /* Add the improved CSS here */
         /* General styles for the search form */
+        
         .search-form {
             background: #fff;
             border: 1px solid #ddd;

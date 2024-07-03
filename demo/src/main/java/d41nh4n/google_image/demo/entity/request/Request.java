@@ -42,7 +42,7 @@ public class Request {
     @Column(name = "request_description", columnDefinition = "NVARCHAR(MAX)", nullable = true)
     private String requestDescription;
 
-    @Column(name = "request_location", length = 80, nullable = true,columnDefinition = "NVARCHAR(155)")
+    @Column(name = "request_location", length = 80, nullable = true, columnDefinition = "NVARCHAR(155)")
     private String requestLocation;
 
     @Column(name = "payment", nullable = true)
@@ -66,7 +66,10 @@ public class Request {
     @Column(name = "responer_confirm")
     private boolean responderConfirm;
 
-    @Column(name="request_type")
+    @Column(name = "result_link", nullable = true)
+    private String resultLink;
+
+    @Column(name = "request_type")
     private String requestType;
     // Chỉ sử dụng cho loại "HIREBYDAY"
     @ElementCollection
@@ -80,4 +83,7 @@ public class Request {
 
     @OneToOne(mappedBy = "request", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private TransactionHistory transactionHistory;
+
+    @OneToMany(mappedBy = "request", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RequestWaitList> requestWaitList;
 }

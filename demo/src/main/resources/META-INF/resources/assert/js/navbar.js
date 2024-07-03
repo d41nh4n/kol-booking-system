@@ -58,47 +58,55 @@ document
     loadNotifications();
   });
 
-function loadNotifications() {
-  if (isLoading || (currentPage >= totalPages && totalPages !== 0)) return;
-  isLoading = true;
-
-  fetch(`https://localhost/notifications?page=${currentPage}`)
-    .then((response) => response.json())
-    .then((data) => {
-      let dropdownMenu = document.getElementById("notificationDropdown");
-
-      if (currentPage === 0) {
-        dropdownMenu.innerHTML = "";
-      }
-
-      data.content.forEach((notification) => {
-        let listItem = document.createElement("li");
-        let link = document.createElement("a");
-        if (notification.type === "REQUEST") {
-          link.href = "/request/pending";
-        } else if (notification.type === "MONEY") {
-          link.href = "#";
-        } else if (notification.type === "JOIN_REQUEST") {
-          link.href = `/request/candidate_list?requestId=${notification.referenceId}`;
-        } else if (notification.type === "ACCOUNT") {
-          link.href = "#";
+  function loadNotifications() {
+    if (isLoading || (currentPage >= totalPages && totalPages !== 0)) return;
+    isLoading = true;
+  
+    fetch(`https://localhost/notifications?page=${currentPage}`)
+      .then((response) => response.json())
+      .then((data) => {
+        let dropdownMenu = document.getElementById("notificationDropdown");
+        
+        if (data.content.length === 0) {
+          isLoading = false;
+          return;
         }
-
-        link.textContent = notification.content;
-        listItem.appendChild(link);
-        dropdownMenu.appendChild(listItem);
+        
+        if (currentPage === 0) {
+          dropdownMenu.innerHTML = "";
+        }
+  
+        // Kiểm tra nếu data.content là mảng rỗng
+        
+        
+        data.content.forEach((notification) => {
+          let listItem = document.createElement("li");
+          let link = document.createElement("a");
+          if (notification.type === "REQUEST") {
+            link.href = "/request/pending";
+          } else if (notification.type === "MONEY") {
+            link.href = "#";
+          } else if (notification.type === "JOIN_REQUEST") {
+            link.href = `/request/candidate-list?requestId=${notification.referenceId}`;
+          } else if (notification.type === "ACCOUNT") {
+            link.href = "#";
+          }
+  
+          link.textContent = notification.content;
+          listItem.appendChild(link);
+          dropdownMenu.appendChild(listItem);
+        });
+  
+        currentPage++;
+        totalPages = data.totalPages;
+        isLoading = false;
+      })
+      .catch((error) => {
+        console.error("Error fetching notifications:", error);
+        isLoading = false;
       });
-
-      currentPage++;
-      totalPages = data.totalPages;
-      isLoading = false;
-    })
-    .catch((error) => {
-      console.error("Error fetching notifications:", error);
-      isLoading = false;
-    });
-}
-
+  }
+  
 document
   .getElementById("notificationDropdown")
   .addEventListener("scroll", function () {

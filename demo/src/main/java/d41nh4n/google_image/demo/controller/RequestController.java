@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,7 @@ import d41nh4n.google_image.demo.dto.requestJob.RequestByDay;
 import d41nh4n.google_image.demo.dto.requestJob.RequestDto;
 import d41nh4n.google_image.demo.dto.requestJob.RequestRepresentativeDto;
 import d41nh4n.google_image.demo.dto.userdto.UserDto;
+import d41nh4n.google_image.demo.dto.userdto.UserInfo;
 import d41nh4n.google_image.demo.entity.Category;
 import d41nh4n.google_image.demo.entity.notification.Notification;
 import d41nh4n.google_image.demo.entity.notification.TypeNotification;
@@ -59,24 +61,15 @@ public class RequestController {
     private final UserService userService;
     private final SimpMessagingTemplate messagingTemplate;
 
-    @PostMapping
+    @PostMapping("/private")
     public ResponseEntity<?> requestJob(@RequestBody Map<String, Object> request) {
         Logger logger = LoggerFactory.getLogger(RequestController.class);
         Map<String, String> res = new HashMap<>();
         String typeRequest = (String) request.get("typeRequest");
-        String moneyStr = (String) request.get("money");
-        Double money = null;
 
         try {
             // Log the incoming request
             logger.info("Received request: {}", request);
-
-            // Validate and parse money
-            money = Double.parseDouble(moneyStr);
-            if (money < 0) {
-                res.put("error", "Invalid number");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
-            }
         } catch (NumberFormatException e) {
             res.put("error", "Invalid number format: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
@@ -96,18 +89,18 @@ public class RequestController {
                 case "VIDEO": {
                     RequesPostOrVideotDto requestDto = mapper.convertValue(request.get("request"),
                             RequesPostOrVideotDto.class);
-                    handlePostOrVideoPublic(requestDto, typeRequest, money);
+                    handlePostOrVideo(requestDto, typeRequest);
                     break;
                 }
                 case "HIREBYDAY": {
                     RequestByDay requestDto = mapper.convertValue(request.get("request"), RequestByDay.class);
-                    handleHireByDayPublic(requestDto, typeRequest, money);
+                    handleHireByDay(requestDto, typeRequest);
                     break;
                 }
                 case "REPRESENTATIVE": {
                     RequestRepresentativeDto requestDto = mapper.convertValue(request.get("request"),
                             RequestRepresentativeDto.class);
-                    handleRepresentativePublic(requestDto, typeRequest, money);
+                    handleRepresentative(requestDto, typeRequest);
                     break;
                 }
                 default:
@@ -125,21 +118,113 @@ public class RequestController {
         return ResponseEntity.ok(res);
     }
 
+    private void handlePostOrVideo(RequesPostOrVideotDto requestDto, String typeRequest) {
+        Request request = requestDtoToRequest.requestDtoToRequest(requestDto);
+        request.setPublic(false);
+        request.setRequestStatus(RequestStatus.PENDING);
+        request.setRequestType(typeRequest);
+        if (requestDto.getType().equalsIgnoreCase("POST")) {
+            request.setPayment(
+                    userService.getProfileById(Integer.parseInt(requestDto.getRecipientId())).getPriceAPost());
+        } else if (requestDto.getType().equalsIgnoreCase("VIDEO")) {
+            request.setPayment(
+                    userService.getProfileById(Integer.parseInt(requestDto.getRecipientId())).getPriceAVideo());
+        }
+        requestService.save(request);
+    }
+
+    private void handleHireByDay(RequestByDay requestDto, String typeRequest) {
+        Request request = requestDtoToRequest.requestByDayToRequest(requestDto);
+        request.setPublic(false);
+        request.setRequestStatus(RequestStatus.PENDING);
+        request.setRequestType(typeRequest);
+        request.setPayment(
+                userService.getProfileById(Integer.parseInt(requestDto.getRecipientId())).getPriceAToHireADay());
+
+        requestService.save(request);
+    }
+
+    private void handleRepresentative(RequestRepresentativeDto requestDto, String typeRequest) {
+        Request request = requestDtoToRequest.requestRepresentativeToRequest(requestDto);
+        request.setPublic(false);
+        request.setRequestType(typeRequest);
+        request.setRequestStatus(RequestStatus.PENDING);
+        request.setPayment(
+                userService.getProfileById(Integer.parseInt(requestDto.getRecipientId())).getRepresentativePrice());
+        requestService.save(request);
+    }
+
     @GetMapping("/pending")
     public String listRequestPending(Model model, @RequestParam(name = "page", required = false) String page) {
+        if (utils.getPrincipal().getRoles().equalsIgnoreCase("KOL")) {
+            return listRequestsByStatus(model, page, RequestStatus.PENDING);
+        }
+        return userRequestList(model, page, RequestStatus.PENDING);
+
+    }
+
+    @GetMapping("/in-process")
+    public String listRequestInProgress(Model model, @RequestParam(name = "page", required = false) String page) {
+        if (utils.getPrincipal().getRoles().equalsIgnoreCase("KOL")) {
+            return listRequestsByStatus(model, page, RequestStatus.IN_PROGRESS);
+        }
+        return userRequestList(model, page, RequestStatus.IN_PROGRESS);
+    }
+
+    @GetMapping("/finish")
+    public String listRequestFinished(Model model, @RequestParam(name = "page", required = false) String page) {
+        if (utils.getPrincipal().getRoles().equalsIgnoreCase("KOL")) {
+            return listRequestsByStatus(model, page, RequestStatus.FINISHED);
+        }
+        return userRequestList(model, page, RequestStatus.FINISHED);
+    }
+
+    @GetMapping("/cancel")
+    public String listRequestCancelled(Model model, @RequestParam(name = "page", required = false) String page) {
+        if (utils.getPrincipal().getRoles().equalsIgnoreCase("KOL")) {
+            return listRequestsByStatus(model, page, RequestStatus.CANCEL);
+        }
+        return userRequestList(model, page, RequestStatus.CANCEL);
+    }
+
+    private String userRequestList(Model model, String page, RequestStatus status) {
         int pageNumber = 0;
         int userId = utils.getPrincipal().getUserId();
+        User user = userService.getUserById(userId);
         if (page != null && page.trim() != "" && !page.isEmpty()) {
             pageNumber = Integer.parseInt(page);
         }
         int pageSize = 5;
-        Page<RequestDto> requestPage = requestService.getListRequestIsPending(userId, pageNumber, pageSize);
+        Page<Request> requestPage = requestService.findByRequesterAndStatus(user, status, pageNumber,
+                pageSize);
+        Page<RequestDto> requestDtoPage = requestPage.map(request -> requestDtoToRequest.requestToRequestDto(request));
+
         int totalPages = requestPage.getTotalPages();
 
         model.addAttribute("currentPage", pageNumber);
         model.addAttribute("totalPages", totalPages);
-        model.addAttribute("list", requestPage.getContent());
-        return "request-list";
+        model.addAttribute("list", requestDtoPage.getContent());
+        return "request-list-user";
+    }
+
+    private String listRequestsByStatus(Model model, String page, RequestStatus status) {
+        int pageNumber = 0;
+        int userId = utils.getPrincipal().getUserId();
+        User user = userService.getUserById(userId);
+        if (page != null && page.trim() != "" && !page.isEmpty()) {
+            pageNumber = Integer.parseInt(page);
+        }
+        int pageSize = 5;
+        Page<Request> requestPage = requestService.getListRequestByResponderAndStatus(user, status, pageNumber,
+                pageSize);
+        Page<RequestDto> requestDtoPage = requestPage.map(request -> requestDtoToRequest.requestToRequestDto(request));
+
+        int totalPages = requestPage.getTotalPages();
+
+        model.addAttribute("currentPage", pageNumber);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("list", requestDtoPage.getContent());
+        return "request-list-kol";
     }
 
     @GetMapping("/accept")
@@ -173,7 +258,7 @@ public class RequestController {
                     return new ResponseEntity<>("Request not exist", HttpStatus.NOT_FOUND);
                 }
 
-                request.setRequestStatus(RequestStatus.CANCLE);
+                request.setRequestStatus(RequestStatus.CANCEL);
                 requestService.save(request);
                 return ResponseEntity.ok("Deny Success");
             } catch (NumberFormatException e) {
@@ -211,41 +296,6 @@ public class RequestController {
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("list", requestPage.getContent());
         return "job-market";
-    }
-
-    private void handlePostOrVideo(RequesPostOrVideotDto requestDto, String typeRequest) {
-        Request request = requestDtoToRequest.requestDtoToRequest(requestDto);
-        request.setPublic(false);
-        request.setRequestStatus(RequestStatus.PENDING);
-        request.setRequestType(typeRequest);
-        if (requestDto.getType().equalsIgnoreCase("POST")) {
-            request.setPayment(
-                    userService.getProfileById(Integer.parseInt(requestDto.getRecipientId())).getPriceAPost());
-        } else if (requestDto.getType().equalsIgnoreCase("VIDEO")) {
-            request.setPayment(
-                    userService.getProfileById(Integer.parseInt(requestDto.getRecipientId())).getPriceAVideo());
-        }
-        requestService.save(request);
-    }
-
-    private void handleHireByDay(RequestByDay requestDto, String typeRequest) {
-        Request request = requestDtoToRequest.requestByDayToRequest(requestDto);
-        request.setPublic(false);
-        request.setRequestStatus(RequestStatus.PENDING);
-        request.setRequestType(typeRequest);
-        request.setPayment(
-                userService.getProfileById(Integer.parseInt(requestDto.getRecipientId())).getPriceAToHireADay());
-        requestService.save(request);
-    }
-
-    private void handleRepresentative(RequestRepresentativeDto requestDto, String typeRequest) {
-        Request request = requestDtoToRequest.requestRepresentativeToRequest(requestDto);
-        request.setPublic(false);
-        request.setRequestType(typeRequest);
-        request.setRequestStatus(RequestStatus.PENDING);
-        request.setPayment(
-                userService.getProfileById(Integer.parseInt(requestDto.getRecipientId())).getRepresentativePrice());
-        requestService.save(request);
     }
 
     @PostMapping("/public")
@@ -366,6 +416,10 @@ public class RequestController {
             notification.setUser(request.getRequester());
             notificationService.save(notification);
 
+            messagingTemplate.convertAndSendToUser(String.valueOf(request.getRequester().getUserId()),
+                    "/queue/notification",
+                    "You have new notification");
+
             res.put("message", "Apply Success!");
             return ResponseEntity.status(HttpStatus.OK).body(res);
 
@@ -373,20 +427,6 @@ public class RequestController {
             res.put("error", "Invalid RequestI Id");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
         }
-    }
-
-    @GetMapping("/my-request")
-    public String userRequestList(Model model) {
-        int userId = utils.getPrincipal().getUserId();
-        User user = userService.getUserById(userId);
-
-        List<Request> requests = requestService.findByRequester(user);
-
-        List<RequestDto> requestDtos = requests.stream()
-                .map(request -> requestDtoToRequest.requestToRequestDto(request)).collect(Collectors.toList());
-
-        model.addAttribute("list", requestDtos);
-        return "request-list";
     }
 
     @PostMapping("/cancel-request")
@@ -400,7 +440,6 @@ public class RequestController {
         }
 
         int updateCount = requestService.cancelRequest(request);
-        System.out.println(updateCount);
         if (updateCount > 0) {
             res.put("message", "Request cancelled successfully");
             return ResponseEntity.ok(res);
@@ -410,20 +449,24 @@ public class RequestController {
         }
     }
 
-    @GetMapping("/candidate_list")
+    @GetMapping("/candidate-list")
     public String getAllCandidate(@RequestParam(name = "requestId") String requestId, Model model) {
 
         int reqIdNumber = utils.stringToInt(requestId);
         Request request = requestService.findRequestById(reqIdNumber);
-        List<RequestWaitList> requestWaitLists = requestService.findByRequest(request);
+        if (request.isPublic() && request.getRequestStatus().equals(RequestStatus.PENDING)
+                && request.getResponder() == null) {
+            List<RequestWaitList> requestWaitLists = requestService.findByRequest(request);
 
-        List<UserDto> userDtos = requestWaitLists.stream()
-                .map(requestWaitList -> UserToUserDto.mapToUserInfoResponse(requestWaitList.getResponder()))
-                .collect(Collectors.toList());
-        model.addAttribute("requestId", reqIdNumber);
-        model.addAttribute("candidates", userDtos);
+            List<UserDto> userDtos = requestWaitLists.stream()
+                    .map(requestWaitList -> UserToUserDto.mapToUserInfoResponse(requestWaitList.getResponder()))
+                    .collect(Collectors.toList());
+            model.addAttribute("requestId", reqIdNumber);
+            model.addAttribute("candidates", userDtos);
 
-        return "candidate-list";
+            return "candidate-list";
+        }
+        return null;
     }
 
     @PostMapping("/accept-candidate")
@@ -450,11 +493,14 @@ public class RequestController {
                 // tạo thông báo
                 Notification notification = new Notification();
                 notification.setCreateAt(ZonedDateTime.now());
-                notification.setType(TypeNotification.ACCEPT_REQUEST);
+                notification.setType(TypeNotification.REQUEST);
                 notification.setContent("You was accepted in a request");
                 notification.setReferenceId(null);
                 notification.setUser(user);
                 notificationService.save(notification);
+
+                // Xóa candidate đi
+                // requestService.deleteAllByRequest(request);
 
                 res.put("message", "Candidate accepted successfully");
                 return ResponseEntity.ok(res);
@@ -469,5 +515,39 @@ public class RequestController {
             res.put("error", "An error occurred while processing the request: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
         }
+    }
+
+    public ResponseEntity<?> submitResult(@RequestParam(name = "url") String urlResult,
+            @RequestParam(name = "requestId") String requestId) {
+        Map<String, String> res = new HashMap<>();
+        if (urlResult == null || urlResult.isEmpty()) {
+            res.put("message", "Invalid url submit");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+        }
+
+        try {
+            int requestIdNumber = utils.stringToInt(requestId);
+            Request request = requestService.findRequestById(requestIdNumber);
+            if (request != null && (request.getRequestType().equalsIgnoreCase("POST")
+                    || request.getRequestType().equalsIgnoreCase("VIDEO"))) {
+                request.setResultLink(urlResult);
+                requestService.save(request);
+
+                Notification notification = new Notification();
+                notification.setContent(
+                        request.getResponder().getProfile().getFullName() + "submitted result of your request!");
+                notification.setReferenceId(null);
+                notification.setCreateAt(ZonedDateTime.now());
+                notification.setType(TypeNotification.SUBMIT);
+                notification.setUser(request.getRequester());
+                notificationService.save(notification);
+            }
+
+        } catch (Exception e) {
+            res.put("message", "Request id invalid!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+        }
+        res.put("message", "Some error");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 }

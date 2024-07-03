@@ -42,19 +42,20 @@ public class RequestService {
         return request;
     }
 
-    public Page<RequestDto> getListRequestIsPending(int userId, int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("request_date").descending());
-        return requestRepository.findRequestIsPending(userId, pageable)
-                .map(requestDtoToRequest::requestToRequestDto);
+    public Page<Request> getListRequestByResponderAndStatus(User user, RequestStatus status, int pageNumber,
+            int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("requestDate").descending());
+        return requestRepository.findRequestByResponderAndStatus(user, status, pageable);
     }
 
     public long countPendingRequests() {
         return requestRepository.countByRequestStatus(0);
     }
 
-    public List<Request> findByRequester(User user) {
-        Sort sort =  Sort.by("requestDate").descending();
-        return requestRepository.findByRequester(user, sort);
+    public Page<Request> findByRequesterAndStatus(User user, RequestStatus status, int pageNumber,
+            int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("requestDate").descending());
+        return requestRepository.findByRequesterAndStatus(user, status, pageable);
     }
 
     @Transactional
@@ -76,8 +77,9 @@ public class RequestService {
         requestWaitListRepository.delete(requestWaitList);
     }
 
+    @Transactional
     public void deleteAllByRequest(Request request) {
-        requestWaitListRepository.deleteByRequest(request);
+        requestWaitListRepository.deleteAllByRequest(request);
     }
 
     public RequestWaitList findByRequestAndResponder(Request request, User user) {

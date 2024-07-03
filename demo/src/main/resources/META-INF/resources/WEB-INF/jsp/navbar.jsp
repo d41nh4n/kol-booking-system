@@ -98,13 +98,16 @@
                 </div>
             </form>
             <ul class="nav navbar-nav navbar-right">
+                <c:if test="${not empty userInfor}">
                 <li>
                     <a href="/request/job-market"><i class="fa-solid fa-shop"></i></a>
                 </li>
+                </c:if>
                 <c:if test="${not empty userInfor}">
                     <li>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="glyphicon glyphicon-bell"></i></a>
                         <ul class="dropdown-menu" id="notificationDropdown">
+                        <li><a href="#">Not have notification yet</a></li>
                         </ul>
                     </li>
                 </c:if>
@@ -115,13 +118,8 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i></a>
                     <ul class="dropdown-menu user">
                         <c:choose>
-                            <c:when test="${not empty userInfor}">
-                                <c:if test="${userInfor.role == 'KOL'}">                           
-                                    <li><a href="/request/pending">Jobs</a></li>
-                                </c:if> 
-                                 <c:if test="${userInfor.role == 'USER'}">                           
-                                    <li><a href="/request/my-request">Jobs</a></li>
-                                </c:if> 
+                            <c:when test="${not empty userInfor}">                      
+                                <li><a href="/request/pending">Jobs</a></li>
                                 <li><a href="/infor">Profile</a></li>
                                 <li class="divider"></li>
                                 <li><a href="/login/logout">Logout</a></li>

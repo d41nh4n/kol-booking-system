@@ -103,6 +103,11 @@
   }
 }
 
+@media (min-width: 1200px) {
+  .col-lg-2 {
+      width: 20%;
+  }
+}
 .wrapper {
   margin-left: 160px; /* Width of the sidebar */
   padding: 20px;

@@ -19,45 +19,60 @@
 
     $(document).ready(function () {
         $(".view-more").on("click", function () {
-            // Set modal content based on clicked item data
-            $("#modal-avatar").attr("src", $(this).data("avatar"));
-            $("#modal-fullname").text($(this).data("fullname"));
-            $("#modal-location").text($(this).data("location"));
-            $("#modal-description").html($(this).data("description").replace(/\n/g, "<br>"));
-            $("#modal-deadline").text("Deadline: " + $(this).data("deadline"));
-            $("#modal-daylocation").text($(this).data("daylocation"));
-            $("#modal-daydescription").text($(this).data("daydescription"));
-            $("#modal-daysrequired").text("Days Required: " + $(this).data("daysrequired"));
-            $("#modal-replocation").text($(this).data("replocation"));
-            $("#modal-repdescription").text($(this).data("repdescription"));
-            $("#modal-startdate").text("Start Date: " + $(this).data("startdate"));
-            $("#modal-months").text("Months: " + $(this).data("months"));
-            $("#modal-price").text($(this).data("price"));
-            $("#modal-type").text($(this).data("type"));
+            // Lấy dữ liệu từ thuộc tính data-*
+            var avatar = $(this).data("avatar");
+            var fullname = $(this).data("fullname");
+            var location = $(this).data("location");
+            var description = String($(this).data("description")); // Chuyển đổi description thành chuỗi
+            var deadline = $(this).data("deadline");
+            var dayLocation = $(this).data("daylocation");
+            var dayDescription = $(this).data("daydescription");
+            var daysRequired = $(this).data("daysrequired");
+            var repLocation = $(this).data("replocation");
+            var repDescription = $(this).data("repdescription");
+            var startDate = $(this).data("startdate");
+            var months = $(this).data("months");
+            var price = $(this).data("price");
+            var type = $(this).data("type");
+
+            // Cập nhật nội dung modal dựa trên dữ liệu của item được click
+            $("#modal-avatar").attr("src", avatar);
+            $("#modal-fullname").text(fullname);
+            $("#modal-location").text(location);
+            $("#modal-description").html(description.replace(/\n/g, "<br>"));  // Chuyển đổi thành chuỗi
+            $("#modal-deadline").text("Deadline: " + (deadline || ""));
+            $("#modal-daylocation").text(dayLocation || "");
+            $("#modal-daydescription").text(dayDescription || "");
+            $("#modal-daysrequired").text("Days Required: " + (daysRequired || ""));
+            $("#modal-replocation").text(repLocation || "");
+            $("#modal-repdescription").text(repDescription || "");
+            $("#modal-startdate").text("Start Date: " + (startDate || ""));
+            $("#modal-months").text("Months: " + (months || ""));
+            $("#modal-price").text(price || "");
+            $("#modal-type").text(type || "");
     
-            var requestType = $(this).data("type");
-            // Show/hide modal content based on request type
-            if (requestType === "POST" || requestType === "VIDEO") {
+            // Hiển thị/ẩn nội dung modal dựa trên loại yêu cầu
+            if (type === "POST" || type === "VIDEO") {
                 $("#modal-daysrequired").hide();
                 $("#modal-startdate").hide();
                 $("#modal-months").hide();
-            } else if (requestType === "HIREBYDAY") {
+            } else if (type === "HIREBYDAY") {
                 $("#modal-daysrequired").show();
                 $("#modal-startdate").hide();
                 $("#modal-months").hide();
                 $("#modal-deadline").hide();
-            } else if (requestType === "REPRESENTATIVE") {
+            } else if (type === "REPRESENTATIVE") {
                 $("#modal-daysrequired").hide();
                 $("#modal-startdate").show();
                 $("#modal-months").show();
                 $("#modal-deadline").hide();
             }
     
-            // Reset type display
-            $("#modal-type").text(requestType);
+            // Cập nhật hiển thị loại yêu cầu
+            $("#modal-type").text(type || "");
         });
     
-        // Reset modal content when modal is hidden
+        // Reset nội dung modal khi modal bị ẩn
         $("#viewMoreModal").on("hidden.bs.modal", function () {
             $("#modal-avatar").attr("src", "");
             $("#modal-fullname").text("");
@@ -75,4 +90,5 @@
             $("#modal-type").text("");
         });
     });
+    
     

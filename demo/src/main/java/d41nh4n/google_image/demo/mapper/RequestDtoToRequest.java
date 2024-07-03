@@ -2,7 +2,9 @@ package d41nh4n.google_image.demo.mapper;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -33,6 +35,7 @@ public class RequestDtoToRequest {
             int recipientId = Integer.parseInt(requestByDay.getRecipientId());
             User recipient = userService.getUserById(recipientId);
             request.setResponder(recipient);
+            request.setPayment(recipient.getProfile().getPriceAToHireADay());
         } else {
             request.setResponder(null);
         }
@@ -76,6 +79,12 @@ public class RequestDtoToRequest {
             int recipientId = Integer.parseInt(requestDto.getRecipientId());
             User recipient = userService.getUserById(recipientId);
             request.setResponder(recipient);
+            if (requestDto.getType().equalsIgnoreCase("POST")) {
+                request.setPayment(recipient.getProfile().getPriceAPost());
+            } else {
+                request.setPayment(recipient.getProfile().getPriceAVideo());
+            }
+
         } else {
             request.setResponder(null);
         }
@@ -86,7 +95,6 @@ public class RequestDtoToRequest {
         Date deadline = utils.stringToDate(requestDto.getDeadline());
 
         request.setRequester(sender);
-
         request.setRequestDescription(requestDto.getDecription());
         request.setRequestLocation(requestDto.getLocation());
         request.setRequestDate(requireDate);
@@ -109,8 +117,6 @@ public class RequestDtoToRequest {
         requestDto.setDeadline(utils.dateToString(request.getRequestDateEnd()));
         requestDto.setDecription(request.getRequestDescription());
         requestDto.setType(request.getRequestType());
-        // Các thuộc tính khác của RequestDto có thể được thiết lập ở đây nếu cần
-
         return requestDto;
     }
 
@@ -121,6 +127,7 @@ public class RequestDtoToRequest {
             int recipientId = Integer.parseInt(requestRepDto.getRecipientId());
             User recipient = userService.getUserById(recipientId);
             request.setResponder(recipient);
+            request.setPayment(recipient.getProfile().getRepresentativePrice());
         } else {
             request.setResponder(null);
         }
@@ -176,31 +183,44 @@ public class RequestDtoToRequest {
     public RequestDto requestToRequestDto(Request request) {
         RequestDto requestPending = new RequestDto();
 
+        // Tạo thông tin người gửi từ đối tượng Request
         UserInfo userSender = new UserInfo(request.getRequester().getUserId(),
-                request.getRequester().getProfile().getFullName(), request.getRequester().getRole(),
+                request.getRequester().getProfile().getFullName(),
+                request.getRequester().getRole(),
                 request.getRequester().getProfile().getAvatarUrl());
 
         requestPending.setSender(userSender);
-        if ("VIDEO".equalsIgnoreCase(request.getRequestType())) {
+
+        // Xác định loại yêu cầu và chuyển đổi đối tượng Request thành RequestDto phù
+        // hợp
+        if ("VIDEO".equalsIgnoreCase(request.getRequestType()) || "POST".equalsIgnoreCase(request.getRequestType())) {
             RequesPostOrVideotDto requestDto = requestToRequesPostOrVideotDto(request);
             requestPending.setRequestDto(requestDto);
-        }
-        if ("POST".equalsIgnoreCase(request.getRequestType())) {
-            RequesPostOrVideotDto requestDto = requestToRequesPostOrVideotDto(request);
-            requestPending.setRequestDto(requestDto);
-        }
-        if ("HIREBYDAY".equalsIgnoreCase(request.getRequestType())) {
+        } else if ("HIREBYDAY".equalsIgnoreCase(request.getRequestType())) {
             RequestByDay requestByDay = mapToRequestByDay(request);
             requestPending.setRequestByDay(requestByDay);
-        }
-        if ("REPRESENTATIVE".equalsIgnoreCase(request.getRequestType())) {
+        } else if ("REPRESENTATIVE".equalsIgnoreCase(request.getRequestType())) {
             RequestRepresentativeDto requestRepresentative = requestToRequestRepresentativeDto(request);
             requestPending.setRequestRepresentative(requestRepresentative);
         }
+
+        // Thiết lập các thuộc tính khác của RequestDto
         requestPending.setRequestId(request.getRequestId());
         requestPending.setPrice(request.getPayment());
         requestPending.setStatus(request.getRequestStatus().name());
-        ;
+        requestPending.setIsPublic(request.isPublic());
+
+        // Cập nhật danh sách người chờ
+        if (request.isPublic() && request.getResponder() == null) {
+            List<UserInfo> listUserApply = request.getRequestWaitList().stream()
+                    .map(requestUserApply -> new UserInfo(requestUserApply.getResponder()))
+                    .collect(Collectors.toList());
+
+            requestPending.setListWaitList(listUserApply);
+        }
+        if (request.getResponder() != null) {
+            requestPending.setResponder(new UserInfo(request.getResponder()));
+        }
         return requestPending;
     }
 }

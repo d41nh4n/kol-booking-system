@@ -14,6 +14,7 @@ function choiceCandidate(requestId, userId) {
     .then(data => {
         if (data.message) {
             alert(data.message);
+            location.href("/request/my-request");
         } else if (data.error) {
             alert(data.error);
         }

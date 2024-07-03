@@ -35,6 +35,7 @@ pageEncoding="US-ASCII" %>
             Reset Password
         </button>
     </form>
+   <a href="/login/form">Back to login</a>
 </div>
 </body>
 </html>
