@@ -281,7 +281,7 @@ async function submitHiretRequest() {
 
   if (selectedDays.length > 0) {
     const location = document.getElementById("hireLocation").value;
-    const dateRequire = selectedDays[0];
+    const dateRequire = new Date().toISOString().split("T")[0];
     const description = replaceNewLinesWithBr(document.getElementById("hireDescription").value);
     const money = document.getElementById("money-hire").value;
     const requestData = {

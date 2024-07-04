@@ -187,6 +187,12 @@
                                        data-type="${request.requestDto.type}">
                                         View More
                                     </a>
+                                     <c:if test="${not empty request.urlResult}">
+                                        <a class="btn btn-primary btn-info btn-sm view-url my-2 rounded" href="#" data-toggle="modal" data-target="#viewUrlModal"
+                                           data-urlresult="${request.urlResult}" data-requestid="${request.requestId}">
+                                            View URL
+                                        </a>
+                                    </c:if>
                                 </div>
                             </div>
                             <c:if test="${userInfor.role == 'USER' && request.isPublic && request.status == 'PENDING'}">
@@ -264,6 +270,25 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <div class="modal fade" id="viewUrlModal" tabindex="-1" role="dialog" aria-labelledby="viewUrlModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h4 class="modal-title" id="viewUrlModalLabel">View URL</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    
+                </div>
+                <div class="modal-body">
+                     <a id="modal-urlResult" href="#" target="_blank"></a>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="finishRequest()">Finish</button>
                 </div>
             </div>
         </div>

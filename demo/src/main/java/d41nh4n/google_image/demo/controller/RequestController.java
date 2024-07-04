@@ -517,8 +517,11 @@ public class RequestController {
         }
     }
 
-    public ResponseEntity<?> submitResult(@RequestParam(name = "url") String urlResult,
-            @RequestParam(name = "requestId") String requestId) {
+    @PostMapping("/submit")
+    public ResponseEntity<?> submitResult(@RequestBody Map<String, String> payload) {
+        String urlResult = payload.get("url");
+        String requestId = payload.get("requestId");
+
         Map<String, String> res = new HashMap<>();
         if (urlResult == null || urlResult.isEmpty()) {
             res.put("message", "Invalid url submit");
@@ -534,20 +537,61 @@ public class RequestController {
                 requestService.save(request);
 
                 Notification notification = new Notification();
-                notification.setContent(
-                        request.getResponder().getProfile().getFullName() + "submitted result of your request!");
+                notification.setContent(request.getResponder().getProfile().getFullName() +
+                        " submitted result of your request!");
                 notification.setReferenceId(null);
                 notification.setCreateAt(ZonedDateTime.now());
-                notification.setType(TypeNotification.SUBMIT);
+                notification.setType(TypeNotification.REQUEST);
                 notification.setUser(request.getRequester());
                 notificationService.save(notification);
+
+                messagingTemplate.convertAndSendToUser(String.valueOf(request.getRequester().getUserId()),
+                        "/queue/notification",
+                        "You have new notification");
+
+                res.put("message", "Result submitted successfully");
+                return ResponseEntity.ok(res);
+            } else {
+                res.put("message", "Invalid request type");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
             }
 
         } catch (Exception e) {
             res.put("message", "Request id invalid!");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
         }
-        res.put("message", "Some error");
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+    }
+
+    @GetMapping("/rating-page")
+    public String rating() {
+        return "leave-rating-page";
+    }
+
+    @PostMapping("/finish-request")
+    public ResponseEntity<?> finishRequest(@RequestParam(name = "requestId") String requestId) {
+        Map<String, String> response = new HashMap<>();
+
+        try {
+            int reqIdNumber = utils.stringToInt(requestId);
+            Request request = requestService.findRequestById(reqIdNumber);
+
+            if (request == null) {
+                response.put("message", "Request not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            request.setRequestStatus(RequestStatus.FINISHED);
+            requestService.save(request);
+
+            response.put("message", "Request finished successfully");
+            return ResponseEntity.ok(response);
+
+        } catch (NumberFormatException e) {
+            response.put("message", "Invalid request ID format");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } catch (Exception e) {
+            response.put("message", "An error occurred while finishing the request");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 }

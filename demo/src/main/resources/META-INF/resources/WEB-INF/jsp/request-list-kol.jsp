@@ -161,7 +161,8 @@
                                     </c:if> 
 
                                     <c:if test="${userInfor.role == 'KOL' && (request.requestDto.type == 'POST' || request.requestDto.type == 'VIDEO') && request.status == 'IN_PROGRESS'}">
-                                        <a class="btn btn-primary btn-info btn-sm view-more my-2 rounded" href="#" data-toggle="modal" data-target="#submitModal">Submit</a>
+                                        <a class="btn btn-primary btn-info btn-sm submit-result my-2 rounded" href="#" data-toggle="modal" data-target="#submitModal" 
+                                        data-requestId = "${request.requestId}">Submit</a>
                                     </c:if>
                                      <c:if test="${userInfor.role == 'KOL' && request.status == 'PENDING'}">
                                         <a class="btn btn-primary btn-info btn-sm" href="/request/accept?request=${request.requestId}">Accept</a>
@@ -221,7 +222,6 @@
                 <div class="modal-header">
                     <h4 class="modal-title" id="viewMoreModalLabel">Request Details</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -260,18 +260,17 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
-                    <form id="submitForm" action="your_submission_endpoint" method="POST">
                         <div class="row">
                             <div class="form-group col-md-12">
                                 <label for="resultLink">Link submit:</label>
                                 <input type="url" class="form-control" id="resultLink" name="resultLink" placeholder="Enter your link here" required>
+                                <input type="hidden" id="submitRequestId" name="submitRequestId" value="">
                             </div>
                         </div>
-                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" form="submitForm" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary" onclick="submitResult()">Submit</button>
                 </div>
             </div>
         </div>

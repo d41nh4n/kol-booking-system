@@ -1,7 +1,6 @@
 package d41nh4n.google_image.demo.dto.requestJob;
 
 import java.util.List;
-
 import d41nh4n.google_image.demo.dto.userdto.UserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +23,7 @@ public class RequestDto {
     private String status;
     private double price;
     private boolean isPublic;
+    private String urlResult; // Đổi tên cho đúng chính tả
     private List<UserInfo> listWaitList;
 
     public Boolean getIsPublic() {
@@ -32,5 +32,13 @@ public class RequestDto {
 
     public void setIsPublic(Boolean isPublic) {
         this.isPublic = isPublic;
+    }
+
+    public String getUrlResult() {
+        return urlResult;
+    }
+
+    public void setUrlResult(String urlResult) {
+        this.urlResult = urlResult;
     }
 }

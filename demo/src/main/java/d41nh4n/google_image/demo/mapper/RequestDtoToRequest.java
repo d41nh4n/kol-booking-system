@@ -221,6 +221,10 @@ public class RequestDtoToRequest {
         if (request.getResponder() != null) {
             requestPending.setResponder(new UserInfo(request.getResponder()));
         }
+
+        if (request.getResultLink() != null) {
+            requestPending.setUrlResult(request.getResultLink());
+        }
         return requestPending;
     }
 }
