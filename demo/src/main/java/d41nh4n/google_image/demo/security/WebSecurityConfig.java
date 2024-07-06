@@ -37,13 +37,27 @@ public class WebSecurityConfig {
                                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                                                 .requestMatchers("/", "/search", "/login/auth", "/login/error",
                                                                 "/login/form", "/register/form", "/register",
-                                                                "/findUser", "/profile")
+                                                                "/findUser", "/profile",
+                                                                "/search-page", "/getimg", "/comment**")
                                                 .permitAll()
                                                 .requestMatchers("/uploadToGoogleDrive",
-                                                                 "/checkAccount", "/ws", "/chatbox",
-                                                                "/chat.sendMessage","/infor")
+                                                                "/checkAccount", "/ws", "/chatbox",
+                                                                "/chat.sendMessage", "/infor",
+                                                                "/pending", "/in-process", "/finish",
+                                                                "/cancel", "/job-market", "/change-password",
+                                                                "/chat.sendMessage",
+                                                                "/chatbox", "/getChat", "/getUserChatted")
                                                 .hasAnyAuthority("USER", "KOL")
-                                                .requestMatchers("/auth/admin").hasAuthority("ADMIN")
+                                                .requestMatchers("/accept", "/deny", "/job-market-add", "/public",
+                                                                "/cancel-request", "/candidate-list",
+                                                                "/accept-candidate", "/request/rating-page**",
+                                                                "/comment-rating",
+                                                                "/finish-request",
+                                                                "/private")
+                                                .hasAuthority("USER")
+                                                .requestMatchers("/apply", "/submit",
+                                                                "/profile-media-add", "/profile-media-delete")
+                                                .hasAuthority("KOL")
                                                 .anyRequest().permitAll())
                                 .formLogin(formLogin -> formLogin
                                                 .loginPage("/login/form"))

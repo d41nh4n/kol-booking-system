@@ -1,5 +1,6 @@
 package d41nh4n.google_image.demo.service;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.data.domain.*;
@@ -12,9 +13,12 @@ import d41nh4n.google_image.demo.entity.request.Request;
 import d41nh4n.google_image.demo.entity.request.RequestStatus;
 import d41nh4n.google_image.demo.entity.request.RequestWaitList;
 import d41nh4n.google_image.demo.entity.user.User;
+import d41nh4n.google_image.demo.exeption.InvalidNumber;
 import d41nh4n.google_image.demo.mapper.RequestDtoToRequest;
 import d41nh4n.google_image.demo.repository.RequestRepository;
 import d41nh4n.google_image.demo.repository.RequestWaitListRepository;
+import d41nh4n.google_image.demo.validation.Utils;
+import io.micrometer.core.instrument.config.validate.Validated.Invalid;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,6 +28,7 @@ public class RequestService {
     private final RequestRepository requestRepository;
     private final RequestDtoToRequest requestDtoToRequest;
     private final RequestWaitListRepository requestWaitListRepository;
+    private final Utils utils;
 
     public Request save(Request request) {
         return requestRepository.save(request);
@@ -63,11 +68,13 @@ public class RequestService {
         return requestRepository.cancelRequest(request);
     }
 
-    public Page<RequestDto> getListRequestPublicIsPending(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("request_date").descending());
-        return requestRepository.findRequestPublicIsPending(pageable)
-                .map(requestDtoToRequest::requestToRequestDto);
-    }
+    // public Page<RequestDto> getListRequestPublicIsPending(int pageNumber, int
+    // pageSize) {
+    // Pageable pageable = PageRequest.of(pageNumber, pageSize,
+    // Sort.by("request_date").descending());
+    // return requestRepository.findRequestPublicIsPending(pageable)
+    // .map(requestDtoToRequest::requestToRequestDto);
+    // }
 
     public RequestWaitList save(RequestWaitList requestWaitList) {
         return requestWaitListRepository.save(requestWaitList);
@@ -88,5 +95,33 @@ public class RequestService {
 
     public List<RequestWaitList> findByRequest(Request request) {
         return requestWaitListRepository.findByRequest(request);
+    }
+
+    public Page<RequestDto> getFilteredRequests(List<String> requestTypes, String requestLocation, String pageNumberStr,
+            int pageSize) {
+
+        try {
+            int pageNumber = 0;
+            if (pageNumberStr != null && pageNumberStr.trim() != "" && !pageNumberStr.isEmpty()) {
+                pageNumber = Integer.parseInt(pageNumberStr);
+            }
+            // Set default request types if none are provided
+            if (requestTypes == null || requestTypes.isEmpty()) {
+                requestTypes = Arrays.asList("POST", "VIDEO", "HIREBYDAY", "REPRESENTATIVE");
+            }
+            RequestStatus requestStatus = RequestStatus.PENDING; // Or any other default status
+
+            // If no location is provided, pass null
+            if (requestLocation != null && requestLocation.trim().isEmpty()) {
+                requestLocation = null;
+            }
+
+            Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("requestDate").descending());
+            // If no location is provided, pass null
+            return requestRepository.findFilteredRequests(requestTypes, requestLocation, requestStatus, pageable)
+                    .map(requestDtoToRequest::requestToRequestDto);
+        } catch (Exception e) {
+            throw new InvalidNumber("Invalid page number", e);
+        }
     }
 }

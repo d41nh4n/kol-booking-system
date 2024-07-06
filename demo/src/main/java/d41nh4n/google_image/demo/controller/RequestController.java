@@ -1,7 +1,6 @@
 package d41nh4n.google_image.demo.controller;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,35 +10,34 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import d41nh4n.google_image.demo.dto.CommentRatingDto;
 import d41nh4n.google_image.demo.dto.requestJob.RequesPostOrVideotDto;
 import d41nh4n.google_image.demo.dto.requestJob.RequestByDay;
 import d41nh4n.google_image.demo.dto.requestJob.RequestDto;
 import d41nh4n.google_image.demo.dto.requestJob.RequestRepresentativeDto;
 import d41nh4n.google_image.demo.dto.userdto.UserDto;
 import d41nh4n.google_image.demo.dto.userdto.UserInfo;
-import d41nh4n.google_image.demo.entity.Category;
+import d41nh4n.google_image.demo.entity.Comment;
 import d41nh4n.google_image.demo.entity.notification.Notification;
 import d41nh4n.google_image.demo.entity.notification.TypeNotification;
 import d41nh4n.google_image.demo.entity.request.Request;
 import d41nh4n.google_image.demo.entity.request.RequestStatus;
 import d41nh4n.google_image.demo.entity.request.RequestWaitList;
-import d41nh4n.google_image.demo.entity.user.ProfileCategories;
 import d41nh4n.google_image.demo.entity.user.User;
 import d41nh4n.google_image.demo.mapper.RequestDtoToRequest;
 import d41nh4n.google_image.demo.mapper.UserToUserDto;
+import d41nh4n.google_image.demo.service.CommentService;
 import d41nh4n.google_image.demo.service.NotificationService;
 import d41nh4n.google_image.demo.service.ProvinceService;
 import d41nh4n.google_image.demo.service.RequestService;
@@ -60,6 +58,7 @@ public class RequestController {
     private final Utils utils;
     private final UserService userService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final CommentService commentService;
 
     @PostMapping("/private")
     public ResponseEntity<?> requestJob(@RequestBody Map<String, Object> request) {
@@ -200,7 +199,6 @@ public class RequestController {
         Page<RequestDto> requestDtoPage = requestPage.map(request -> requestDtoToRequest.requestToRequestDto(request));
 
         int totalPages = requestPage.getTotalPages();
-
         model.addAttribute("currentPage", pageNumber);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("list", requestDtoPage.getContent());
@@ -227,7 +225,7 @@ public class RequestController {
         return "request-list-kol";
     }
 
-    @GetMapping("/accept")
+    @PostMapping("/accept")
     public ResponseEntity<String> acceptRequest(@RequestParam(name = "request") String id) {
         if (id != null && !id.trim().isEmpty()) {
             try {
@@ -247,7 +245,7 @@ public class RequestController {
         return new ResponseEntity<>("Request id is missing", HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/deny")
+    @PostMapping("/deny")
     public ResponseEntity<String> denyRequest(@RequestParam(name = "request") String id) {
         if (id != null && !id.trim().isEmpty()) {
             try {
@@ -269,14 +267,15 @@ public class RequestController {
     }
 
     @GetMapping("/job-market")
-    public String getListpublicRequest(@RequestParam(name = "page", required = false) String page, Model model) {
-        int pageNumber = 0;
-        if (page != null && page.trim() != "" && !page.isEmpty()) {
-            pageNumber = Integer.parseInt(page);
-        }
-        Page<RequestDto> requestPage = requestService.getListRequestPublicIsPending(pageNumber, 10);
+    public String getListpublicRequest(@RequestParam(name = "page", required = false) String page,
+            @RequestParam(name = "requestTypes", required = false) List<String> requestTypes,
+            @RequestParam(name = "requestLocation", required = false) String requestLocation, Model model) {
+
+        Page<RequestDto> requestPage = requestService.getFilteredRequests(requestTypes, requestLocation, page, 10);
         int totalPages = requestPage.getTotalPages();
         List<String> provinces = provinceService.getProvinceNames();
+        model.addAttribute("requestTypes", requestTypes);
+        model.addAttribute("requestLocation", requestLocation);
         model.addAttribute("provinces", provinces);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
@@ -284,19 +283,21 @@ public class RequestController {
         return "job-market";
     }
 
-    @GetMapping("/job-market-add")
-    public String addpublicRequest(@RequestParam(name = "page", required = false) String page, Model model) {
-        int pageNumber = 0;
-        if (page != null && page.trim() != "" && !page.isEmpty()) {
-            pageNumber = Integer.parseInt(page);
-        }
-        Page<RequestDto> requestPage = requestService.getListRequestPublicIsPending(pageNumber, 10);
-        int totalPages = requestPage.getTotalPages();
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("list", requestPage.getContent());
-        return "job-market";
-    }
+    // @GetMapping("/job-market-add")
+    // public String addpublicRequest(@RequestParam(name = "page", required = false)
+    // String page, Model model) {
+    // int pageNumber = 0;
+    // if (page != null && page.trim() != "" && !page.isEmpty()) {
+    // pageNumber = Integer.parseInt(page);
+    // }
+    // Page<RequestDto> requestPage =
+    // requestService.getListRequestPublicIsPending(pageNumber, 10);
+    // int totalPages = requestPage.getTotalPages();
+    // model.addAttribute("currentPage", page);
+    // model.addAttribute("totalPages", totalPages);
+    // model.addAttribute("list", requestPage.getContent());
+    // return "job-market";
+    // }
 
     @PostMapping("/public")
     public ResponseEntity<?> publicRequestJob(@RequestBody Map<String, Object> request) {
@@ -562,10 +563,6 @@ public class RequestController {
         }
     }
 
-    @GetMapping("/rating-page")
-    public String rating() {
-        return "leave-rating-page";
-    }
 
     @PostMapping("/finish-request")
     public ResponseEntity<?> finishRequest(@RequestParam(name = "requestId") String requestId) {

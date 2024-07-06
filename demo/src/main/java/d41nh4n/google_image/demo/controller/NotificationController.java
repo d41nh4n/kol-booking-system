@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +24,7 @@ import d41nh4n.google_image.demo.service.UserService;
 import d41nh4n.google_image.demo.validation.Utils;
 import lombok.RequiredArgsConstructor;
 
+@CrossOrigin(origins = "https://f4d3-2405-4802-7074-a350-69bf-92f1-f99c-73fa.ngrok-free.app")
 @Controller
 @RequiredArgsConstructor
 public class NotificationController {

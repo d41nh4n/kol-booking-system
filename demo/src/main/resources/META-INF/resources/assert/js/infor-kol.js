@@ -309,6 +309,7 @@ async function sendRequest(data) {
     const result = await response.json();
     console.log(result.result);
     alert(result.result);
+    window.location.href = "https://localhost/request/pending";
   } catch (error) {
     alert("An error occurred: " + error.message);
   }
@@ -424,7 +425,10 @@ function getComment(numberPage) {
       getTotalComment(data.totalElements);
       if (data.content && data.content.length > 0) {
         data.content.forEach(function (comment) {
-          // Tạo cấu trúc HTML cho comment
+          // Generate star rating HTML
+          var starRatingHtml = generateStarRating(comment.rating);
+
+          // Create HTML structure for comment
           var commentHtml = `
             <div class="media">
               <a class="pull-left" href="#">
@@ -434,6 +438,9 @@ function getComment(numberPage) {
               </a>
               <div class="media-body">
                 <h4 class="media-heading">${comment.nameSender}</h4>
+                <div class="star-rating">
+                  ${starRatingHtml}
+                </div>
                 <p>${comment.content}</p>
                 <ul class="list-unstyled list-inline media-detail pull-left">
                   <li><i class="fa fa-calendar"></i>${new Date(
@@ -443,7 +450,7 @@ function getComment(numberPage) {
               </div>
             </div>
           `;
-          // Chèn comment vào container
+          // Append comment to container
           $("#comments-list").append(commentHtml);
         });
         createPagination(data.totalPages, data.number);
@@ -456,6 +463,7 @@ function getComment(numberPage) {
       $("#comments-list").append("<p>Failed to load comments.</p>");
     });
 }
+
 function createPagination(totalPages, currentPage) {
   const pagination = $("#pagination");
   pagination.empty();
@@ -494,4 +502,16 @@ function createPagination(totalPages, currentPage) {
     var page = parseInt($(this).attr("data-page"));
     getComment(page);
   });
+}
+
+function generateStarRating(rating) {
+  let starHtml = '';
+  for (let i = 1; i <= 5; i++) {
+    if (i <= rating) {
+      starHtml += '<i class="fa fa-star"></i>';
+    } else {
+      starHtml += '<i class="fa fa-star-o"></i>';
+    }
+  }
+  return starHtml;
 }

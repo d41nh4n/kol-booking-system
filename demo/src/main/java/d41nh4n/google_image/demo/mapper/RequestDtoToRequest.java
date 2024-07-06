@@ -114,7 +114,9 @@ public class RequestDtoToRequest {
         }
         requestDto.setLocation(request.getRequestLocation());
         requestDto.setDateRequire(utils.dateToString(request.getRequestDate()));
-        requestDto.setDeadline(utils.dateToString(request.getRequestDateEnd()));
+        if (request.getRequestDateEnd() != null) {
+            requestDto.setDeadline(utils.dateToString(request.getRequestDateEnd()));
+        }
         requestDto.setDecription(request.getRequestDescription());
         requestDto.setType(request.getRequestType());
         return requestDto;
@@ -209,7 +211,7 @@ public class RequestDtoToRequest {
         requestPending.setPrice(request.getPayment());
         requestPending.setStatus(request.getRequestStatus().name());
         requestPending.setIsPublic(request.isPublic());
-
+        
         // Cập nhật danh sách người chờ
         if (request.isPublic() && request.getResponder() == null) {
             List<UserInfo> listUserApply = request.getRequestWaitList().stream()

@@ -1,24 +1,24 @@
-function searchByName(param) {
-  var search = param.value.trim();
-  if (search === "") {
-    removeElements();
-    return;
-  } else {
-    $.ajax({
-      url: "/findUser",
-      type: "get",
-      data: {
-        name: search,
-      },
-      success: function (data) {
-        displaySuggestions(data.list);
-      },
-      error: function (xhr) {
-        // Handle error
-      },
-    });
-  }
-}
+// function searchByName(param) {
+//   var search = param.value.trim();
+//   if (search === "") {
+//     removeElements();
+//     return;
+//   } else {
+//     $.ajax({
+//       url: "/findUser",
+//       type: "get",
+//       data: {
+//         name: search,
+//       },
+//       success: function (data) {
+//         displaySuggestions(data.list);
+//       },
+//       error: function (xhr) {
+//         // Handle error
+//       },
+//     });
+//   }
+// }
 
 function displaySuggestions(users) {
   removeElements();

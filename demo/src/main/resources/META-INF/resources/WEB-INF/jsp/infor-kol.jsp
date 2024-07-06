@@ -46,14 +46,16 @@
                                 <p class="price-player-profile">A Video: <fmt:formatNumber value="${userInformation.pricePost}" type="number" pattern="###0" /> </p>
                                 <p class="price-player-profile">Per Day: <fmt:formatNumber value="${userInformation.pricePost}" type="number" pattern="###0" /> </p>
                                 <p class="price-player-profile">Representative: <fmt:formatNumber value="${userInformation.pricePost}" type="number" pattern="###0" /></p>
-                                <div class="rateting-style">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half"></i>&nbsp;
-                                    <span>177 <span>Evaluate</span></span>
-                                </div>
+                                 <div class="rating-style">
+        <!-- Hiển thị các sao đầy đủ -->
+        <i class="fas fa-star <c:if test="${userInformation.averageRating >= 1}">star-filled</c:if>"></i>
+        <i class="fas fa-star <c:if test="${userInformation.averageRating >= 2}">star-filled</c:if>"></i>
+        <i class="fas fa-star <c:if test="${userInformation.averageRating >= 3}">star-filled</c:if>"></i>
+        <i class="fas fa-star <c:if test="${userInformation.averageRating >= 4}">star-filled</c:if>"></i>
+        <i class="fas fa-star <c:if test="${userInformation.averageRating >= 5}">star-filled</c:if>"></i>
+        <!-- Hiển thị số lượng đánh giá -->
+        <span><c:out value="${totalRating}"/> Evaluate</span>
+    </div>
                             </div>
                         </div>
                     </div>

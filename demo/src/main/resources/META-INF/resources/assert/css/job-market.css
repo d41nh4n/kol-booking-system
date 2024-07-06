@@ -215,3 +215,75 @@ button.submit {
 button.submit:hover {
   background-color: #0056b3;
 }
+
+.search-form {
+  background: #fff;
+  border: 1px solid #f5f2f2;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.search-form .form-control {
+  border-radius: 5px;
+  box-shadow: none;
+  border: 1px solid #ccc;
+  padding: 5px;
+}
+
+.search-form .form-control:focus {
+  border-color: #1aaceb;
+  box-shadow: 0 0 5px rgba(26, 172, 235, 0.5);
+}
+
+.search-form button.btn-base {
+  background: #1aaceb;
+  border: none;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+.search-form button.btn-base:hover {
+  background: #138fbc;
+}
+
+.search-form .form-check {
+  margin-right: 10px;
+}
+
+.search-form .form-check-input {
+  margin-top: 0.3rem;
+}
+
+.search-form .form-check-label {
+  margin-left: 3px;
+}
+
+/* Adjustments for small screens */
+@media (max-width: 768px) {
+  .search-form .row > div {
+      margin-bottom: 10px;
+
+  }
+}
+.Type-Request{
+  margin-top: 5px;
+display: flex;
+justify-content: space-evenly;
+}
+
+.search-form button.btn-base:hover, .search-form a.btn-reset:hover {
+  background: #138fbc;
+}
+
+.search-form a.btn-reset {
+  background: #e0e0e0;
+  color: #333;
+  border-radius: 7px;
+}
+
+.search-form a.btn-reset:hover {
+  background: #ccc;
+}

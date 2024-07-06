@@ -53,8 +53,8 @@
         font-weight: 800;
     }    
      .dropdown-menu {
-        max-width: 300px;
-        min-width: 300px;
+        max-width: 400px;
+        min-width: 400px;
         max-height: 300px; 
         overflow-y: auto; 
     }
@@ -89,14 +89,14 @@
             </button>
         </div>
         <div id="navbar-collapse1" class="collapse navbar-collapse">
-            <form class="navbar-form pull-left">
+            <%-- <form class="navbar-form pull-left">
                 <div style="max-width:600px;" class="input-group">
                     <input type="text" id="srch-term" name="srch-term" placeholder="Search" class="form-control" onchange="searchByName(this)">
                     <div class="input-group-btn">
                         <button type="submit" class="btn btn-default btn-primary"><i class="glyphicon glyphicon-search"></i></button>
                     </div>
                 </div>
-            </form>
+            </form> --%>
             <ul class="nav navbar-nav navbar-right">
                 <c:if test="${not empty userInfor}">
                 <li>
@@ -121,6 +121,7 @@
                             <c:when test="${not empty userInfor}">                      
                                 <li><a href="/request/pending">Jobs</a></li>
                                 <li><a href="/infor">Profile</a></li>
+                                <li><a href="/login/change-password">Change password</a></li>
                                 <li class="divider"></li>
                                 <li><a href="/login/logout">Logout</a></li>
                             </c:when>

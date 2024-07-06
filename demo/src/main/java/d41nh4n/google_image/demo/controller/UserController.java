@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,6 +36,7 @@ import d41nh4n.google_image.demo.dto.userdto.UserFindedBySearch;
 import d41nh4n.google_image.demo.dto.userdto.UserProfileUpdate;
 import d41nh4n.google_image.demo.dto.userdto.MediaProfileDto;
 import d41nh4n.google_image.demo.dto.userdto.MediaProfileUpload;
+import d41nh4n.google_image.demo.entity.Comment;
 import d41nh4n.google_image.demo.entity.VerifyCode;
 import d41nh4n.google_image.demo.entity.user.Gender;
 import d41nh4n.google_image.demo.entity.user.MediaProfile;
@@ -48,6 +50,7 @@ import d41nh4n.google_image.demo.service.MailService;
 import d41nh4n.google_image.demo.service.MediaProfileService;
 import d41nh4n.google_image.demo.service.ProvinceService;
 import d41nh4n.google_image.demo.service.CloudinaryService;
+import d41nh4n.google_image.demo.service.CommentService;
 import d41nh4n.google_image.demo.service.UserService;
 import d41nh4n.google_image.demo.service.VerifyCodeService;
 import d41nh4n.google_image.demo.validation.Utils;
@@ -71,6 +74,7 @@ public class UserController {
     private final ProvinceService provinceService;
     private final CloudinaryService cloudinaryService;
     private final MediaProfileService mediaProfileService;
+    private final CommentService commentService;
 
     @GetMapping()
     public String index(Model model, HttpServletRequest request) {
@@ -102,6 +106,10 @@ public class UserController {
         }
         List<MediaProfileDto> mediaProfile = mediaProfileService.getAllByProfileId(getUserId()).stream()
                 .map(media -> new MediaProfileDto(media)).collect(Collectors.toList());
+        if (principal.getRoles().equalsIgnoreCase("KOL")) {
+            int totalRating = commentService.totalRatingByUserId(principal.getUserId());
+            model.addAttribute("totalRating", totalRating);
+        }
         model.addAttribute("medias", mediaProfile);
         if (principal.getRoles().equals("USER")) {
             return "infor-user";
@@ -378,9 +386,14 @@ public class UserController {
         List<String> provinces = provinceService.getProvinceNames();
         List<MediaProfileDto> mediaProfile = mediaProfileService.getAllByProfileId(userIdNumber).stream()
                 .map(media -> new MediaProfileDto(media)).collect(Collectors.toList());
+        if (user.getRole().equalsIgnoreCase("KOL")) {
+            int totalRating = commentService.totalRatingByUserId(userIdNumber);
+            model.addAttribute("totalRating", totalRating);
+        }
         model.addAttribute("provinces", provinces);
         model.addAttribute("userInformation", userDto);
         model.addAttribute("medias", mediaProfile);
+
         if (user.getRole().equals("USER")) {
             return "infor-user";
         } else {
@@ -474,10 +487,11 @@ public class UserController {
         return "search-page";
     }
 
-    @GetMapping("/find-user")
-    public String findUserByName(@RequestParam(name = "name", required = false) String name) {
-        return "list-find-user";
-    }
+    // @GetMapping("/find-user")
+    // public String findUserByName(@RequestParam(name = "name", required = false)
+    // String name) {
+    // return "list-find-user";
+    // }
 
     @PostMapping("/profile-media-add")
     public ResponseEntity<?> handleProfileMediaUpload(@RequestBody MediaProfileUpload content) {

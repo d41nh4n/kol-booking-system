@@ -11,7 +11,6 @@
 
 .box-product-outer:hover {
   outline: 1px solid #aaa;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 }
 
 .tab-content .box-product-outer {
@@ -247,10 +246,9 @@ h2.my-4 {
 /* General styles for the search form */
 .search-form {
   background: #fff;
-  border: 1px solid #ddd;
+  border: 1px solid #ebeaea;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .search-form .form-control {

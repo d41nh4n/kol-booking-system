@@ -1,12 +1,11 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>Leave Comment</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        /* Star Rating CSS */
         .star-rating {
             display: flex;
             flex-direction: row-reverse;
@@ -28,14 +27,27 @@
         .star-rating label:hover ~ label {
             color: #ffd700;
         }
+
+        .comment-body {
+            margin-top: 120px;
+        }
     </style>
 </head>
 <body>
-<div class="container mt-5">
+<%@ include file="navbar.jsp" %>
+<div class="container comment-body">
     <div class="card">
         <div class="card-body">
             <h3 class="card-title">Leave Comment</h3>
-            <form action="submitComment" method="post">
+            
+            <!-- User information section -->
+            <div class="user-info mb-4">
+                <img src="${userBeRated.avatar}" alt="User Avatar" class="img-thumbnail" style="width: 100px; height: 100px;">
+                <h4>${userBeRated.fullName}</h4>
+            </div>
+            
+            <form id="commentForm" onsubmit="submitComment(event)">
+                <input type="hidden" id="userId" name="userId" value="${userBeRated.id}">
                 <div class="form-group">
                     <label for="rating">Rate the Place</label>
                     <div class="star-rating">
@@ -62,5 +74,6 @@
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="../../assert/js/leave-rating-page.js"></script>
 </body>
 </html>

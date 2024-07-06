@@ -165,8 +165,8 @@
                                         data-requestId = "${request.requestId}">Submit</a>
                                     </c:if>
                                      <c:if test="${userInfor.role == 'KOL' && request.status == 'PENDING'}">
-                                        <a class="btn btn-primary btn-info btn-sm" href="/request/accept?request=${request.requestId}">Accept</a>
-                                        <a class="btn btn-primary btn-info btn-sm" href="/request/deny?request=${request.requestId}">Deny</a>
+                                    <a class="btn btn-primary btn-info btn-sm" href="#" onclick="acceptRequest(${request.requestId})">Accept</a>
+                                    <a class="btn btn-primary btn-info btn-sm" href="#" onclick="denyRequest(${request.requestId})">Deny</a>
                                     </c:if>
                                     <c:choose>
                                         <c:when test="${request.status == 'PENDING'}">
@@ -275,6 +275,26 @@
             </div>
         </div>
     </div>
+<c:if test="${not empty list}">
+    <div class="text-align-center pagination-box">
+        <ul class="pagination pagination-sm">
+            <li class="${currentPage == 0 ? 'disabled' : ''}">
+                <a <c:if test="${currentPage > 0}">href="${baseUrl}?page=${currentPage - 1}"</c:if>>Prev</a>
+            </li>
+            <c:if test="${totalPages > 0}">
+                <c:forEach begin="0" end="${totalPages - 1}" var="i">
+                    <li class="${i == currentPage ? 'active' : ''}">
+                        <a <c:if test="${i != currentPage}">href="${baseUrl}?page=${i}"</c:if>>${i + 1}</a>
+                    </li>
+                </c:forEach>
+            </c:if>
+            <li class="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                <a <c:if test="${currentPage < totalPages - 1}">href="${baseUrl}?page=${currentPage + 1}"</c:if>>Next</a>
+            </li>
+        </ul>
+    </div>
+</c:if>
+
 
     <script src="../../assert/js/request-list.js"></script>
 </body>

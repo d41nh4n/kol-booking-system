@@ -23,7 +23,7 @@ public class RequestDto {
     private String status;
     private double price;
     private boolean isPublic;
-    private String urlResult; // Đổi tên cho đúng chính tả
+    private String urlResult;
     private List<UserInfo> listWaitList;
 
     public Boolean getIsPublic() {

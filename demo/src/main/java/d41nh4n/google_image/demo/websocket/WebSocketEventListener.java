@@ -9,12 +9,14 @@ import d41nh4n.google_image.demo.validation.ValidTokenService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
 @RequiredArgsConstructor
 public class WebSocketEventListener {
+    private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
     private final ValidTokenService validTokenService;
-
     private static ConcurrentHashMap<Integer, String> userSessionMap = new ConcurrentHashMap<>();
 
     @EventListener
@@ -22,12 +24,20 @@ public class WebSocketEventListener {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String token = accessor.getFirstNativeHeader("token");
         if (token != null) {
-            Integer userId = validTokenService.principalFromToken(token).getUserId();
-            if (userId != null) {
-                String sessionId = accessor.getSessionId();
-                userSessionMap.put(userId, sessionId);
-                System.out.println("User connected: userId=" + userId + ", sessionId=" + sessionId);
+            try {
+                Integer userId = validTokenService.principalFromToken(token).getUserId();
+                if (userId != null) {
+                    String sessionId = accessor.getSessionId();
+                    userSessionMap.put(userId, sessionId);
+                    logger.info("User connected: userId={}, sessionId={}", userId, sessionId);
+                } else {
+                    logger.warn("Invalid userId from token.");
+                }
+            } catch (Exception e) {
+                logger.error("Error while processing token: {}", e.getMessage());
             }
+        } else {
+            logger.warn("Token is missing.");
         }
     }
 
@@ -35,7 +45,7 @@ public class WebSocketEventListener {
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         String sessionId = event.getSessionId();
         userSessionMap.entrySet().removeIf(entry -> sessionId.equals(entry.getValue()));
-        System.out.println("User disconnected: sessionId=" + sessionId);
+        logger.info("User disconnected: sessionId={}", sessionId);
     }
 
     public static String getSessionIdByUserId(Integer userId) {

@@ -1,15 +1,21 @@
 package d41nh4n.google_image.demo.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -30,7 +36,7 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/login")
-public class LoginController {
+public class AuthController {
 
     private final AuthService authService;
     private final ValidTokenService validTokenService;
@@ -119,5 +125,30 @@ public class LoginController {
         userService.save(profile);
 
         return "redirect:/login/form?success=true";
+    }
+
+    @GetMapping("/change-password")
+    public String changePasswordForm() {
+        return "change-password";
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<Map<String, String>> changePassword(@RequestBody Map<String, String> payload) {
+        String oldPass = payload.get("oldPassword");
+        String newPass = payload.get("newPassword");
+        int userId = utils.getPrincipal().getUserId();
+        User user = userService.getUserById(userId);
+        Map<String, String> response = new HashMap<>();
+
+        if (passwordEncoder.matches(oldPass, user.getPasswordHash())) {
+            String newPassHash = passwordEncoder.encode(newPass);
+            user.setPasswordHash(newPassHash);
+            userService.save(user);
+            response.put("message", "Password changed successfully.");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("error", "Old password is incorrect.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
     }
 }

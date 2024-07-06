@@ -47,5 +47,7 @@ public class Comment {
     @Column(nullable = false)
     private Boolean isViolation = false;
 
+    @Column(name = "rating_value", nullable = true)
+    private int ratingValue;
     // Getters and setters
 }

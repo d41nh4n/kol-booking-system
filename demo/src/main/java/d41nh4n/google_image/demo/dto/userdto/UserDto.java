@@ -32,6 +32,7 @@ public class UserDto {
     private double priceVideo;
     private double priceHireByDay;
     private double representativePrice;
+    private double averageRating;
     private List<String> categories;
 
 }

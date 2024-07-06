@@ -9,7 +9,6 @@ import d41nh4n.google_image.demo.entity.Category;
 import d41nh4n.google_image.demo.entity.user.Gender;
 import d41nh4n.google_image.demo.entity.user.ProfileCategories;
 import d41nh4n.google_image.demo.entity.user.User;
-import d41nh4n.google_image.demo.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -23,7 +22,9 @@ public final class UserToUserDto {
         userInfo.setFullName(user.getProfile().getFullName());
         userInfo.setRole(user.getRole());
         userInfo.setAvatarUrl(user.getProfile().getAvatarUrl());
-        userInfo.setBirthday(dateFormat.format(user.getProfile().getBirthday()));
+        if (user.getProfile().getBirthday() != null) {
+            userInfo.setBirthday(dateFormat.format(user.getProfile().getBirthday()));
+        }
         userInfo.setLocation(user.getProfile().getLocation());
         if (user.getGender() == null) {
             userInfo.setGender(Gender.OTHER.toString());
@@ -36,7 +37,7 @@ public final class UserToUserDto {
         userInfo.setPriceVideo(user.getProfile().getPriceAVideo());
         userInfo.setPriceHireByDay(user.getProfile().getPriceAToHireADay());
         userInfo.setRepresentativePrice(user.getProfile().getRepresentativePrice());
-
+        userInfo.setAverageRating(user.getProfile().getAverageRating());
         List<ProfileCategories> profileCategories = user.getProfile().getProfileCategories();
         List<String> categoryNames = new ArrayList<>();
         for (ProfileCategories profileCategory : profileCategories) {

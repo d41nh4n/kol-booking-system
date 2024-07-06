@@ -144,3 +144,6 @@ body{
       .view-more{
         border-radius: 10%;
       }
+      .pagination-box {
+        margin-left: 10%;
+    }

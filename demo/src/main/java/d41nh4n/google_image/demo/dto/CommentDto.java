@@ -12,12 +12,13 @@ public class CommentDto {
     private String urlAvatarSender;
     private String createAt;
     private String content;
-
+    private int rating;
     public CommentDto(Comment comment) {
         this.idSender = comment.getCommenter().getUserId();
         this.nameSender = comment.getCommenter().getProfile().getFullName();
         this.urlAvatarSender = comment.getCommenter().getProfile().getAvatarUrl();
         this.createAt = comment.getCreatedAt().toString();
         this.content = comment.getCommentContent();
+        this.rating = comment.getRatingValue();
     }
 }

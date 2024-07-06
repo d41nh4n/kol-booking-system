@@ -19,7 +19,7 @@ public class NotificationDto {
     private String content;
     private String createAt;
     private String type;
-
+    private String urlAvatar;
     public NotificationDto(Notification notification) {
         this.id = notification.getNotificationId();
         this.referenceId = notification.getReferenceId();

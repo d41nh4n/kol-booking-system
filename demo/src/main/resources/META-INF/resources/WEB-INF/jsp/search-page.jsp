@@ -149,24 +149,24 @@
                             </c:forEach>    
                         </div>
                         <c:if test="${not empty listSearch}">
-                            <div class="text-align-center">
-                                <ul class="pagination pagination-sm">
-                                    <li class="${currentPage == 0 ? 'disabled' : ''}">
-                                        <a href="/search-page?page=${currentPage - 1}">Prev</a>
-                                    </li>
-                                    <c:if test="${totalPages > 0}">
-                                        <c:forEach begin="0" end="${totalPages - 1}" var="i">
-                                            <li class="${i == currentPage ? 'active' : ''}">
-                                                <a href="/search-page?page=${i}">${i + 1}</a>
-                                            </li>
-                                        </c:forEach>
-                                    </c:if>
-                                    <li class="${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                                        <a href="/search-page?page=${currentPage + 1}">Next</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </c:if>
+    <div class="text-align-center">
+        <ul class="pagination pagination-sm">
+            <li class="${currentPage == 0 ? 'disabled' : ''}">
+                <a <c:if test="${currentPage > 0}">href="${baseUrl}?page=${currentPage - 1}"</c:if>>Prev</a>
+            </li>
+            <c:if test="${totalPages > 0}">
+                <c:forEach begin="0" end="${totalPages - 1}" var="i">
+                    <li class="${i == currentPage ? 'active' : ''}">
+                        <a <c:if test="${i != currentPage}">href="${baseUrl}?page=${i}"</c:if>>${i + 1}</a>
+                    </li>
+                </c:forEach>
+            </c:if>
+            <li class="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                <a <c:if test="${currentPage < totalPages - 1}">href="${baseUrl}?page=${currentPage + 1}"</c:if>>Next</a>
+            </li>
+        </ul>
+    </div>
+</c:if>
 
                     </div>
                 </div>        

@@ -1006,3 +1006,22 @@ body {
   color: #007bff; /* Màu chữ xanh */
   border: 1px solid #007bff; /* Đường viền xanh */
 }
+.rating-style .fa-star {
+  color: lightgray;
+}
+
+.rating-style .fa-star.star-filled {
+  color: gold;
+}
+
+.rating-style .fa-star-half {
+  color: gold;
+}
+
+.star-rating {
+  color: #f4c150;
+}
+
+.star-rating .fa-star, .star-rating .fa-star-o {
+  margin-right: 2px;
+}
