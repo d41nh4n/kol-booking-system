@@ -3,8 +3,6 @@ package d41nh4n.google_image.demo.controller;
 import java.util.*;
 import java.time.ZonedDateTime;
 import java.util.stream.Collectors;
-
-import org.checkerframework.checker.units.qual.m;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.*;
@@ -261,6 +259,14 @@ public class RequestController {
 
                 request.setRequestStatus(RequestStatus.IN_PROGRESS);
                 requestService.save(request);
+
+                Notification notification = new Notification();
+                notification.setContent(request.getResponder().getProfile().getFullName() + " accepted your request");
+                notification.setCreateAt(ZonedDateTime.now());
+                notification.setType(TypeNotification.ACCEPT_REQUEST);
+                notification.setUser(request.getRequester());
+                notificationService.save(notification);
+
                 return ResponseEntity.ok("Accept Success");
             } catch (NumberFormatException e) {
                 return new ResponseEntity<>("Invalid request id", HttpStatus.BAD_REQUEST);
@@ -282,6 +288,13 @@ public class RequestController {
 
                 request.setRequestStatus(RequestStatus.CANCEL);
                 requestService.save(request);
+
+                Notification notification = new Notification();
+                notification.setContent(request.getResponder().getProfile().getFullName() + " denied your request");
+                notification.setCreateAt(ZonedDateTime.now());
+                notification.setType(TypeNotification.DENY_REQUEST);
+                notification.setUser(request.getRequester());
+                notificationService.save(notification);
 
                 // refund money to user
                 transactionHistoryService.refundMoneyToRequester(request);
@@ -471,7 +484,20 @@ public class RequestController {
             return ResponseEntity.status(404).body(res);
         }
 
+        List<RequestWaitList> RequestWaitList = request.getRequestWaitList();
+
+        for (RequestWaitList requestWait : RequestWaitList) {
+            Notification notification = new Notification();
+            notification.setContent(request.getRequester().getProfile().getFullName() + " canceled request");
+            notification.setCreateAt(ZonedDateTime.now());
+            notification.setType(TypeNotification.CANCEL_REQUEST);
+            notification.setUser(requestWait.getResponder());
+            notificationService.save(notification);
+        }
+
         int updateCount = requestService.cancelRequest(request);
+
+        // create notification
 
         transactionHistoryService.refundMoneyToRequesterIfRequestCancel(request);
         if (updateCount > 0) {
@@ -575,7 +601,7 @@ public class RequestController {
                         " submitted result of your request!");
                 notification.setReferenceId(null);
                 notification.setCreateAt(ZonedDateTime.now());
-                notification.setType(TypeNotification.REQUEST);
+                notification.setType(TypeNotification.SUBMIT);
                 notification.setUser(request.getRequester());
                 notificationService.save(notification);
 
@@ -611,6 +637,15 @@ public class RequestController {
 
             request.setRequestStatus(RequestStatus.FINISHED);
             requestService.save(request);
+
+            Notification notification = new Notification();
+            notification.setContent(request.getRequester().getProfile().getFullName() +
+                    "accepted your result");
+            notification.setReferenceId(null);
+            notification.setCreateAt(ZonedDateTime.now());
+            notification.setType(TypeNotification.SUBMIT);
+            notification.setUser(request.getRequester());
+            notificationService.save(notification);
 
             // tranfer money to kol
             transactionHistoryService.transferMoneyToResponder(request);
@@ -648,6 +683,15 @@ public class RequestController {
                 }
                 // Perform money transfer to responder
                 boolean transferSuccess = transactionHistoryService.transferMoneyToResponder(request);
+
+                Notification notification = new Notification();
+                notification.setContent(request.getRequester().getProfile().getFullName() +
+                        "accepted your result");
+                notification.setReferenceId(null);
+                notification.setCreateAt(ZonedDateTime.now());
+                notification.setType(TypeNotification.SUBMIT);
+                notification.setUser(request.getRequester());
+                notificationService.save(notification);
                 if (!transferSuccess) {
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                             .body("Failed to transfer money to responder for request ID " + requestId);

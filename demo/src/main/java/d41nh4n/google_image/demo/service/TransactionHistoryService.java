@@ -2,6 +2,8 @@ package d41nh4n.google_image.demo.service;
 
 import d41nh4n.google_image.demo.entity.TransactionHistory;
 import d41nh4n.google_image.demo.entity.TypeTransaction;
+import d41nh4n.google_image.demo.entity.notification.Notification;
+import d41nh4n.google_image.demo.entity.notification.TypeNotification;
 import d41nh4n.google_image.demo.entity.request.Request;
 import d41nh4n.google_image.demo.entity.request.RequestStatus;
 import d41nh4n.google_image.demo.entity.user.User;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
@@ -21,6 +24,7 @@ import java.util.Date;
 public class TransactionHistoryService {
     private final TransactionHistoryRepository transactionHistoryRepository;
     private final UserService userService;
+    private final NotificationService notificationService;
 
     public TransactionHistory findByRequest(Request request) {
         return transactionHistoryRepository.findByRequest(request).orElse(null);
@@ -30,9 +34,7 @@ public class TransactionHistoryService {
             String transactionId) {
         User sender = userService.getUserById(senderId);
         User receiver = userService.getUserById(receiverId);
-        System.out.println(sender);
-        System.out.println(amount);
-        if ( sender == null || amount <= 0) {
+        if (sender == null || amount <= 0) {
             return null; // Invalid transaction
         }
 
@@ -55,6 +57,14 @@ public class TransactionHistoryService {
         transactionHistory.setTransactionId(transactionId);
         transactionHistoryRepository.save(transactionHistory);
 
+        Notification notification = new Notification();
+        notification.setContent("Your account has been deducted " + amount);
+        notification.setReferenceId(null);
+        notification.setCreateAt(ZonedDateTime.now());
+        notification.setType(TypeNotification.MONEY);
+        notification.setUser(sender);
+        notificationService.save(notification);
+
         return transactionHistory;
     }
 
@@ -76,6 +86,15 @@ public class TransactionHistoryService {
 
                 requester.setAccountBalance(totalMoneyAfterRefund);
                 userService.save(requester);
+
+                Notification notification = new Notification();
+                notification.setContent("Your account has been added " + totalMoneyAfterRefund);
+                notification.setReferenceId(null);
+                notification.setCreateAt(ZonedDateTime.now());
+                notification.setType(TypeNotification.MONEY);
+                notification.setUser(requester);
+                notificationService.save(notification);
+
                 return true;
             } catch (Exception e) {
                 // Log the exception
@@ -110,9 +129,17 @@ public class TransactionHistoryService {
                 transactionHistory.setTransDate(new Date());
                 transactionHistory.setTransStatus(true);
                 transactionHistoryRepository.save(transactionHistory);
-
-                responder.setAccountBalance(responder.getAccountBalance() + moneyAmount);
+                double moneyLeft = moneyAmount - (moneyAmount * 0.2);
+                responder.setAccountBalance(responder.getAccountBalance() + moneyLeft);
                 userService.save(responder);
+
+                Notification notification = new Notification();
+                notification.setContent("Your account has been added " + moneyLeft);
+                notification.setReferenceId(null);
+                notification.setCreateAt(ZonedDateTime.now());
+                notification.setType(TypeNotification.MONEY);
+                notification.setUser(responder);
+                notificationService.save(notification);
             }
             return true;
         } catch (Exception e) {
@@ -139,27 +166,31 @@ public class TransactionHistoryService {
                 double requesterAmount = requester.getAccountBalance();
                 double requesterAmountLeft = 0;
 
-                if (request.isPublic()) {
-                    Date requestDateAsDate = request.getRequestDate();
-                    LocalDate requestDate = requestDateAsDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                Date requestDateAsDate = request.getRequestDate();
+                LocalDate requestDate = requestDateAsDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-                    long numberDays = ChronoUnit.DAYS.between(requestDate, LocalDate.now());
+                long numberDays = ChronoUnit.DAYS.between(requestDate, LocalDate.now());
 
-                    if (numberDays < 30) {
-                        requesterAmountLeft = requesterAmount - (requesterAmount * 0.1); // Giảm 10% nếu số ngày nhỏ hơn
-                                                                                         // 30
-                    } else {
-                        requesterAmountLeft = requesterAmount; // Không giảm nếu số ngày lớn hơn hoặc bằng 30
-                    }
+                if (numberDays < 30) {
+                    requesterAmountLeft = requesterAmount - (requesterAmount * 0.1); // Giảm 10% nếu số ngày nhỏ hơn
+                                                                                     // 30
                 } else {
-                    requesterAmountLeft = requesterAmount; // Nếu không công khai, số tiền còn lại bằng tổng số tiền của
-                                                           // người yêu cầu
+                    requesterAmountLeft = requesterAmount; // Không giảm nếu số ngày lớn hơn hoặc bằng 30
                 }
 
                 double totalMoneyAfterRefund = requesterAmountLeft + moneyAmount;
 
                 requester.setAccountBalance(totalMoneyAfterRefund);
                 userService.save(requester);
+
+                Notification notification = new Notification();
+                notification.setContent("Your account has been added " + requesterAmountLeft);
+                notification.setReferenceId(null);
+                notification.setCreateAt(ZonedDateTime.now());
+                notification.setType(TypeNotification.MONEY);
+                notification.setUser(requester);
+                notificationService.save(notification);
+
                 return true;
             } catch (Exception e) {
                 // Log the exception
