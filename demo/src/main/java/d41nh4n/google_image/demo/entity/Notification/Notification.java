@@ -40,7 +40,7 @@ public class Notification {
     @Column(name = "reference_id", nullable = true)
     private String referenceId;
 
-    @Column(name = "content")
+    @Column(name = "content",  columnDefinition = "NVARCHAR(100)")
     private String content;
 
     @Column(name = "create_at")

@@ -110,7 +110,7 @@
                                     </c:if>
                                 </div>
                                 <div class="col-sm-3 text-align-center">
-                                    <p class="value3 mt-sm">${request.price}</p>
+                                    <p class="value3 mt-sm"><fmt:formatNumber value="${request.price}" type="number" pattern="###0" /> VND</p>
                                     <c:if test="${not empty request.requestDto}">
                                         <p class="fs-mini text-muted">${request.requestDto.type}</p>
                                     </c:if>
@@ -240,7 +240,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="postLocation">Money:</label>
+                        <label for="postLocation">Money total:</label>
                         <input type="Number" class="form-control" id="money-post">
                     </div>
                 </div>
@@ -278,7 +278,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="postLocation">Money:</label>
+                        <label for="postLocation">Money total:</label>
                         <input type="Number" class="form-control" id="money-video">
                     </div>
                 </div>
@@ -329,7 +329,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="postLocation">Money:</label>
+                        <label for="postLocation">Money total:</label>
                         <input type="Number" class="form-control" id="money-hire">
                     </div>
                 </div>

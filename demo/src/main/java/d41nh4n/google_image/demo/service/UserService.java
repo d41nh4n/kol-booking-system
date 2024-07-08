@@ -234,4 +234,19 @@ public class UserService {
         return new PageImpl<>(userDtoList, pageable, users.getTotalElements());
     }
 
+    public Double getAccountBalanceByUserId(int userId) {
+
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            return user.getAccountBalance();
+        }
+        return null;
+    }
+
+    public void updateUserBalance(int userId, double amountPaid) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        double userBalance = user.getAccountBalance() + amountPaid;
+        user.setAccountBalance(userBalance);
+        save(user);
+    }
 }

@@ -43,8 +43,9 @@ public class WebSecurityConfig {
                                                 .requestMatchers("/uploadToGoogleDrive",
                                                                 "/checkAccount", "/ws", "/chatbox",
                                                                 "/chat.sendMessage", "/infor",
-                                                                "/pending", "/in-process", "/finish",
-                                                                "/cancel", "/job-market", "/change-password",
+                                                                "/request/pending", "/request/in-process",
+                                                                "/request/finish",
+                                                                "/request/cancel", "/job-market", "/change-password",
                                                                 "/chat.sendMessage",
                                                                 "/chatbox", "/getChat", "/getUserChatted")
                                                 .hasAnyAuthority("USER", "KOL")

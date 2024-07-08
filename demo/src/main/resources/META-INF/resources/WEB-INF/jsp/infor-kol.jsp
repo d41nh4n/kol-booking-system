@@ -42,10 +42,10 @@
                         <div class="right-container">
 
                             <div class="right-player-profile">
-                                <p class="price-player-profile">A post:<fmt:formatNumber value="${userInformation.pricePost}" type="number" pattern="###0" /></p>
-                                <p class="price-player-profile">A Video: <fmt:formatNumber value="${userInformation.pricePost}" type="number" pattern="###0" /> </p>
-                                <p class="price-player-profile">Per Day: <fmt:formatNumber value="${userInformation.pricePost}" type="number" pattern="###0" /> </p>
-                                <p class="price-player-profile">Representative: <fmt:formatNumber value="${userInformation.pricePost}" type="number" pattern="###0" /></p>
+                                <p class="price-player-profile">A post:<fmt:formatNumber value="${userInformation.pricePost}" type="number" pattern="###0" /> VND</p>
+                                <p class="price-player-profile">A Video: <fmt:formatNumber value="${userInformation.priceVideo}" type="number" pattern="###0" /> VND</p>
+                                <p class="price-player-profile">Per Day: <fmt:formatNumber value="${userInformation.priceHireByDay}" type="number" pattern="###0" /> VND</p>
+                                <p class="price-player-profile">Representative: <fmt:formatNumber value="${userInformation.representativePrice}" type="number" pattern="###0" /> VND / 3 months</p>
                                  <div class="rating-style">
         <!-- Hiển thị các sao đầy đủ -->
         <i class="fas fa-star <c:if test="${userInformation.averageRating >= 1}">star-filled</c:if>"></i>

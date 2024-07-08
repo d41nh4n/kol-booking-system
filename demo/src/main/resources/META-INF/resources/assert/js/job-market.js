@@ -1,77 +1,76 @@
 $(document).ready(function () {
   $(".view-more").on("click", function () {
-      // Lấy dữ liệu từ thuộc tính data-*
-      var avatar = $(this).data("avatar");
-      var fullname = $(this).data("fullname");
-      var location = $(this).data("location");
-      var description = String($(this).data("description")); // Chuyển đổi description thành chuỗi
-      var deadline = $(this).data("deadline");
-      var dayLocation = $(this).data("daylocation");
-      var dayDescription = $(this).data("daydescription");
-      var daysRequired = $(this).data("daysrequired");
-      var repLocation = $(this).data("replocation");
-      var repDescription = $(this).data("repdescription");
-      var startDate = $(this).data("startdate");
-      var months = $(this).data("months");
-      var price = $(this).data("price");
-      var type = $(this).data("type");
+    // Lấy dữ liệu từ thuộc tính data-*
+    var avatar = $(this).data("avatar");
+    var fullname = $(this).data("fullname");
+    var location = $(this).data("location");
+    var description = String($(this).data("description")); // Chuyển đổi description thành chuỗi
+    var deadline = $(this).data("deadline");
+    var dayLocation = $(this).data("daylocation");
+    var dayDescription = $(this).data("daydescription");
+    var daysRequired = $(this).data("daysrequired");
+    var repLocation = $(this).data("replocation");
+    var repDescription = $(this).data("repdescription");
+    var startDate = $(this).data("startdate");
+    var months = $(this).data("months");
+    var price = $(this).data("price");
+    var type = $(this).data("type");
 
-      // Cập nhật nội dung modal dựa trên dữ liệu của item được click
-      $("#modal-avatar").attr("src", avatar);
-      $("#modal-fullname").text(fullname);
-      $("#modal-location").text(location);
-      $("#modal-description").html(description.replace(/\n/g, "<br>"));  // Chuyển đổi thành chuỗi
-      $("#modal-deadline").text("Deadline: " + (deadline || ""));
-      $("#modal-daylocation").text(dayLocation || "");
-      $("#modal-daydescription").text(dayDescription || "");
-      $("#modal-daysrequired").text("Days Required: " + (daysRequired || ""));
-      $("#modal-replocation").text(repLocation || "");
-      $("#modal-repdescription").text(repDescription || "");
-      $("#modal-startdate").text("Start Date: " + (startDate || ""));
-      $("#modal-months").text("Months: " + (months || ""));
-      $("#modal-price").text(price || "");
-      $("#modal-type").text(type || "");
+    // Cập nhật nội dung modal dựa trên dữ liệu của item được click
+    $("#modal-avatar").attr("src", avatar);
+    $("#modal-fullname").text(fullname);
+    $("#modal-location").text(location);
+    $("#modal-description").html(description.replace(/\n/g, "<br>")); // Chuyển đổi thành chuỗi
+    $("#modal-deadline").text("Deadline: " + (deadline || ""));
+    $("#modal-daylocation").text(dayLocation || "");
+    $("#modal-daydescription").text(dayDescription || "");
+    $("#modal-daysrequired").text("Days Required: " + (daysRequired || ""));
+    $("#modal-replocation").text(repLocation || "");
+    $("#modal-repdescription").text(repDescription || "");
+    $("#modal-startdate").text("Start Date: " + (startDate || ""));
+    $("#modal-months").text("Months: " + (months || ""));
+    $("#modal-price").text(price || "");
+    $("#modal-type").text(type || "");
 
-      // Hiển thị/ẩn nội dung modal dựa trên loại yêu cầu
-      if (type === "POST" || type === "VIDEO") {
-          $("#modal-daysrequired").hide();
-          $("#modal-startdate").hide();
-          $("#modal-months").hide();
-      } else if (type === "HIREBYDAY") {
-          $("#modal-daysrequired").show();
-          $("#modal-startdate").hide();
-          $("#modal-months").hide();
-          $("#modal-deadline").hide();
-      } else if (type === "REPRESENTATIVE") {
-          $("#modal-daysrequired").hide();
-          $("#modal-startdate").show();
-          $("#modal-months").show();
-          $("#modal-deadline").hide();
-      }
+    // Hiển thị/ẩn nội dung modal dựa trên loại yêu cầu
+    if (type === "POST" || type === "VIDEO") {
+      $("#modal-daysrequired").hide();
+      $("#modal-startdate").hide();
+      $("#modal-months").hide();
+    } else if (type === "HIREBYDAY") {
+      $("#modal-daysrequired").show();
+      $("#modal-startdate").hide();
+      $("#modal-months").hide();
+      $("#modal-deadline").hide();
+    } else if (type === "REPRESENTATIVE") {
+      $("#modal-daysrequired").hide();
+      $("#modal-startdate").show();
+      $("#modal-months").show();
+      $("#modal-deadline").hide();
+    }
 
-      // Cập nhật hiển thị loại yêu cầu
-      $("#modal-type").text(type || "");
+    // Cập nhật hiển thị loại yêu cầu
+    $("#modal-type").text(type || "");
   });
 
   // Reset nội dung modal khi modal bị ẩn
   $("#viewMoreModal").on("hidden.bs.modal", function () {
-      $("#modal-avatar").attr("src", "");
-      $("#modal-fullname").text("");
-      $("#modal-location").text("");
-      $("#modal-description").text("");
-      $("#modal-deadline").text("");
-      $("#modal-daylocation").text("");
-      $("#modal-daydescription").text("");
-      $("#modal-daysrequired").text("");
-      $("#modal-replocation").text("");
-      $("#modal-repdescription").text("");
-      $("#modal-startdate").text("");
-      $("#modal-months").text("");
-      $("#modal-price").text("");
-      $("#modal-type").text("");
+    $("#modal-avatar").attr("src", "");
+    $("#modal-fullname").text("");
+    $("#modal-location").text("");
+    $("#modal-description").text("");
+    $("#modal-deadline").text("");
+    $("#modal-daylocation").text("");
+    $("#modal-daydescription").text("");
+    $("#modal-daysrequired").text("");
+    $("#modal-replocation").text("");
+    $("#modal-repdescription").text("");
+    $("#modal-startdate").text("");
+    $("#modal-months").text("");
+    $("#modal-price").text("");
+    $("#modal-type").text("");
   });
 });
-
 
 // ================================================
 function openModal() {
@@ -220,17 +219,30 @@ function nextMonth() {
 }
 
 function replaceNewLinesWithBr(text) {
-  return text.replace(/\n/g, '<br>');
+  return text.replace(/\n/g, "<br>");
 }
 
-
 document.addEventListener("DOMContentLoaded", updateCalendar);
+
+function checkCurrentDate(dateEnd) {
+  var currentDate = new Date().toISOString().split("T")[0]; // Chỉ lấy ngày
+  if (dateEnd <= currentDate) {
+    return false;
+  }
+  return true;
+}
 
 async function submitPostRequest() {
   const location = document.getElementById("postLocation").value;
   const dateRequire = new Date().toISOString().split("T")[0];
   const deadline = document.getElementById("postDeadline").value;
-  const description = replaceNewLinesWithBr(document.getElementById("postDescription").value);
+  const description = replaceNewLinesWithBr(
+    document.getElementById("postDescription").value
+  );
+  if (!checkCurrentDate(deadline)) {
+    alert("The deadline must be greater than the current date.");
+    return;
+  }
   const money = document.getElementById("money-post").value;
   const requestData = {
     typeRequest: "POST",
@@ -252,7 +264,13 @@ async function submitVideoRequest() {
   const location = document.getElementById("videoLocation").value;
   const dateRequire = new Date().toISOString().split("T")[0];
   const deadline = document.getElementById("videoDeadline").value;
-  const description = replaceNewLinesWithBr(document.getElementById("videoDescription").value);
+  const description = replaceNewLinesWithBr(
+    document.getElementById("videoDescription").value
+  );
+  if (!checkCurrentDate(deadline)) {
+    alert("The deadline must be greater than the current date.");
+    return;
+  }
   const money = document.getElementById("money-video").value;
   const requestData = {
     typeRequest: "VIDEO",
@@ -282,7 +300,9 @@ async function submitHiretRequest() {
   if (selectedDays.length > 0) {
     const location = document.getElementById("hireLocation").value;
     const dateRequire = new Date().toISOString().split("T")[0];
-    const description = replaceNewLinesWithBr(document.getElementById("hireDescription").value);
+    const description = replaceNewLinesWithBr(
+      document.getElementById("hireDescription").value
+    );
     const money = document.getElementById("money-hire").value;
     const requestData = {
       typeRequest: "HIREBYDAY",
@@ -308,7 +328,13 @@ async function submitRepresentativetRequest() {
   const dateRequire = new Date().toISOString().split("T")[0];
   const dateStart = document.getElementById("representativeStart").value;
   const numberMonths = document.getElementById("representativeMonths").value;
-  const description = replaceNewLinesWithBr(document.getElementById("representativeDescription").value);
+  const description = replaceNewLinesWithBr(
+    document.getElementById("representativeDescription").value
+  );
+  if (!checkCurrentDate(dateStart)) {
+    alert("The Date Start must be greater than the current date.");
+    return;
+  }
   const money = document.getElementById("money-representative").value;
   const requestData = {
     typeRequest: "REPRESENTATIVE",
@@ -327,7 +353,6 @@ async function submitRepresentativetRequest() {
   await sendRequest(requestData);
 }
 
-
 async function sendRequest(data) {
   try {
     console.log(data);
@@ -338,14 +363,20 @@ async function sendRequest(data) {
       },
       body: JSON.stringify(data),
     });
-    
+    console.log(data);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const result = await response.json();
-    alert(result.result);
-    location.reload();
+
+    if (result.type === "ERROR_MONEY") {
+      alert("Insufficient funds. Redirecting to recharge page...");
+      window.location.href = "/payment/recharge"; // Redirect to recharge page
+    } else {
+      alert(result.result);
+      location.reload(); // Reload the page after successful request
+    }
   } catch (error) {
     alert("An error occurred: " + error.message);
   }
@@ -360,7 +391,9 @@ async function applyPublicRequest(id) {
 
       if (!response.ok) {
         const errorResult = await response.json();
-        throw new Error(errorResult.error || `HTTP error! status: ${response.status}`);
+        throw new Error(
+          errorResult.error || `HTTP error! status: ${response.status}`
+        );
       }
 
       const result = await response.json();
@@ -370,8 +403,6 @@ async function applyPublicRequest(id) {
     }
   }
 }
-
-
 
 document.addEventListener("DOMContentLoaded", updateCalendar);
 

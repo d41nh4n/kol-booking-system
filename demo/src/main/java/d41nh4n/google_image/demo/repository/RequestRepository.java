@@ -13,6 +13,7 @@ import d41nh4n.google_image.demo.entity.request.RequestStatus;
 
 import java.util.List;
 import d41nh4n.google_image.demo.entity.user.User;
+import java.util.Date;
 
 public interface RequestRepository extends JpaRepository<Request, Integer> {
 
@@ -50,4 +51,7 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
                         @Param("requestLocation") String requestLocation,
                         @Param("requestStatus") RequestStatus requestStatus,
                         Pageable pageable);
+
+        @Query("SELECT r FROM Request r WHERE r.requestDateEnd <= :endDate")
+        List<Request> findRequestsEndingBeforeOrOn(@Param("endDate") Date endDate);
 }

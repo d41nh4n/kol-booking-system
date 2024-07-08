@@ -11,7 +11,7 @@
 </head>
 
 <body>
-  <%@include file="navbar.jsp" %>
+
 <div class="container p-0">
     <div class="card px-4">
         <p class="h8 py-3 text-danger text-center">Fail payment</p>

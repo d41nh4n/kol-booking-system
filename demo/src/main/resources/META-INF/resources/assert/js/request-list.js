@@ -224,3 +224,28 @@ function denyRequest(requestId) {
     });
   }
 }
+$(document).ready(function() {
+  // Event listener for the 'Get Money' button click
+  $('.get-money').click(function(e) {
+    e.preventDefault();
+
+    const requestId = $(this).data('requestid');
+
+    if (requestId) {
+      $.ajax({
+        type: 'POST',
+        url: '/request/get-money',
+        data: { requestId: requestId },
+        success: function(response) {
+          alert('Success: ' + response);
+          location.reload(); // Reload the page to update the UI
+        },
+        error: function(xhr, status, error) {
+          alert('Error: ' + xhr.responseText);
+        }
+      });
+    } else {
+      alert('Request ID is missing.');
+    }
+  });
+});

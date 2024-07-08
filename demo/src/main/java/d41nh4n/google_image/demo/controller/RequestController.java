@@ -1,11 +1,10 @@
 package d41nh4n.google_image.demo.controller;
 
+import java.util.*;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.checkerframework.checker.units.qual.m;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.*;
@@ -14,21 +13,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import d41nh4n.google_image.demo.dto.CommentRatingDto;
 import d41nh4n.google_image.demo.dto.requestJob.RequesPostOrVideotDto;
 import d41nh4n.google_image.demo.dto.requestJob.RequestByDay;
 import d41nh4n.google_image.demo.dto.requestJob.RequestDto;
 import d41nh4n.google_image.demo.dto.requestJob.RequestRepresentativeDto;
 import d41nh4n.google_image.demo.dto.userdto.UserDto;
-import d41nh4n.google_image.demo.dto.userdto.UserInfo;
-import d41nh4n.google_image.demo.entity.Comment;
+import d41nh4n.google_image.demo.entity.TransactionHistory;
 import d41nh4n.google_image.demo.entity.notification.Notification;
 import d41nh4n.google_image.demo.entity.notification.TypeNotification;
 import d41nh4n.google_image.demo.entity.request.Request;
@@ -37,10 +33,10 @@ import d41nh4n.google_image.demo.entity.request.RequestWaitList;
 import d41nh4n.google_image.demo.entity.user.User;
 import d41nh4n.google_image.demo.mapper.RequestDtoToRequest;
 import d41nh4n.google_image.demo.mapper.UserToUserDto;
-import d41nh4n.google_image.demo.service.CommentService;
 import d41nh4n.google_image.demo.service.NotificationService;
 import d41nh4n.google_image.demo.service.ProvinceService;
 import d41nh4n.google_image.demo.service.RequestService;
+import d41nh4n.google_image.demo.service.TransactionHistoryService;
 import d41nh4n.google_image.demo.service.UserService;
 import d41nh4n.google_image.demo.validation.Utils;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +54,7 @@ public class RequestController {
     private final Utils utils;
     private final UserService userService;
     private final SimpMessagingTemplate messagingTemplate;
-    private final CommentService commentService;
+    private final TransactionHistoryService transactionHistoryService;
 
     @PostMapping("/private")
     public ResponseEntity<?> requestJob(@RequestBody Map<String, Object> request) {
@@ -69,11 +65,8 @@ public class RequestController {
         try {
             // Log the incoming request
             logger.info("Received request: {}", request);
-        } catch (NumberFormatException e) {
-            res.put("error", "Invalid number format: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
         } catch (Exception e) {
-            res.put("error", "Error parsing money: " + e.getMessage());
+            res.put("error", "Error logging the request: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
         }
 
@@ -82,24 +75,86 @@ public class RequestController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
         }
 
+        int recipientId = 0;
+        double amount = 0;
+        String transactionId = null;
+        Date date = new Date();
         try {
             switch (typeRequest.toUpperCase()) {
                 case "POST":
                 case "VIDEO": {
+
                     RequesPostOrVideotDto requestDto = mapper.convertValue(request.get("request"),
                             RequesPostOrVideotDto.class);
-                    handlePostOrVideo(requestDto, typeRequest);
+                    // check ngày hợp lệ
+                    if (utils.stringToDate(requestDto.getDeadline()).compareTo(date) <= 0) {
+                        res.put("error", "The deadline must be greater than the current date!");
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+                    }
+                    recipientId = Integer.parseInt(requestDto.getRecipientId());
+                    amount = (requestDto.getType().equalsIgnoreCase("POST"))
+                            ? userService.getProfileById(recipientId).getPriceAPost()
+                            : userService.getProfileById(recipientId).getPriceAVideo();
+
+                    TransactionHistory depositSuccess = transactionHistoryService.depositMoneyForRequest(
+                            utils.getPrincipal().getUserId(),
+                            recipientId, amount, transactionId);
+                    if (depositSuccess == null) {
+                        res.put("error", "Insufficient funds");
+                        res.put("type", "ERROR_MONEY");
+                        return ResponseEntity.ok(res);
+                    }
+
+                    requestService.handlePostOrVideo(requestDto, typeRequest, depositSuccess);
                     break;
                 }
                 case "HIREBYDAY": {
                     RequestByDay requestDto = mapper.convertValue(request.get("request"), RequestByDay.class);
-                    handleHireByDay(requestDto, typeRequest);
+                    recipientId = Integer.parseInt(requestDto.getRecipientId());
+                    // check ngày hợp lệ
+                    List<Date> days = requestDto.getDaysRequire().stream().map(day -> utils.stringToDate(day))
+                            .collect(Collectors.toList());
+                    for (Date dateRequired : days) {
+                        if (dateRequired.compareTo(date) <= 0) {
+                            res.put("error", "The date required must be greater than the current date!");
+                            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+                        }
+                    }
+                    int numberDay = requestDto.getDaysRequire().size();
+                    amount = userService.getProfileById(recipientId).getPriceAToHireADay() * numberDay;
+                    TransactionHistory depositSuccess = transactionHistoryService.depositMoneyForRequest(
+                            utils.getPrincipal().getUserId(),
+                            recipientId, amount, transactionId);
+                    if (depositSuccess == null) {
+                        res.put("error", "Insufficient funds");
+                        res.put("type", "ERROR_MONEY");
+                        return ResponseEntity.ok(res);
+                    }
+
+                    requestService.handleHireByDay(requestDto, typeRequest, depositSuccess);
                     break;
                 }
                 case "REPRESENTATIVE": {
                     RequestRepresentativeDto requestDto = mapper.convertValue(request.get("request"),
                             RequestRepresentativeDto.class);
-                    handleRepresentative(requestDto, typeRequest);
+                    // check ngày hợp lệ
+                    if (utils.stringToDate(requestDto.getDateStart()).compareTo(date) <= 0) {
+                        res.put("error", "The date start must be greater than the current date!");
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+                    }
+                    recipientId = Integer.parseInt(requestDto.getRecipientId());
+                    amount = userService.getProfileById(recipientId).getRepresentativePrice();
+
+                    TransactionHistory depositSuccess = transactionHistoryService.depositMoneyForRequest(
+                            utils.getPrincipal().getUserId(),
+                            recipientId, amount, transactionId);
+                    if (depositSuccess == null) {
+                        res.put("error", "Insufficient funds");
+                        res.put("type", "ERROR_MONEY");
+                        return ResponseEntity.ok(res);
+                    }
+
+                    requestService.handleRepresentative(requestDto, typeRequest, depositSuccess);
                     break;
                 }
                 default:
@@ -107,7 +162,6 @@ public class RequestController {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
             }
         } catch (Exception e) {
-            // Log the error details
             logger.error("An error occurred while processing the request: {}", e.getMessage(), e);
             res.put("error", "An error occurred while processing the request: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
@@ -115,42 +169,6 @@ public class RequestController {
 
         res.put("result", "Success");
         return ResponseEntity.ok(res);
-    }
-
-    private void handlePostOrVideo(RequesPostOrVideotDto requestDto, String typeRequest) {
-        Request request = requestDtoToRequest.requestDtoToRequest(requestDto);
-        request.setPublic(false);
-        request.setRequestStatus(RequestStatus.PENDING);
-        request.setRequestType(typeRequest);
-        if (requestDto.getType().equalsIgnoreCase("POST")) {
-            request.setPayment(
-                    userService.getProfileById(Integer.parseInt(requestDto.getRecipientId())).getPriceAPost());
-        } else if (requestDto.getType().equalsIgnoreCase("VIDEO")) {
-            request.setPayment(
-                    userService.getProfileById(Integer.parseInt(requestDto.getRecipientId())).getPriceAVideo());
-        }
-        requestService.save(request);
-    }
-
-    private void handleHireByDay(RequestByDay requestDto, String typeRequest) {
-        Request request = requestDtoToRequest.requestByDayToRequest(requestDto);
-        request.setPublic(false);
-        request.setRequestStatus(RequestStatus.PENDING);
-        request.setRequestType(typeRequest);
-        request.setPayment(
-                userService.getProfileById(Integer.parseInt(requestDto.getRecipientId())).getPriceAToHireADay());
-
-        requestService.save(request);
-    }
-
-    private void handleRepresentative(RequestRepresentativeDto requestDto, String typeRequest) {
-        Request request = requestDtoToRequest.requestRepresentativeToRequest(requestDto);
-        request.setPublic(false);
-        request.setRequestType(typeRequest);
-        request.setRequestStatus(RequestStatus.PENDING);
-        request.setPayment(
-                userService.getProfileById(Integer.parseInt(requestDto.getRecipientId())).getRepresentativePrice());
-        requestService.save(request);
     }
 
     @GetMapping("/pending")
@@ -164,6 +182,9 @@ public class RequestController {
 
     @GetMapping("/in-process")
     public String listRequestInProgress(Model model, @RequestParam(name = "page", required = false) String page) {
+
+        requestService.checkFinishRequest();
+
         if (utils.getPrincipal().getRoles().equalsIgnoreCase("KOL")) {
             return listRequestsByStatus(model, page, RequestStatus.IN_PROGRESS);
         }
@@ -172,6 +193,9 @@ public class RequestController {
 
     @GetMapping("/finish")
     public String listRequestFinished(Model model, @RequestParam(name = "page", required = false) String page) {
+
+        requestService.checkFinishRequest();
+
         if (utils.getPrincipal().getRoles().equalsIgnoreCase("KOL")) {
             return listRequestsByStatus(model, page, RequestStatus.FINISHED);
         }
@@ -258,6 +282,9 @@ public class RequestController {
 
                 request.setRequestStatus(RequestStatus.CANCEL);
                 requestService.save(request);
+
+                // refund money to user
+                transactionHistoryService.refundMoneyToRequester(request);
                 return ResponseEntity.ok("Deny Success");
             } catch (NumberFormatException e) {
                 return new ResponseEntity<>("Invalid request id", HttpStatus.BAD_REQUEST);
@@ -313,8 +340,9 @@ public class RequestController {
 
             // Validate and parse money
             money = Double.parseDouble(moneyStr);
+            System.out.println("money = " + money);
             if (money < 0) {
-                res.put("error", "Invalid number");
+                res.put("error", "Invalid money");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
             }
         } catch (Exception e) {
@@ -326,24 +354,54 @@ public class RequestController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("typeRequest is missing");
         }
 
+        int recipientId = 0;
+        String transactionId = null;
+
         try {
             switch (typeRequest.toUpperCase()) {
                 case "POST":
                 case "VIDEO": {
                     RequesPostOrVideotDto requestDto = mapper.convertValue(request.get("request"),
                             RequesPostOrVideotDto.class);
-                    handlePostOrVideoPublic(requestDto, typeRequest, money);
+
+                    TransactionHistory depositSuccess = transactionHistoryService.depositMoneyForRequest(
+                            utils.getPrincipal().getUserId(),
+                            recipientId, money, transactionId);
+                    if (depositSuccess == null) {
+                        res.put("error", "Insufficient funds");
+                        res.put("type", "ERROR_MONEY");
+                        return ResponseEntity.ok(res);
+                    }
+                    requestService.handlePostOrVideoPublic(requestDto, typeRequest, money, depositSuccess);
                     break;
                 }
                 case "HIREBYDAY": {
                     RequestByDay requestDto = mapper.convertValue(request.get("request"), RequestByDay.class);
-                    handleHireByDayPublic(requestDto, typeRequest, money);
+
+                    TransactionHistory depositSuccess = transactionHistoryService.depositMoneyForRequest(
+                            utils.getPrincipal().getUserId(),
+                            recipientId, money, transactionId);
+                    if (depositSuccess == null) {
+                        res.put("error", "Insufficient funds");
+                        res.put("type", "ERROR_MONEY");
+                        return ResponseEntity.ok(res);
+                    }
+                    requestService.handleHireByDayPublic(requestDto, typeRequest, money, depositSuccess);
                     break;
                 }
                 case "REPRESENTATIVE": {
                     RequestRepresentativeDto requestDto = mapper.convertValue(request.get("request"),
                             RequestRepresentativeDto.class);
-                    handleRepresentativePublic(requestDto, typeRequest, money);
+
+                    TransactionHistory depositSuccess = transactionHistoryService.depositMoneyForRequest(
+                            utils.getPrincipal().getUserId(),
+                            recipientId, money, transactionId);
+                    if (depositSuccess == null) {
+                        res.put("error", "Insufficient funds");
+                        res.put("type", "ERROR_MONEY");
+                        return ResponseEntity.ok(res);
+                    }
+                    requestService.handleRepresentativePublic(requestDto, typeRequest, money, depositSuccess);
                     break;
                 }
                 default:
@@ -359,33 +417,6 @@ public class RequestController {
 
         res.put("result", "Success");
         return ResponseEntity.ok(res);
-    }
-
-    private void handlePostOrVideoPublic(RequesPostOrVideotDto requestDto, String typeRequest, Double money) {
-        Request request = requestDtoToRequest.requestDtoToRequest(requestDto);
-        request.setPublic(true);
-        request.setRequestStatus(RequestStatus.PENDING);
-        request.setRequestType(typeRequest);
-        request.setPayment(money);
-        requestService.save(request);
-    }
-
-    private void handleHireByDayPublic(RequestByDay requestDto, String typeRequest, Double money) {
-        Request request = requestDtoToRequest.requestByDayToRequest(requestDto);
-        request.setPublic(true);
-        request.setRequestStatus(RequestStatus.PENDING);
-        request.setRequestType(typeRequest);
-        request.setPayment(money);
-        requestService.save(request);
-    }
-
-    private void handleRepresentativePublic(RequestRepresentativeDto requestDto, String typeRequest, Double money) {
-        Request request = requestDtoToRequest.requestRepresentativeToRequest(requestDto);
-        request.setPublic(true);
-        request.setRequestType(typeRequest);
-        request.setRequestStatus(RequestStatus.PENDING);
-        request.setPayment(money);
-        requestService.save(request);
     }
 
     @PostMapping("/apply")
@@ -441,6 +472,8 @@ public class RequestController {
         }
 
         int updateCount = requestService.cancelRequest(request);
+
+        transactionHistoryService.refundMoneyToRequesterIfRequestCancel(request);
         if (updateCount > 0) {
             res.put("message", "Request cancelled successfully");
             return ResponseEntity.ok(res);
@@ -563,7 +596,6 @@ public class RequestController {
         }
     }
 
-
     @PostMapping("/finish-request")
     public ResponseEntity<?> finishRequest(@RequestParam(name = "requestId") String requestId) {
         Map<String, String> response = new HashMap<>();
@@ -580,6 +612,9 @@ public class RequestController {
             request.setRequestStatus(RequestStatus.FINISHED);
             requestService.save(request);
 
+            // tranfer money to kol
+            transactionHistoryService.transferMoneyToResponder(request);
+
             response.put("message", "Request finished successfully");
             return ResponseEntity.ok(response);
 
@@ -591,4 +626,39 @@ public class RequestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
+    @PostMapping("/get-money")
+    public ResponseEntity<?> getMoneyForResponder(@RequestParam int requestId) {
+        try {
+            // Retrieve the request by requestId
+            Request request = requestService.findRequestById(requestId);
+            if (request == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Request with ID " + requestId + " not found");
+            }
+
+            if (request.getRequestStatus().equals(RequestStatus.FINISHED)
+                    && (request.getRequestType().equalsIgnoreCase("HIREBYDAY")
+                            || (request.getRequestType().equalsIgnoreCase("REPRESENTATIVE")))
+                    && !request.getTransactionHistory().isTransStatus()) {
+                User responder = request.getResponder();
+                if (responder == null) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body("No responder found for request ID " + requestId);
+                }
+                // Perform money transfer to responder
+                boolean transferSuccess = transactionHistoryService.transferMoneyToResponder(request);
+                if (!transferSuccess) {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body("Failed to transfer money to responder for request ID " + requestId);
+                }
+                return ResponseEntity.ok("Money successfully transferred to responder for request ID " + requestId);
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error processing request: " + e.getMessage());
+        }
+    }
+
 }

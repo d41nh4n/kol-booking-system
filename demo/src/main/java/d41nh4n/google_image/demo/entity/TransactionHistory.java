@@ -1,13 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package d41nh4n.google_image.demo.entity;
 
-/**
- *
- * @author DAO
- */
 import jakarta.persistence.*;
 import java.util.Date;
 
@@ -44,11 +36,17 @@ public class TransactionHistory {
     @JoinColumn(name = "receiver_id")
     private User receiver;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private TypeTransaction type;
+
     @Column(name = "trans_status")
-    private boolean transtStatus;
+    private boolean transStatus;
+
+    @Column(name = "transaction_id", unique = true, nullable = true)
+    private String transactionId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id", referencedColumnName = "request_id")
     private Request request;
-    // Getters and setters
 }

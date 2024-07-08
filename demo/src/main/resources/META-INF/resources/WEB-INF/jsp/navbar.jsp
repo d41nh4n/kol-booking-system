@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -52,7 +52,7 @@
         border-width: 0 0 2px;
         font-weight: 800;
     }    
-     .dropdown-menu {
+    .dropdown-menu {
         max-width: 400px;
         min-width: 400px;
         max-height: 300px; 
@@ -64,16 +64,16 @@
     .navbar-nav .dropdown-menu{
         position:absolute;
     }
-  .navbar-nav{
-    display: flex;
-    flex-direction: row;
-  }           
-  .navbar-nav > li > a > i {
+    .navbar-nav{
+        display: flex;
+        flex-direction: row;
+    }           
+    .navbar-nav > li > a > i {
         font-size: 1.5em; /* Tăng kích thước icon */
     }  
     .dropdown-menu>li>a {
-    height: 40px;
-}     
+        height: 40px;
+    }     
 </style>
 </head>
 <body>
@@ -99,26 +99,33 @@
             </form> --%>
             <ul class="nav navbar-nav navbar-right">
                 <c:if test="${not empty userInfor}">
-                <li>
-                    <a href="/request/job-market"><i class="fa-solid fa-shop"></i></a>
-                </li>
+                    <li>
+                        <a href="/request/job-market"><i class="fa-solid fa-shop"></i></a>
+                    </li>
                 </c:if>
                 <c:if test="${not empty userInfor}">
                     <li>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="glyphicon glyphicon-bell"></i></a>
                         <ul class="dropdown-menu" id="notificationDropdown">
-                        <li><a href="#">Not have notification yet</a></li>
+                            <li><a href="#">Not have notification yet</a></li>
                         </ul>
                     </li>
                 </c:if>
                 <c:if test="${not empty userInfor}">
-                <li><a id="btnToggle" href="/chatbox"><i class="fa-solid fa-message"></i></a></li>
+                    <li><a id="btnToggle" href="/chatbox"><i class="fa-solid fa-message"></i></a></li>
                 </c:if>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="glyphicon glyphicon-user"></i>
+                        <c:if test="${not empty userInfor}">
+                            <span>(<fmt:formatNumber value="${balance}" type="number" pattern="###0" /> VND)</span>
+                        </c:if>
+                    </a>
                     <ul class="dropdown-menu user">
                         <c:choose>
-                            <c:when test="${not empty userInfor}">                      
+                            <c:when test="${not empty userInfor}">
+                                <li><a href="#" data-toggle="modal" data-target="#balanceModal">Balance: <fmt:formatNumber value="${balance}" type="number" pattern="###0" /> VND</a></li>      
+                                <li class="divider"></li>           
                                 <li><a href="/request/pending">Jobs</a></li>
                                 <li><a href="/infor">Profile</a></li>
                                 <li><a href="/login/change-password">Change password</a></li>
@@ -132,6 +139,24 @@
                     </ul>
                 </li>
             </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="balanceModal" tabindex="-1" role="dialog" aria-labelledby="balanceModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="balanceModalLabel">Information Balance</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Balance: <fmt:formatNumber value="${balance}" type="number" pattern="###0" /> VND</p>
+                <a href="/payment/recharge" class="btn btn-primary">Pay In</a>
+            </div>
         </div>
     </div>
 </div>

@@ -109,7 +109,7 @@
                                     </c:if>
                                 </div>
                                 <div class="col-sm-3 text-align-center">
-                                    <p class="value3 mt-sm">${request.price}</p>
+                                    <p class="value3 mt-sm"><fmt:formatNumber value="${request.price}" type="number" pattern="###0" /> VND</p>
                                     <c:if test="${not empty request.requestDto}">
                                         <p class="fs-mini text-muted">
                                             ${request.requestDto.type} |
@@ -194,7 +194,7 @@
                                         </a>
                                     </c:if>
                                     <c:if test="${ request.status == 'FINISHED'}">
-                                        <a class="btn btn-primary btn-info btn-sm my-2 rounded" href="/request/rating-page?requestId=${request.requestId}" >
+                                        <a class="btn btn-primary btn-info btn-sm my-2 rounded" href="/comment/rating-page?requestId=${request.requestId}" >
                                             Comment
                                         </a>
                                     </c:if>
@@ -214,7 +214,6 @@
                                 </div>
                              </div>
                             </c:if>
-
                            <div class="wait-list">
     <p class="day">User Work:</p>
     <c:choose>

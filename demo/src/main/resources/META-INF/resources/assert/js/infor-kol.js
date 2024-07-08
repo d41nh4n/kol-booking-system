@@ -75,8 +75,18 @@ function openModal() {
 button.on("click", openModal);
 
 const monthNames = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 const currentDate = new Date();
 let currentMonth = currentDate.getMonth();
@@ -94,34 +104,34 @@ function updateCalendar() {
   const monthDays = new Date(currentYear, currentMonth + 1, 0).getDate();
 
   for (let i = 0; i < firstDay; i++) {
-      const emptyDiv = document.createElement("div");
-      daysContainer.appendChild(emptyDiv);
+    const emptyDiv = document.createElement("div");
+    daysContainer.appendChild(emptyDiv);
   }
 
   for (let day = 1; day <= monthDays; day++) {
-      const dayDiv = document.createElement("div");
-      dayDiv.className = "day";
+    const dayDiv = document.createElement("div");
+    dayDiv.className = "day";
 
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.id = `day${day}`;
-      checkbox.dataset.date = `${currentYear}-${currentMonth + 1}-${day}`;
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.id = `day${day}`;
+    checkbox.dataset.date = `${currentYear}-${currentMonth + 1}-${day}`;
 
-      const label = document.createElement("label");
-      label.setAttribute("for", checkbox.id);
-      label.innerText = day;
+    const label = document.createElement("label");
+    label.setAttribute("for", checkbox.id);
+    label.innerText = day;
 
-      if (selectedDaysList.includes(checkbox.dataset.date)) {
-          checkbox.checked = true;
-          label.style.backgroundColor = "#007bff";
-          label.style.color = "white";
-      }
+    if (selectedDaysList.includes(checkbox.dataset.date)) {
+      checkbox.checked = true;
+      label.style.backgroundColor = "#007bff";
+      label.style.color = "white";
+    }
 
-      checkbox.addEventListener("change", handleCheckboxChange);
+    checkbox.addEventListener("change", handleCheckboxChange);
 
-      dayDiv.appendChild(checkbox);
-      dayDiv.appendChild(label);
-      daysContainer.appendChild(dayDiv);
+    dayDiv.appendChild(checkbox);
+    dayDiv.appendChild(label);
+    daysContainer.appendChild(dayDiv);
   }
 
   enforceMaxDaysSelection();
@@ -134,61 +144,73 @@ function handleCheckboxChange(event) {
   const selectedDate = new Date(currentYear, currentMonth, day);
 
   if (selectedDate < currentDate) {
-      alert("You cannot select a date earlier than today.");
-      event.target.checked = false;
-      return;
+    alert("You cannot select a date earlier than today.");
+    event.target.checked = false;
+    return;
   }
 
   const dateStr = event.target.dataset.date;
   if (event.target.checked) {
-      selectedDaysList.push(dateStr);
-      event.target.nextElementSibling.style.backgroundColor = "#007bff";
-      event.target.nextElementSibling.style.color = "white";
+    selectedDaysList.push(dateStr);
+    event.target.nextElementSibling.style.backgroundColor = "#007bff";
+    event.target.nextElementSibling.style.color = "white";
   } else {
-      const index = selectedDaysList.indexOf(dateStr);
-      if (index > -1) {
-          selectedDaysList.splice(index, 1);
-          event.target.nextElementSibling.style.backgroundColor = "";
-          event.target.nextElementSibling.style.color = "";
-      }
+    const index = selectedDaysList.indexOf(dateStr);
+    if (index > -1) {
+      selectedDaysList.splice(index, 1);
+      event.target.nextElementSibling.style.backgroundColor = "";
+      event.target.nextElementSibling.style.color = "";
+    }
   }
 
   if (selectedDaysList.length > maxDays) {
-      alert("The maximum number of days you can select is " + maxDays);
-      event.target.checked = false;
-      const lastSelectedDate = selectedDaysList.pop();
-      document.querySelector(`input[data-date='${lastSelectedDate}']`).checked = false;
-      document.querySelector(`input[data-date='${lastSelectedDate}']`).nextElementSibling.style.backgroundColor = "";
-      document.querySelector(`input[data-date='${lastSelectedDate}']`).nextElementSibling.style.color = "";
+    alert("The maximum number of days you can select is " + maxDays);
+    event.target.checked = false;
+    const lastSelectedDate = selectedDaysList.pop();
+    document.querySelector(
+      `input[data-date='${lastSelectedDate}']`
+    ).checked = false;
+    document.querySelector(
+      `input[data-date='${lastSelectedDate}']`
+    ).nextElementSibling.style.backgroundColor = "";
+    document.querySelector(
+      `input[data-date='${lastSelectedDate}']`
+    ).nextElementSibling.style.color = "";
   }
 }
 
 function enforceMaxDaysSelection() {
   const maxDays = 15;
   while (selectedDaysList.length > maxDays) {
-      const lastSelectedDate = selectedDaysList.pop();
-      document.querySelector(`input[data-date='${lastSelectedDate}']`).checked = false;
-      document.querySelector(`input[data-date='${lastSelectedDate}']`).nextElementSibling.style.backgroundColor = "";
-      document.querySelector(`input[data-date='${lastSelectedDate}']`).nextElementSibling.style.color = "";
+    const lastSelectedDate = selectedDaysList.pop();
+    document.querySelector(
+      `input[data-date='${lastSelectedDate}']`
+    ).checked = false;
+    document.querySelector(
+      `input[data-date='${lastSelectedDate}']`
+    ).nextElementSibling.style.backgroundColor = "";
+    document.querySelector(
+      `input[data-date='${lastSelectedDate}']`
+    ).nextElementSibling.style.color = "";
   }
 }
 
 function prevMonth() {
   if (currentMonth === 0) {
-      currentMonth = 11;
-      currentYear--;
+    currentMonth = 11;
+    currentYear--;
   } else {
-      currentMonth--;
+    currentMonth--;
   }
   updateCalendar();
 }
 
 function nextMonth() {
   if (currentMonth === 11) {
-      currentMonth = 0;
-      currentYear++;
+    currentMonth = 0;
+    currentYear++;
   } else {
-      currentMonth++;
+    currentMonth++;
   }
   updateCalendar();
 }
@@ -196,7 +218,7 @@ function nextMonth() {
 document.addEventListener("DOMContentLoaded", updateCalendar);
 
 function replaceNewLinesWithBr(text) {
-  return text.replace(/\n/g, '<br>');
+  return text.replace(/\n/g, "<br>");
 }
 
 async function submitPostRequest() {
@@ -204,7 +226,13 @@ async function submitPostRequest() {
   const location = document.getElementById("postLocation").value;
   const dateRequire = new Date().toISOString().split("T")[0]; // Ngày hiện tại
   const deadline = document.getElementById("postDeadline").value;
-  const description = replaceNewLinesWithBr(document.getElementById("postDescription").value);
+  const description = replaceNewLinesWithBr(
+    document.getElementById("postDescription").value
+  );
+  if (!checkCurrentDate(deadline)) {
+    alert("The deadline must be greater than the current date.");
+    return;
+  }
   const requestData = {
     typeRequest: "POST",
     request: {
@@ -225,8 +253,13 @@ async function submitVideoRequest() {
   const location = document.getElementById("videoLocation").value;
   const dateRequire = new Date().toISOString().split("T")[0]; // Ngày hiện tại
   const deadline = document.getElementById("videoDeadline").value;
-  const description = replaceNewLinesWithBr(document.getElementById("videoDescription").value);
-
+  const description = replaceNewLinesWithBr(
+    document.getElementById("videoDescription").value
+  );
+  if (!checkCurrentDate(deadline)) {
+    alert("The deadline must be greater than the current date.");
+    return;
+  }
   const requestData = {
     typeRequest: "VIDEO",
     request: {
@@ -247,7 +280,9 @@ async function submitHiretRequest() {
     const recipientId = document.getElementById("user-recipient-request").value;
     const location = document.getElementById("hireLocation").value;
     const dateRequire = new Date().toISOString().split("T")[0]; // Ngày hiện tại
-    const description = replaceNewLinesWithBr(document.getElementById("hireDescription").value);
+    const description = replaceNewLinesWithBr(
+      document.getElementById("hireDescription").value
+    );
 
     const requestData = {
       typeRequest: "HIREBYDAY",
@@ -273,8 +308,13 @@ async function submitRepresentativetRequest() {
   const dateRequire = new Date().toISOString().split("T")[0]; // Ngày hiện tại
   const dateStart = document.getElementById("representativeStart").value; // Ngày bắt đầu
   const numberMonths = document.getElementById("representativeMonths").value;
-  const description = replaceNewLinesWithBr(document.getElementById("representativeDescription").value);
-
+  const description = replaceNewLinesWithBr(
+    document.getElementById("representativeDescription").value
+  );
+  if (!checkCurrentDate(dateStart)) {
+    alert("The Date Start must be greater than the current date.");
+    return;
+  }
   const requestData = {
     typeRequest: "REPRESENTATIVE",
     request: {
@@ -291,7 +331,6 @@ async function submitRepresentativetRequest() {
   await sendRequest(requestData);
 }
 
-
 async function sendRequest(data) {
   try {
     const response = await fetch("/request/private", {
@@ -301,15 +340,21 @@ async function sendRequest(data) {
       },
       body: JSON.stringify(data),
     });
-
+    console.log(data);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const result = await response.json();
-    console.log(result.result);
-    alert(result.result);
-    window.location.href = "https://localhost/request/pending";
+    console.log(result);
+    if (result.type === "ERROR_MONEY") {
+      alert("Insufficient funds. Redirecting to recharge page...");
+      window.location.href = "https://localhost/payment/recharge";
+    } else {
+      console.log(result.result);
+      alert(result.result);
+      window.location.href = "https://localhost/request/pending";
+    }
   } catch (error) {
     alert("An error occurred: " + error.message);
   }
@@ -337,7 +382,6 @@ function showContent(type) {
     default:
   }
 }
-
 
 // ================================================
 document.getElementById("add-button").addEventListener("click", function () {
@@ -505,7 +549,7 @@ function createPagination(totalPages, currentPage) {
 }
 
 function generateStarRating(rating) {
-  let starHtml = '';
+  let starHtml = "";
   for (let i = 1; i <= 5; i++) {
     if (i <= rating) {
       starHtml += '<i class="fa fa-star"></i>';
@@ -514,4 +558,12 @@ function generateStarRating(rating) {
     }
   }
   return starHtml;
+}
+
+function checkCurrentDate(dateEnd) {
+  var currentDate = new Date().toISOString().split("T")[0]; // Chỉ lấy ngày
+  if (dateEnd <= currentDate) {
+    return false;
+  }
+  return true;
 }

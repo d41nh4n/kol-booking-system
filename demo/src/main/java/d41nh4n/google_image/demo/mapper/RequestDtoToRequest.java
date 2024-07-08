@@ -3,6 +3,7 @@ package d41nh4n.google_image.demo.mapper;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,8 +49,11 @@ public class RequestDtoToRequest {
         request.setRequestDescription(requestByDay.getDecription());
         request.setRequestLocation(requestByDay.getLocation());
         request.setRequestDate(requireDate);
-        request.setDaysRequest(requestByDay.getDaysRequire().stream().map(day -> utils.stringToDate(day))
-                .collect(Collectors.toList()));
+        List<Date> days = requestByDay.getDaysRequire().stream().map(day -> utils.stringToDate(day))
+                .collect(Collectors.toList());
+        Collections.sort(days);
+        request.setRequestDateEnd(days.getLast());
+        request.setDaysRequest(days);
         return request;
     }
 
@@ -125,6 +129,7 @@ public class RequestDtoToRequest {
     public Request requestRepresentativeToRequest(RequestRepresentativeDto requestRepDto) {
         Request request = new Request();
         int senderId = utils.getPrincipal().getUserId();
+
         if (requestRepDto.getRecipientId() != null) {
             int recipientId = Integer.parseInt(requestRepDto.getRecipientId());
             User recipient = userService.getUserById(recipientId);
@@ -133,6 +138,7 @@ public class RequestDtoToRequest {
         } else {
             request.setResponder(null);
         }
+
         User sender = userService.getUserById(senderId);
         Date requireDate = utils.stringToDate(requestRepDto.getDateRequire());
         request.setRequester(sender);
@@ -152,6 +158,10 @@ public class RequestDtoToRequest {
         requestRepresentative.setEndDate(Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         requestRepresentative.setRequest(request);
         request.setRequestRepresentative(requestRepresentative);
+
+        // Thiết lập ngày kết thúc của request là ngày kết thúc của
+        // requestRepresentative
+        request.setRequestDateEnd(requestRepresentative.getEndDate());
 
         return request;
     }
@@ -211,7 +221,7 @@ public class RequestDtoToRequest {
         requestPending.setPrice(request.getPayment());
         requestPending.setStatus(request.getRequestStatus().name());
         requestPending.setIsPublic(request.isPublic());
-        
+        requestPending.setTransactionDone(request.getTransactionHistory().isTransStatus());
         // Cập nhật danh sách người chờ
         if (request.isPublic() && request.getResponder() == null) {
             List<UserInfo> listUserApply = request.getRequestWaitList().stream()

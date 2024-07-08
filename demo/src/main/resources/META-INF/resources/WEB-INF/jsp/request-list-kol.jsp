@@ -117,7 +117,7 @@
                                     </c:if>
                                 </div>
                                 <div class="col-sm-3 text-align-center">
-                                    <p class="value3 mt-sm">${request.price}</p>
+                                    <p class="value3 mt-sm"><fmt:formatNumber value="${request.price}" type="number" pattern="###0" /> VND</p>
                                     <c:if test="${not empty request.requestDto}">
                                         <p class="fs-mini text-muted">
                                             ${request.requestDto.type} |
@@ -164,7 +164,11 @@
                                         <a class="btn btn-primary btn-info btn-sm submit-result my-2 rounded" href="#" data-toggle="modal" data-target="#submitModal" 
                                         data-requestId = "${request.requestId}">Submit</a>
                                     </c:if>
-                                     <c:if test="${userInfor.role == 'KOL' && request.status == 'PENDING'}">
+                                    <c:if test="${userInfor.role == 'KOL' && request.status == 'FINISHED' && request.transactionDone == false}">
+                                        <a class="btn btn-primary btn-info btn-sm get-money my-2 rounded" href="#"  data-requestId = "${request.requestId}">Get Money</a>
+                                    </c:if>
+
+                                    <c:if test="${userInfor.role == 'KOL' && request.status == 'PENDING'}">
                                     <a class="btn btn-primary btn-info btn-sm" href="#" onclick="acceptRequest(${request.requestId})">Accept</a>
                                     <a class="btn btn-primary btn-info btn-sm" href="#" onclick="denyRequest(${request.requestId})">Deny</a>
                                     </c:if>

@@ -55,11 +55,17 @@ public class User {
     @Column(name = "reset_password_token")
     private String resetPasswordToken;
 
+    @Column(name = "account_balance")
+    private Double accountBalance;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Profile profile;
 
     @PrePersist
     protected void onCreate() {
         this.createAt = new Date();
+        if (this.accountBalance == null) {
+            this.accountBalance = 0.0;
+        }
     }
 }

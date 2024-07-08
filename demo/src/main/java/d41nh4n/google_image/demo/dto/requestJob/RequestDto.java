@@ -25,6 +25,7 @@ public class RequestDto {
     private boolean isPublic;
     private String urlResult;
     private List<UserInfo> listWaitList;
+    private boolean transactionDone;
 
     public Boolean getIsPublic() {
         return isPublic;

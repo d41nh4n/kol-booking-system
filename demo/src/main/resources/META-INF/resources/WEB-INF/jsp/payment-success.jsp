@@ -11,7 +11,6 @@
 </head>
 
 <body>
-  <%@include file="navbar.jsp" %>
 <div class="container p-0">
     <div class="card px-4">
         <p class="h8 py-3 text-success text-center">Success payment</p>
@@ -33,7 +32,7 @@
             </div>
             <div class="col-12">
                 <div class="d-flex flex-column">
-                    <p class="text mb-1">Payment Time:p>
+                    <p class="text mb-1">Payment Time:</p>
                     <input class="form-control mb-3" type="text" value="${paymentTime}" placeholder="[payment time]" readonly>
                 </div>
             </div>

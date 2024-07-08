@@ -31,6 +31,10 @@ public class GlobalControllerAdvice {
         if (principal != null && !validTokenService.isTokenExpired(token)) {
             UserInfo info = new UserInfo(principal.getUserId(), principal.getFullName(), principal.getRoles(),
                     principal.getAvatar());
+
+            Double balance = userService.getAccountBalanceByUserId(principal.getUserId());
+            System.out.println("Balance "+balance);
+            request.setAttribute("balance", balance);
             request.setAttribute("userInfor", info);
         }
     }
