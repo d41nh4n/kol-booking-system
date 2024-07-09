@@ -2,7 +2,6 @@ package com.duc.vnpaydemo.model;
 
 import jakarta.persistence.*;
 
-import java.util.List;
 
 @Entity
 @Table(name = "Users")
