@@ -67,8 +67,8 @@
                                             </div>
                                             <!-- Price Range Input -->
                                             <div class="col-lg-4 col-md-3 col-sm-12 p-0">
-                                                <input type="number" placeholder="Min Price" class="form-control" id="minPrice" name="minPrice" value="${minPrice}">
-                                                <input type="number" placeholder="Max Price" class="form-control" id="maxPrice" name="maxPrice" value="${maxPrice}">
+                                                <input type="number" placeholder="Min Price" class="form-control" id="minPrice" name="minPrice" value="<fmt:formatNumber value="${minPrice}" type="number" pattern="#,##0" />">
+                                                <input type="number" placeholder="Max Price" class="form-control" id="maxPrice" name="maxPrice" value="<fmt:formatNumber value="${maxPrice}" type="number" pattern="#,##0" />">
                                             </div>
                                         </div>
                                         <div class="row mt-2">
@@ -120,19 +120,19 @@
                                         <div class="price">
                                             <div class="price-item">
                                                 <span class="dot"></span>
-                                                <span class="price-down"><fmt:formatNumber value="${user.pricePost}" type="number" pattern="###0" /></span> <h6>(A Post)</h6>
+                                                <span class="price-down"><fmt:formatNumber value="${user.pricePost}" type="number" pattern="#,##0" /></span> <h6>(A Post)</h6>
                                             </div>
                                             <div class="price-item">
                                                 <span class="dot"></span>
-                                                <span class="price-down"><fmt:formatNumber value="${user.priceVideo}" type="number" pattern="###0" /></span> <h6>(A Video)</h6>
+                                                <span class="price-down"><fmt:formatNumber value="${user.priceVideo}" type="number" pattern="#,##0" /></span> <h6>(A Video)</h6>
                                             </div>
                                             <div class="price-item">
                                                 <span class="dot"></span>
-                                                <span class="price-down"><fmt:formatNumber value="${user.priceHireByDay}" type="number" pattern="###0" /></span> <h6>(Per Day)</h6>
+                                                <span class="price-down"><fmt:formatNumber value="${user.priceHireByDay}" type="number" pattern="#,##0" /></span> <h6>(Per Day)</h6>
                                             </div>
                                             <div class="price-item">
                                                 <span class="dot"></span>
-                                                <span class="price-down"><fmt:formatNumber value="${user.representativePrice}" type="number" pattern="###0" /></span> <h6>(Representative)</h6>
+                                                <span class="price-down"><fmt:formatNumber value="${user.representativePrice}" type="number" pattern="#,##0" /></span> <h6>(Representative)</h6>
                                             </div>
                                         </div> 
                                         <div class="rating-location">

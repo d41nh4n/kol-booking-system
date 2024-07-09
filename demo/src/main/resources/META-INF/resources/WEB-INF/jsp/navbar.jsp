@@ -118,13 +118,13 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="glyphicon glyphicon-user"></i>
                         <c:if test="${not empty userInfor}">
-                            <span>(<fmt:formatNumber value="${balance}" type="number" pattern="###0" /> VND)</span>
+                            <span>(<fmt:formatNumber value="${balance}" type="number" pattern="#,##0" /> VND)</span>
                         </c:if>
                     </a>
                     <ul class="dropdown-menu user">
                         <c:choose>
                             <c:when test="${not empty userInfor}">
-                                <li><a href="#" data-toggle="modal" data-target="#balanceModal">Balance: <fmt:formatNumber value="${balance}" type="number" pattern="###0" /> VND</a></li>      
+                                <li><a href="#" data-toggle="modal" data-target="#balanceModal">Balance: <fmt:formatNumber value="${balance}" type="number" pattern="#,##0" /> VND</a></li>      
                                 <li class="divider"></li>           
                                 <li><a href="/request/pending">Jobs</a></li>
                                 <li><a href="/infor">Profile</a></li>
@@ -154,7 +154,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>Balance: <fmt:formatNumber value="${balance}" type="number" pattern="###0" /> VND</p>
+                <p>Balance: <fmt:formatNumber value="${balance}" type="number" pattern="#,##0" /> VND</p>
                 <a href="/payment/recharge" class="btn btn-primary">Pay In</a>
             </div>
         </div>

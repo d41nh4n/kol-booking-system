@@ -2,24 +2,23 @@ async function submitForm(event) {
   event.preventDefault();
 
   const form = document.getElementById("userForm");
-    const formData = new FormData(form);
+  const formData = new FormData(form);
 
-    let description = formData.get("description");
-    description = description.replace(/\n/g, '<br>');
-    formData.set("description", description);
+  let description = formData.get("description");
+  description = description.replace(/\n/g, "<br>");
+  formData.set("description", description);
 
-    const userProfileUpdate = {
-        fullName: formData.get("fullName"),
-        gender: formData.get("gender"),
-        description: formData.get("description"),
-        dob: formData.get("dob"),
-        location: formData.get("location"),
-        facebookUrl: formData.get("facebookUrl"),
-        tiktokUrl: formData.get("tiktokUrl"),
-        linkedinUrl: formData.get("linkedinUrl"),
-        instagramUrl: formData.get("instagramUrl"),
-    };
-  console.log('Location:', userProfileUpdate.location); // Kiểm tra giá trị location
+  const userProfileUpdate = {
+    fullName: formData.get("fullName"),
+    gender: formData.get("gender"),
+    description: formData.get("description"),
+    dob: formData.get("dob"),
+    location: formData.get("location"),
+    priceAPost: formData.get("priceAPost"),
+    priceAVideo: formData.get("priceAVideo"),
+    priceAToHireADay: formData.get("priceAToHireADay"),
+    representativePrice: formData.get("representativePrice"),
+  };
 
   try {
     const response = await fetch("/update", {

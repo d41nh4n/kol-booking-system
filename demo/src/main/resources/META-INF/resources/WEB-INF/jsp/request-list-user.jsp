@@ -109,7 +109,7 @@
                                     </c:if>
                                 </div>
                                 <div class="col-sm-3 text-align-center">
-                                    <p class="value3 mt-sm"><fmt:formatNumber value="${request.price}" type="number" pattern="###0" /> VND</p>
+                                    <p class="value3 mt-sm"><fmt:formatNumber value="${request.price}" type="number" pattern="#,##0" /> VND</p>
                                     <c:if test="${not empty request.requestDto}">
                                         <p class="fs-mini text-muted">
                                             ${request.requestDto.type} |
@@ -247,13 +247,14 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
+                     <h4 class="modal-title" id="viewMoreModalLabel">Request Details</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="viewMoreModalLabel">Request Details</h4>
+
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-4 text-center">
-                            <img id="modal-avatar" src="" alt="Avatar" class="img-circle img-responsive" style="margin: 0 auto;">
+                            <img id="modal-avatar" src="" alt="Avatar" class=" img-responsive" style="margin: 0 auto;">
                         </div>
                         <div class="col-md-8">
                             <h4 id="modal-fullname"></h4>

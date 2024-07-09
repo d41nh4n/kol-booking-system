@@ -4,12 +4,18 @@ async function submitComment(event) {
     const form = document.getElementById('commentForm');
     const formData = new FormData(form);
     
+    // Thay thế dấu xuống dòng bằng <br> trong trường comment
+    let comment = formData.get('comment');
+    comment = comment.replace(/\n/g, '<br>');
+
     const data = {
         userId: parseInt(formData.get('userId')), // Chuyển đổi thành số nguyên
         rating: parseInt(formData.get('rating')), // Chuyển đổi thành số nguyên
-        comment: formData.get('comment')
+        comment: comment
     };
+    
     console.log(data);
+
     try {
         const response = await fetch('/comment/comment-rating', {
             method: 'POST',

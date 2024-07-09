@@ -21,4 +21,9 @@ public class UserProfileUpdate {
     private String dob;
     private String location;
     private String description;
+    private String priceAPost;
+    private String priceAVideo;
+    private String priceAToHireADay;
+    private String representativePrice;
+    
 }

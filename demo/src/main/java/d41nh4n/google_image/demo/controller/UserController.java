@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
@@ -19,14 +18,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-
 import d41nh4n.google_image.demo.dto.respone.ResponeJson;
 import d41nh4n.google_image.demo.dto.respone.ResponeUpload;
 import d41nh4n.google_image.demo.dto.respone.VerifyStatus;
@@ -36,7 +32,6 @@ import d41nh4n.google_image.demo.dto.userdto.UserFindedBySearch;
 import d41nh4n.google_image.demo.dto.userdto.UserProfileUpdate;
 import d41nh4n.google_image.demo.dto.userdto.MediaProfileDto;
 import d41nh4n.google_image.demo.dto.userdto.MediaProfileUpload;
-import d41nh4n.google_image.demo.entity.Comment;
 import d41nh4n.google_image.demo.entity.VerifyCode;
 import d41nh4n.google_image.demo.entity.user.Gender;
 import d41nh4n.google_image.demo.entity.user.MediaProfile;
@@ -63,6 +58,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/")
 public class UserController {
+
     public static final Long MAX_PRICE = 999999999999L;
     public static final Long MIN_PRICE = 0L;
     private final JwtIssuer jwtIssuer;
@@ -122,7 +118,6 @@ public class UserController {
     public ResponseEntity<Map<String, String>> updateUser(@RequestBody UserProfileUpdate infor,
             HttpServletRequest request,
             HttpServletResponse response) {
-        System.out.println(infor);
         UserPrincipal principal = utils.getPrincipal();
         if (principal != null) {
             int userId = principal.getUserId();
@@ -141,6 +136,25 @@ public class UserController {
             }
             profile.setLocation(infor.getLocation());
             profile.setBio(infor.getDescription());
+
+            try {
+                if (infor.getPriceAPost() != null && !infor.getPriceAPost().isEmpty()) {
+                    profile.setPriceAPost(Long.parseLong(infor.getPriceAPost()));
+                }
+                if (infor.getPriceAVideo() != null && !infor.getPriceAVideo().isEmpty()) {
+                    profile.setPriceAVideo(Long.parseLong(infor.getPriceAVideo()));
+                }
+                if (infor.getPriceAToHireADay() != null && !infor.getPriceAToHireADay().isEmpty()) {
+                    profile.setPriceAToHireADay(Long.parseLong(infor.getPriceAToHireADay()));
+                }
+                if (infor.getRepresentativePrice() != null && !infor.getRepresentativePrice().isEmpty()) {
+                    profile.setRepresentativePrice(Long.parseLong(infor.getRepresentativePrice()));
+                }
+            } catch (NumberFormatException e) {
+                Map<String, String> responseBody = new HashMap<>();
+                responseBody.put("message", "Invalid price format");
+                return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+            }
 
             // Cập nhật thông tin user
             user.setGender(Gender.valueOf(infor.getGender().toUpperCase()));
@@ -540,8 +554,21 @@ public class UserController {
 
     @PostMapping("/profile-media-delete")
     public ResponseEntity<ResponeJson> handleProfileMediaDelete(@RequestParam(name = "id") String id) {
+
         try {
             Long idImg = Long.parseLong(id);
+
+            int userId = utils.getPrincipal().getUserId();
+            User user = userService.getUserById(userId);
+
+            List<MediaProfile> mediaProfiles = mediaProfileService.getAllByProfileId(user.getProfile().getProfileId());
+
+            for (MediaProfile mediaProfileTemp : mediaProfiles) {
+                if (mediaProfileTemp.getId() != idImg) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                            new ResponeJson(HttpStatus.BAD_REQUEST.value(), "You not have permission to delete!"));
+                }
+            }
             MediaProfile mediaProfile = mediaProfileService.getById(idImg);
 
             if (mediaProfile == null) {

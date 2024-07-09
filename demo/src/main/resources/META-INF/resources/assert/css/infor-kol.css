@@ -1025,3 +1025,28 @@ body {
 .star-rating .fa-star, .star-rating .fa-star-o {
   margin-right: 2px;
 }
+
+.modal-dialog {
+  max-width: 1000px; /* Đặt chiều rộng tối đa cho modal */
+  margin: 1.75rem auto; /* Thêm khoảng cách xung quanh modal */
+}
+
+.modal-content {
+  max-height: 90vh; /* Đặt chiều cao tối đa cho modal */
+  overflow-y: auto; /* Thêm thanh cuộn nếu nội dung vượt quá chiều cao tối đa */
+}
+
+.modal-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-body img {
+  max-width: 100%; /* Đảm bảo hình ảnh vừa khít chiều rộng của modal */
+  max-height: 80vh; /* Đảm bảo hình ảnh vừa khít chiều cao của modal */
+  width: auto;
+  height: auto;
+  display: block;
+  margin: 0 auto; /* Căn giữa hình ảnh */
+}

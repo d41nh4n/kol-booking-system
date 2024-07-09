@@ -10,8 +10,6 @@ package d41nh4n.google_image.demo.entity.user;
  */
 import jakarta.persistence.*;
 import java.util.Date;
-import java.util.Set;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

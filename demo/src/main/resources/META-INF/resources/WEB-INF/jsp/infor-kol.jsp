@@ -42,10 +42,10 @@
                         <div class="right-container">
 
                             <div class="right-player-profile">
-                                <p class="price-player-profile">A post:<fmt:formatNumber value="${userInformation.pricePost}" type="number" pattern="###0" /> VND</p>
-                                <p class="price-player-profile">A Video: <fmt:formatNumber value="${userInformation.priceVideo}" type="number" pattern="###0" /> VND</p>
-                                <p class="price-player-profile">Per Day: <fmt:formatNumber value="${userInformation.priceHireByDay}" type="number" pattern="###0" /> VND</p>
-                                <p class="price-player-profile">Representative: <fmt:formatNumber value="${userInformation.representativePrice}" type="number" pattern="###0" /> VND / 3 months</p>
+                                <p class="price-player-profile">A post:<fmt:formatNumber value="${userInformation.pricePost}" type="number" pattern="#,##0" /> VND</p>
+                                <p class="price-player-profile">A Video: <fmt:formatNumber value="${userInformation.priceVideo}" type="number" pattern="#,##0" /> VND</p>
+                                <p class="price-player-profile">Per Day: <fmt:formatNumber value="${userInformation.priceHireByDay}" type="number" pattern="#,##0" /> VND</p>
+                                <p class="price-player-profile">Representative: <fmt:formatNumber value="${userInformation.representativePrice}" type="number" pattern="#,##0" /> VND / 3 months</p>
                                  <div class="rating-style">
         <!-- Hiển thị các sao đầy đủ -->
         <i class="fas fa-star <c:if test="${userInformation.averageRating >= 1}">star-filled</c:if>"></i>
@@ -165,7 +165,7 @@
                             </li>
                         </c:if>
                     </ul>
-                    <div class="tab-content p30" style="height: 1100px">
+                    <div class="tab-content p30" style="height: 900px">
                         <div id="tab1" class="tab-pane active">
                             <div class="container-image_list">
                                 <c:if test="${not empty me}">
@@ -234,14 +234,14 @@
             </div>
             <div class="modal-body"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">
-                    Close
-                </button>
+                <c:if test="${userInfor.role == 'ROLE'}">
                 <button type="button" class="btn btn-danger" onclick="deleteImage()">Delete Image</button>
+                </c:if>
             </div>
         </div>
     </div>
 </div>
+
 <input type="hidden" id="user-recipient-request" value="${userInformation.userId}">
 <c:if test="${empty me && userInfor.role == 'USER'}">
     <!-- Main Modal -->

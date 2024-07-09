@@ -515,10 +515,14 @@ function createPagination(totalPages, currentPage) {
   var prevButton = `<li class="page-item ${
     currentPage === 0 ? "disabled" : ""
   }">
-                      <a class="page-link" href="#" data-page="${
-                        currentPage - 1
-                      }">Previous</a>
-                    </li>`;
+  ${
+    currentPage === 0
+      ? '<span class="">Previous</span>'
+      : '<a class="page-link" href="#" data-page="' +
+        (currentPage - 1) +
+        '">Previous</a>'
+  }
+  </li>`;
   pagination.append(prevButton);
 
   for (var i = 0; i <= totalPages - 1; i++) {
@@ -535,9 +539,13 @@ function createPagination(totalPages, currentPage) {
   var nextButton = `<li class="page-item ${
     currentPage + 1 === totalPages ? "disabled" : ""
   }">
-                      <a class="page-link" href="#" data-page="${
-                        currentPage + 1
-                      }">Next</a>
+  ${
+    currentPage + 1 === totalPages
+      ? '<span class="">Next</span>'
+      : '<a class="page-link" href="#" data-page="' +
+        (currentPage + 1) +
+        ' ">Next</a>'
+  }                
                     </li>`;
   pagination.append(nextButton);
 

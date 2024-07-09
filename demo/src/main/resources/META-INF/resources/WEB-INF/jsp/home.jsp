@@ -205,19 +205,19 @@
                                     <div class="price">
                                         <div class="price-item">
                                             <span class="dot"></span>
-                                            <span class="price-down"><fmt:formatNumber value="${user.pricePost}" type="number" pattern="###0" /></span> <h6>(A Post)</h6>
+                                            <span class="price-down"><fmt:formatNumber value="${user.pricePost}" type="number" pattern="#,##0" /></span> <h6>(A Post)</h6>
                                         </div>
                                         <div class="price-item">
                                             <span class="dot"></span>
-                                            <span class="price-down"><fmt:formatNumber value="${user.priceVideo}" type="number" pattern="###0" /></span> <h6>(A Video)</h6>
+                                            <span class="price-down"><fmt:formatNumber value="${user.priceVideo}" type="number" pattern="#,##0" /></span> <h6>(A Video)</h6>
                                         </div>
                                         <div class="price-item">
                                             <span class="dot"></span>
-                                            <span class="price-down"><fmt:formatNumber value="${user.priceHireByDay}" type="number" pattern="###0" /></span> <h6>(Per Day)</h6>
+                                            <span class="price-down"><fmt:formatNumber value="${user.priceHireByDay}" type="number" pattern="#,##0" /></span> <h6>(Per Day)</h6>
                                         </div>
                                         <div class="price-item">
                                             <span class="dot"></span>
-                                            <span class="price-down"><fmt:formatNumber value="${user.representativePrice}" type="number" pattern="###0" /></span> <h6>(Representative)</h6>
+                                            <span class="price-down"><fmt:formatNumber value="${user.representativePrice}" type="number" pattern="#,##0" /></span> <h6>(Representative)</h6>
                                         </div>
                                     </div> 
                                     <div class="rating-location">
@@ -257,19 +257,19 @@
                                     <div class="price">
                                         <div class="price-item">
                                             <span class="dot"></span>
-                                            <span class="price-down"><fmt:formatNumber value="${user.pricePost}" type="number" pattern="###0" /></span> <h6>(A Post)</h6>
+                                            <span class="price-down"><fmt:formatNumber value="${user.pricePost}" type="number" pattern="#,##0" /></span> <h6>(A Post)</h6>
                                         </div>
                                         <div class="price-item">
                                             <span class="dot"></span>
-                                            <span class="price-down"><fmt:formatNumber value="${user.priceVideo}" type="number" pattern="###0" /></span> <h6>(A Video)</h6>
+                                            <span class="price-down"><fmt:formatNumber value="${user.priceVideo}" type="number" pattern="#,##0" /></span> <h6>(A Video)</h6>
                                         </div>
                                         <div class="price-item">
                                             <span class="dot"></span>
-                                            <span class="price-down"><fmt:formatNumber value="${user.priceHireByDay}" type="number" pattern="###0" /></span> <h6>(Per Day)</h6>
+                                            <span class="price-down"><fmt:formatNumber value="${user.priceHireByDay}" type="number" pattern="#,##0" /></span> <h6>(Per Day)</h6>
                                         </div>
                                         <div class="price-item">
                                             <span class="dot"></span>
-                                            <span class="price-down"><fmt:formatNumber value="${user.representativePrice}" type="number" pattern="###0" /></span> <h6>(Representative)</h6>
+                                            <span class="price-down"><fmt:formatNumber value="${user.representativePrice}" type="number" pattern="#,##0" /></span> <h6>(Representative)</h6>
                                         </div>
                                     </div> 
                                     <div class="rating-location">

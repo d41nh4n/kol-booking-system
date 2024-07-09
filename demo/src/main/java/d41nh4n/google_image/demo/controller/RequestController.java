@@ -454,6 +454,7 @@ public class RequestController {
 
             // create notification
             Notification notification = new Notification();
+            notification.setReferenceId(requestId);
             notification.setCreateAt(ZonedDateTime.now());
             notification.setReferenceId(requestId);
             notification.setContent(user.getProfile().getFullName() + " applied for you request");
@@ -684,14 +685,6 @@ public class RequestController {
                 // Perform money transfer to responder
                 boolean transferSuccess = transactionHistoryService.transferMoneyToResponder(request);
 
-                Notification notification = new Notification();
-                notification.setContent(request.getRequester().getProfile().getFullName() +
-                        "accepted your result");
-                notification.setReferenceId(null);
-                notification.setCreateAt(ZonedDateTime.now());
-                notification.setType(TypeNotification.SUBMIT);
-                notification.setUser(request.getRequester());
-                notificationService.save(notification);
                 if (!transferSuccess) {
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                             .body("Failed to transfer money to responder for request ID " + requestId);

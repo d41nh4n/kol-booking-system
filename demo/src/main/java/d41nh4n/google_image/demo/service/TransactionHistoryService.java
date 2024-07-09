@@ -126,11 +126,12 @@ public class TransactionHistoryService {
 
             TransactionHistory transactionHistory = findByRequest(request);
             if (!transactionHistory.isTransStatus()) {
+                double moneyLeft = moneyAmount - (moneyAmount * 0.2);
+                responder.setAccountBalance(responder.getAccountBalance() + moneyLeft);
+                transactionHistory.setSystemIncome(moneyAmount * 0.2);
                 transactionHistory.setTransDate(new Date());
                 transactionHistory.setTransStatus(true);
                 transactionHistoryRepository.save(transactionHistory);
-                double moneyLeft = moneyAmount - (moneyAmount * 0.2);
-                responder.setAccountBalance(responder.getAccountBalance() + moneyLeft);
                 userService.save(responder);
 
                 Notification notification = new Notification();
@@ -171,9 +172,12 @@ public class TransactionHistoryService {
 
                 long numberDays = ChronoUnit.DAYS.between(requestDate, LocalDate.now());
 
+                TransactionHistory transactionHistory = findByRequest(request);
+
                 if (numberDays < 30) {
-                    requesterAmountLeft = requesterAmount - (requesterAmount * 0.1); // Giảm 10% nếu số ngày nhỏ hơn
-                                                                                     // 30
+                    requesterAmountLeft = requesterAmount + (moneyAmount - (moneyAmount * 0.1)); // Giảm 10% nếu số ngày nhỏ hơn\
+                    transactionHistory.setSystemIncome((moneyAmount * 0.1));
+                    transactionHistoryRepository.save(transactionHistory);
                 } else {
                     requesterAmountLeft = requesterAmount; // Không giảm nếu số ngày lớn hơn hoặc bằng 30
                 }
