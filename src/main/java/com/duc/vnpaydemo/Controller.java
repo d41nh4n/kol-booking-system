@@ -35,6 +35,7 @@ public class Controller {
         return "redirect:" + vnpayUrl;
     }
 
+    // This is for mapping
     @GetMapping("/order-status")
     public String GetMapping(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
