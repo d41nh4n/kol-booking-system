@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
 @EntityScan(basePackages = {"com.duc.vnpaydemo.model"})
-//Hello my love ,my name is Trac 
+//Hello my love ,my name is  
 public class VnpayDemoApplication {
 
     public static void main(String[] args) {
