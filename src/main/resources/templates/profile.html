@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #0C4160;
+      padding: 30px 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 20px;
+      padding: 20px;
+      width: 100%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .h8 {
+      font-size: 30px;
+      font-weight: 800;
+      text-align: center;
+      color: #223C60;
+      margin-bottom: 20px;
+    }
+
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-image: linear-gradient(to right, #77A1D3 0%, #79CBCA 51%, #77A1D3 100%);
+      border: none;
+      color: white;
+      transition: 0.5s;
+      background-size: 200% auto;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background-position: right center;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover .fas.fa-arrow-right {
+      transform: translate(15px);
+      transition: transform 0.2s ease-in;
+    }
+
+    .form-control {
+      color: white;
+      background-color: #223C60;
+      border: 2px solid transparent;
+      height: 60px;
+      padding-left: 20px;
+      vertical-align: middle;
+    }
+
+    .form-control:focus {
+      color: white;
+      background-color: #0C4160;
+      border: 2px solid #2d4dda;
+      box-shadow: none;
+    }
+
+    .text {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    ::placeholder {
+      font-size: 14px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container mx-auto p-5">
+    <div class="card">
+      <!-- Thêm phần navbar -->
+      <nav class="flex justify-between items-center mb-6">
+        <!-- Logo hoặc tên trang web -->
+        <div>
+          <h1 class="text-2xl text-black">Payment System</h1>
+        </div>
+        <!-- Menu điều hướng -->
+        <ul class="flex space-x-4 text-black">
+          <li><a href="/index" class="hover:text-gray-400">Home</a></li>
+          <li><a href="/profile" class="hover:text-gray-400">Profile</a></li>
+          <li><a href="/" class="hover:text-gray-400">Logout</a></li>
+        </ul>
+      </nav>
+
+      <!-- Nội dung profile -->
+      <div class="text-center">
+        <h2 class="text-2xl mb-4">User Profile</h2>
+        <div class="mb-4" th:if="${loggedInUser != null}">
+          <p class="text-lg mb-2">Username: <span th:text="${loggedInUser.username}"></span></p>
+          <p class="text-lg">Email: <span th:text="${loggedInUser.email}"></span></p>
+          <p class="text-lg">Balance: <span th:text="${loggedInUser.balance}"></span></p>
+          <p class="text-lg">Gender: <span th:text="${loggedInUser.gender}"></span></p>
+        </div>
+
+        <!-- Form để nạp tiền -->
+        <form th:action="@{/profile/process-payment}" method="post" class="mb-4">
+          <div class="flex items-center mb-2">
+            <label for="amount" class="mr-2">Amount:</label>
+            <input type="number" id="amount" name="amount" class="form-control" placeholder="Enter amount" required>
+          </div>
+          <button type="submit" class="btn-primary w-40 mt-2 inline-flex items-center justify-center">
+            <span>Add Balance</span>
+          </button>
+        </form>
+
+
+
+        <!-- Nút quay về trang chủ -->
+        <a href="/index" class="btn-primary w-40 mt-2 inline-flex items-center justify-center">
+          <span>Back to Home</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,151 +1,191 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-    <title>Thanh toán</title>
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css" rel="stylesheet">
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Montserrat', sans-serif;
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thanh toán</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <!-- SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.5/dist/sweetalert2.min.css">
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #0C4160;
+      padding: 30px 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 20px;
+      padding: 20px;
+      width: 100%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .h8 {
+      font-size: 30px;
+      font-weight: 800;
+      text-align: center;
+      color: #223C60;
+      margin-bottom: 20px;
+    }
+
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-image: linear-gradient(to right, #77A1D3 0%, #79CBCA 51%, #77A1D3 100%);
+      border: none;
+      color: white;
+      transition: 0.5s;
+      background-size: 200% auto;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background-position: right center;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover .fas.fa-arrow-right {
+      transform: translate(15px);
+      transition: transform 0.2s ease-in;
+    }
+
+    .form-control {
+      color: white;
+      background-color: #223C60;
+      border: 2px solid transparent;
+      height: 60px;
+      padding-left: 20px;
+      vertical-align: middle;
+    }
+
+    .form-control:focus {
+      color: white;
+      background-color: #0C4160;
+      border: 2px solid #2d4dda;
+      box-shadow: none;
+    }
+
+    .text {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    ::placeholder {
+      font-size: 14px;
+      font-weight: 600;
+    }
+  </style>
+  <!-- SweetAlert2 JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.5/dist/sweetalert2.all.min.js"></script>
+  <script>
+    function checkBalance(balance, paymentAmount) {
+      if (balance < paymentAmount) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: "You don't have enough balance",
+          confirmButtonText: 'OK'
+        });
+        return false;
       }
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        background-color: #0C4160;
-        padding: 30px 10px;
-      }
-      .card {
-        max-width: 500px;
-        margin: auto;
-        color: black;
-        border-radius: 20px;
-      }
-      .h8 {
-        font-size: 30px;
-        font-weight: 800;
-        text-align: center;
-      }
-      .btn-primary {
-        width: 100%;
-        height: 70px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-image: linear-gradient(to right, #77A1D3 0%, #79CBCA 51%, #77A1D3 100%);
-        border: none;
-        transition: 0.5s;
-        background-size: 200% auto;
-      }
-      .btn-primary:hover {
-        background-position: right center;
-        color: #fff;
-        text-decoration: none;
-      }
-      .btn-primary:hover .fas.fa-arrow-right {
-        transform: translate(15px);
-        transition: transform 0.2s ease-in;
-      }
-      .form-control {
-        color: white;
-        background-color: #223C60;
-        border: 2px solid transparent;
-        height: 60px;
-        padding-left: 20px;
-        vertical-align: middle;
-      }
-      .form-control:focus {
-        color: white;
-        background-color: #0C4160;
-        border: 2px solid #2d4dda;
-        box-shadow: none;
-      }
-      .text {
-        font-size: 14px;
-        font-weight: 600;
-      }
-      ::placeholder {
-        font-size: 14px;
-        font-weight: 600;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container p-0">
-      <div class="card px-4">
-        <p class="h8 py-3">Payment Details</p>
-        <div class="row gx-3" th:each="request : ${requests}">
-          <div class="col-12">
-            <div class="d-flex flex-column">
-              <p class="text mb-1">Request ID</p>
-              <input class="form-control mb-3" type="text" th:attr="value=${request.requestId}" placeholder="Request ID">
-            </div>
-          </div>
-          <div class="col-12">
-            <div class="d-flex flex-column">
-              <p class="text mb-1">Requester ID</p>
-              <input class="form-control mb-3" type="text" th:attr="value=${request.requesterId}" placeholder="Requester ID">
-            </div>
-          </div>
-          <div class="col-12">
-            <div class="d-flex flex-column">
-              <p class="text mb-1">Responder ID</p>
-              <input class="form-control mb-3" type="text" th:attr="value=${request.responderId}" placeholder="Responder ID">
-            </div>
-          </div>
-          <div class="col-12">
-            <div class="d-flex flex-column">
-              <p class="text mb-1">Description</p>
-              <input class="form-control mb-3" type="text" th:attr="value=${request.requestDescription}" placeholder="Description">
-            </div>
-          </div>
-          <div class="col-12">
-            <div class="d-flex flex-column">
-              <p class="text mb-1">Location</p>
-              <input class="form-control mb-3" type="text" th:attr="value=${request.requestLocation}" placeholder="Location">
-            </div>
-          </div>
-          <div class="col-12">
-            <div class="d-flex flex-column">
-              <p class="text mb-1">Payment</p>
-              <input class="form-control mb-3" type="text" th:attr="value=${request.payment}" placeholder="Payment">
-            </div>
-          </div>
-          <div class="col-12">
-            <div class="d-flex flex-column">
-              <p class="text mb-1">Request Date</p>
-              <input class="form-control mb-3" type="text" th:attr="value=${request.requestDate}" placeholder="Request Date">
-            </div>
-          </div>
-          <div class="col-12">
-            <div class="d-flex flex-column">
-              <p class="text mb-1">Request Date End</p>
-              <input class="form-control mb-3" type="text" th:attr="value=${request.requestDateEnd}" placeholder="Request Date End">
-            </div>
-          </div>
-          <div class="col-12">
-            <div class="d-flex flex-column">
-              <p class="text mb-1">Status</p>
-              <input class="form-control mb-3" type="text" th:attr="value=${request.requestStatus} ? 'Active' : 'Inactive'" placeholder="Status">
-            </div>
-          </div>
-          <div class="col-12" th:unless="${request.requestStatus}">
-            <a class="btn btn-primary mb-3" th:href="@{/order-save(amount=${request.payment}, info=${request.requestDescription}, requesterId=${request.requesterId}, responderId=${request.responderId}, requestId=${request.requestId}, requestStatus=${request.requestStatus})}">
-              <span>Payment with VNPAY</span>
-            </a>
-          </div>
+      return true;
+    }
+  </script>
+</head>
+
+<body>
+  <div class="container mx-auto p-5">
+    <div class="card">
+      <!-- Thêm phần navbar -->
+      <nav class="flex justify-between items-center mb-6">
+        <!-- Logo hoặc tên trang web -->
+        <div>
+          <h1 class="text-2xl text-black">Payment System</h1>
         </div>
+        <!-- Menu điều hướng -->
+        <ul class="flex space-x-4 text-black">
+          <li><a href="/index" class="hover:text-gray-400">Home</a></li>
+          <li><a href="/profile" class="hover:text-gray-400">Profile</a></li>
+          <li><a href="/" class="hover:text-gray-400">Logout</a></li>
+        </ul>
+      </nav>
+
+      <!-- Các phần khác của trang -->
+      <p class="h8">Payment Details</p>
+      <div class="mb-4" th:if="${loggedInUser != null}">
+        <p class="text-lg mb-2">Welcome, <span th:text="${loggedInUser.username}"></span>!</p>
+        <p class="text-lg">Your balance: <span th:text="${loggedInUser.balance}"></span></p>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border border-gray-300">
+          <thead>
+            <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+              <th class="py-3 px-6 text-left">Request ID</th>
+              <th class="py-3 px-6 text-left">Requester ID</th>
+              <th class="py-3 px-6 text-left">Responder ID</th>
+              <th class="py-3 px-6 text-left">Description</th>
+              <th class="py-3 px-6 text-left">Location</th>
+              <th class="py-3 px-6 text-left">Payment</th>
+              <th class="py-3 px-6 text-left">Request Date</th>
+              <th class="py-3 px-6 text-left">End Date</th>
+              <th class="py-3 px-6 text-left">Status</th>
+              <th class="py-3 px-6 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-600 text-sm font-light">
+            <tr class="border-b border-gray-200 hover:bg-gray-100" th:each="request : ${requests}">
+              <td class="py-3 px-6 text-left" th:text="${request.requestId}"></td>
+              <td class="py-3 px-6 text-left" th:text="${request.requesterId}"></td>
+              <td class="py-3 px-6 text-left" th:text="${request.responderId}"></td>
+              <td class="py-3 px-6 text-left" th:text="${request.requestDescription}"></td>
+              <td class="py-3 px-6 text-left" th:text="${request.requestLocation}"></td>
+              <td class="py-3 px-6 text-left" th:text="${request.payment}"></td>
+              <td class="py-3 px-6 text-left" th:text="${request.requestDate}"></td>
+              <td class="py-3 px-6 text-left" th:text="${request.requestDateEnd}"></td>
+              <td class="py-3 px-6 text-left" th:text="${request.requestStatus} ? 'Active' : 'Inactive'"></td>
+              <td class="py-3 px-6 text-center">
+                <div class="flex item-center justify-center">
+                  <div th:unless="${request.requestStatus}">
+                    <!-- VNPAY Button -->
+                    <a class="btn-primary w-40 text-center inline-flex items-center justify-center"
+                      th:href="@{/order-save(amount=${request.payment}, info=${request.requestDescription}, requesterId=${request.requesterId}, responderId=${request.responderId}, requestId=${request.requestId}, requestStatus=${request.requestStatus})}">
+                      <span>Pay with VNPAY</span>
+                    </a>
+                    <!-- Pay with Balance Button -->
+                    <form
+                      th:action="@{/process-payment(amount=${request.payment}, info=${request.requestDescription}, requesterId=${request.requesterId}, responderId=${request.responderId}, requestId=${request.requestId}, requestStatus=${request.requestStatus})}"
+                      method="post" class="inline-block"
+                      th:onsubmit="'return checkBalance(' + ${loggedInUser.balance} + ', ' + ${request.payment} + ');'">
+                      <input type="hidden" name="paymentAmount" th:value="${request.payment}" />
+                      <input type="hidden" name="requestId" th:value="${request.requestId}" />
+                      <button type="submit"
+                        class="btn-primary w-40 mt-2 text-center inline-flex items-center justify-center">
+                        <span>Pay with Balance</span>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-  </body>
+  </div>
+</body>
+
 </html>

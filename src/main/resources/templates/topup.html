@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-    <title>Thanh toán thành công</title>
+    <title>Nạp tiền vào ví</title>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css" rel="stylesheet">
     <style>
@@ -31,9 +31,7 @@
             color: black;
             border-radius: 20px;
             background-color: white;
-            /* Added background color */
             padding: 20px;
-            /* Added padding */
         }
 
         .h8 {
@@ -68,9 +66,7 @@
 
         .form-control {
             color: black;
-            /* Changed text color to black */
             background-color: #f8f9fa;
-            /* Light gray background */
             border: 2px solid transparent;
             height: 60px;
             padding-left: 20px;
@@ -79,9 +75,7 @@
 
         .form-control:focus {
             color: black;
-            /* Changed focus text color to black */
             background-color: #e9ecef;
-            /* Slightly darker gray on focus */
             border: 2px solid #2d4dda;
             box-shadow: none;
         }
@@ -101,42 +95,14 @@
 <body>
     <div class="container p-0">
         <div class="card px-4">
-            <p class="h8 py-3 text-success">Thanh toán thành công</p>
+            <p class="h8 py-3 text-success">Successful wallet top-up</p>
             <div class="row gx-3">
                 <div class="col-12">
-                    <h2 class="my-2">Chi tiết đơn hàng</h2>
+                    <p class="my-2">Your new balance is: <span th:text="${updatedBalance}"></span></p>
                 </div>
                 <div class="col-12">
-                    <div class="d-flex flex-column">
-                        <p class="text mb-1">Thông tin đơn hàng:</p>
-                        <input class="form-control mb-3" type="text" th:attr="value=${orderId}" placeholder="[order ID]"
-                            readonly>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <div class="d-flex flex-column">
-                        <p class="text mb-1">Tổng tiền:</p>
-                        <input class="form-control mb-3" type="text" th:attr="value=${totalPrice}"
-                            placeholder="[total price]" readonly>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <div class="d-flex flex-column">
-                        <p class="text mb-1">Thời gian thanh toán:</p>
-                        <input class="form-control mb-3" type="text" th:attr="value=${paymentTime}"
-                            placeholder="[payment time]" readonly>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <div class="d-flex flex-column">
-                        <p class="text mb-1">Mã giao dịch:</p>
-                        <input class="form-control mb-3" type="text" th:attr="value=${transactionId}"
-                            placeholder="[transaction ID]" readonly>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <a href="/index-2" class="btn btn-primary mb-3">
-                        <span>Về trang chủ</span>
+                    <a href="/index" class="btn btn-primary mb-3">
+                        <span>Back to home</span>
                     </a>
                 </div>
             </div>
