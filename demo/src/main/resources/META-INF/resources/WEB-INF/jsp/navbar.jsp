@@ -127,6 +127,7 @@
                                 <li><a href="#" data-toggle="modal" data-target="#balanceModal">Balance: <fmt:formatNumber value="${balance}" type="number" pattern="#,##0" /> VND</a></li>      
                                 <li class="divider"></li>           
                                 <li><a href="/request/pending">Jobs</a></li>
+                                <li><a href="/transaction">Transaction</a></li>
                                 <li><a href="/infor">Profile</a></li>
                                 <li><a href="/login/change-password">Change password</a></li>
                                 <li class="divider"></li>

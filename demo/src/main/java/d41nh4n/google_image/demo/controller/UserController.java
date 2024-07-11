@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,8 +79,17 @@ public class UserController {
         List<UserDtoFilter> listUser = userService.getUserListHomePage();
         List<UserDtoFilter> listTop = userService.getTop6UsersForHomePage();
         List<String> provinces = provinceService.getProvinceNames();
+
+        List<UserDtoFilter> randomUsers = listUser.stream()
+                .collect(Collectors.collectingAndThen(Collectors.toList(), collected -> {
+                    Collections.shuffle(collected);
+                    return collected.stream();
+                }))
+                .limit(12)
+                .collect(Collectors.toList());
+
         model.addAttribute("topUsers", listTop);
-        model.addAttribute("users", listUser);
+        model.addAttribute("users", randomUsers);
         model.addAttribute("categories", categoies);
         model.addAttribute("provinces", provinces);
         return "home";

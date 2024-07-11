@@ -1,0 +1,29 @@
+/* header_styles.css */
+.function {
+    padding: 10px 20px;
+    width: 100%; 
+}
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+.header {
+    background-color: #007bff;
+    overflow: hidden;
+    display: flex;
+    justify-content: center; /* căn giữa theo chiều ngang */
+    align-items: center; /* căn giữa theo chiều dọc */
+}
+
+.header a {
+    float: left;
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+.header a:hover {
+    background-color: #ffffff;
+}

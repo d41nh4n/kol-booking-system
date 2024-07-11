@@ -80,39 +80,24 @@ public class ChatController {
     @GetMapping("/chatbox")
     public String chatBox(@RequestParam(value = "userId", required = false) String userId, HttpServletRequest request,
             Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
-        int userSender = principal.getUserId();
-        if (userId != null) {
-            String conversationId = utils.generateChatRoomId(String.valueOf(userSender), userId);
-            Conversation conversation = conversationService.findConversationById(conversationId);
-            if (conversation == null) {
-                // create new conversation
-                Conversation newConversation = new Conversation();
-                newConversation.setId(conversationId);
-                newConversation.setCreatedAt(ZonedDateTime.now());
-                newConversation.setUpdatedAt(ZonedDateTime.now());
-                newConversation.setType(TypeConversation.PRIVATE);
-                conversationService.save(newConversation);
+        try {
 
-                // add user to conversation
-                User userA = userService.getUserById(Integer.parseInt(userId));
-                User userB = userService.getUserById(userSender);
-
-                UserConversation userConversationSender = new UserConversation();
-                userConversationSender.setUser(userA);
-                userConversationSender.setConversation(newConversation);
-                userConversationService.save(userConversationSender);
-
-                UserConversation userConversationRecipient = new UserConversation();
-                userConversationRecipient.setUser(userB);
-                userConversationRecipient.setConversation(newConversation);
-                userConversationService.save(userConversationRecipient);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+            int userSender = principal.getUserId();
+            if (userId != null) {
+                int userRecepientId = utils.stringToInt(userId);
+                User userRecepient = userService.getUserById(userRecepientId);
+                if (userRecepient.getRole().equalsIgnoreCase("USER")) {
+                    chatMessageService.createAConversation(userSender, userRecepientId);
+                }
             }
+            List<ConversationExsisted> userConversations = userConversationService.findConversationByUserId(userSender);
+            model.addAttribute("conversations", userConversations);
+            return "chatbox";
+        } catch (Exception e) {
+            return "chatbox";
         }
-        List<ConversationExsisted> userConversations = userConversationService.findConversationByUserId(userSender);
-        model.addAttribute("conversations", userConversations);
-        return "chatbox";
     }
 
     @GetMapping("/getChat")

@@ -49,7 +49,7 @@ public class Report {
     private User reportedUser;
     
     @ManyToOne
-    @JoinColumn(name = "comment_id", nullable = false)
+    @JoinColumn(name = "comment_id", nullable = true)
     private Comment reportedComment;
 
     // Getters and setters

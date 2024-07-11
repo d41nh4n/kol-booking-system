@@ -30,9 +30,7 @@
                     </div>
                     <div class="media-right">
                         <div class="hire-container">
-                            <c:if test="${empty me && userInfor.role == 'USER'}">
-                                <button id="hire-button" type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#myModal">$ Hire</button>
-                            </c:if>
+
                             <c:if test="${not empty me}">
                                 <a href="/update-profile-form" class="btn btn-primary btn-lg edit-profile">
                                     <i class="fa fa-pencil-square fa-lg"></i> Edit profile
@@ -42,7 +40,7 @@
                         <div class="right-container">
 
                             <div class="right-player-profile">
-                                <p class="price-player-profile">A post:<fmt:formatNumber value="${userInformation.pricePost}" type="number" pattern="#,##0" /> VND</p>
+                                <p class="price-player-profile">A post: <fmt:formatNumber value="${userInformation.pricePost}" type="number" pattern="#,##0" /> VND</p>
                                 <p class="price-player-profile">A Video: <fmt:formatNumber value="${userInformation.priceVideo}" type="number" pattern="#,##0" /> VND</p>
                                 <p class="price-player-profile">Per Day: <fmt:formatNumber value="${userInformation.priceHireByDay}" type="number" pattern="#,##0" /> VND</p>
                                 <p class="price-player-profile">Representative: <fmt:formatNumber value="${userInformation.representativePrice}" type="number" pattern="#,##0" /> VND / 3 months</p>
@@ -56,6 +54,12 @@
         <!-- Hiển thị số lượng đánh giá -->
         <span><c:out value="${totalRating}"/> Evaluate</span>
     </div>
+                            <c:if test="${empty me && userInfor.role == 'USER'}">
+                                <button id="hire-button" type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#myModal">$ Hire</button>
+                            </c:if>
+                            <c:if test="${empty me && userInfor.role == 'USER'}">
+                            <a id="chat" href="/chatbox?userId=${userInformation.userId}" class="btn btn-warning btn-sm " >Chat</a>
+                            </c:if>
                             </div>
                         </div>
                     </div>

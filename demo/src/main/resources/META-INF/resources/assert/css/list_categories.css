@@ -1,0 +1,122 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0 auto;
+    padding: 20px;
+    max-width: 1200px; /* Đặt chiều rộng tối đa cho nội dung */
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #0056b3; /* Một màu xanh đậm hơn khi hover */
+}
+
+/* Table Container Styles */
+.table-container {
+    overflow-x: auto;
+    margin-top: 20px;
+    max-width: 100%; /* Đảm bảo container chiếm toàn bộ chiều rộng */
+    padding: 0 20px; /* Tăng khoảng cách giữa container và nội dung */
+}
+
+/* Table Styles */
+#categoryTable {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* Đảm bảo các cột có chiều rộng cố định */
+}
+
+#categoryTable th, #categoryTable td {
+    border: 1px solid #dee2e6;
+    padding: 12px; /* Tăng khoảng cách giữa nội dung và đường viền */
+    text-align: center; /* Căn giữa nội dung trong ô */
+}
+
+#categoryTable th {
+    background-color: #007bff;
+    color: #ffffff;
+    font-weight: bold; /* Đậm chữ cho tiêu đề cột */
+}
+
+#categoryTable td {
+    background-color: #ffffff;
+}
+
+#categoryTable tbody tr:nth-child(even) td {
+    background-color: #f2f2f2;
+}
+
+/* Pagination Styles */
+.pagination {
+    margin-top: 20px;
+    text-align: center; /* Canh giữa các nút phân trang */
+    width: 100%; /* Đảm bảo phần phân trang chiếm toàn bộ chiều rộng */
+}
+
+.pagination ul {
+    display: inline-block;
+    padding: 0;
+    margin: 0 auto; /* Canh giữa theo chiều ngang */
+}
+
+.pagination ul li {
+    display: inline;
+    margin: 0 5px;
+}
+
+.pagination ul li a {
+    text-decoration: none;
+    color: #007bff;
+    padding: 8px 16px; /* Kích thước lớn hơn cho các nút */
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s; /* Hiệu ứng mượt mà khi hover */
+}
+
+.pagination ul li a:hover {
+    background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+    color: #ffffff; /* Chữ trắng khi hover */
+}
+
+/* Search Container Styles */
+.search-container {
+    display: flex;
+    justify-content: end;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.search-container input[type="text"] {
+    width: 300px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.search-container button {
+    padding: 10px 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-container button:hover {
+    background-color: #0056b3;
+}

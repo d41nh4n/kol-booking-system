@@ -24,23 +24,9 @@
                         <div class="profile-label">
                             <span class="label label-danger">${userInformation.role}</span>
                         </div>
-                        <div class="profile-stars">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star-o"></i>
-                            <span>Super User</span>
-                        </div>
+                        </br>
                         <div class="profile-since">Member since: ${userInformation.createAt}</div>
                         <br/>
-                        <c:if test="${empty me}">
-                            <div class="profile-message-btn center-block text-center">
-                                <a href="/profile?userId=${userInformation.userId}" class="btn btn-success">
-                                    <i class="fa fa-envelope"></i> Send message
-                                </a>
-                            </div>
-                        </c:if>
                     </div>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-8">
@@ -85,114 +71,6 @@
     </div>
 </div>
 
-                        <div class="col-sm-4 profile-social">
-                            <ul class="fa-ul">
-                            </ul>
-
-                        </div>
-                    </div>
-                    <div class="tabs-wrapper profile-tabs">
-                        <ul class="nav nav-tabs">
-                            <li class="active">
-                                <a href="#tab-activity" data-toggle="tab">Activity</a>
-                            </li>
-
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane fade in active" id="tab-activity">
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <tbody>
-                                            <tr>
-                                                <td class="text-center">
-                                                    <i class="fa fa-comment"></i>
-                                                </td>
-                                                <td>
-                                                    John Doe posted a comment in
-                                                    <a href="#">Avengers Initiative</a> project.
-                                                </td>
-                                                <td>2014/08/08 12:08</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center">
-                                                    <i class="fa fa-truck"></i>
-                                                </td>
-                                                <td>
-                                                    John Doe changed order status from
-                                                    <span class="label label-primary">Pending</span> to
-                                                    <span class="label label-success">Completed</span>
-                                                </td>
-                                                <td>2014/08/08 12:08</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center">
-                                                    <i class="fa fa-check"></i>
-                                                </td>
-                                                <td>
-                                                    John Doe posted a comment in
-                                                    <a href="#">Lost in Translation opening scene</a>
-                                                    discussion.
-                                                </td>
-                                                <td>2014/08/08 12:08</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center">
-                                                    <i class="fa fa-users"></i>
-                                                </td>
-                                                <td>
-                                                    John Doe posted a comment in
-                                                    <a href="#">Avengers Initiative</a> project.
-                                                </td>
-                                                <td>2014/08/08 12:08</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center">
-                                                    <i class="fa fa-heart"></i>
-                                                </td>
-                                                <td>
-                                                    John Doe changed order status from
-                                                    <span class="label label-warning">On Hold</span> to
-                                                    <span class="label label-danger">Disabled</span>
-                                                </td>
-                                                <td>2014/08/08 12:08</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center">
-                                                    <i class="fa fa-check"></i>
-                                                </td>
-                                                <td>
-                                                    John Doe posted a comment in
-                                                    <a href="#">Lost in Translation opening scene</a>
-                                                    discussion.
-                                                </td>
-                                                <td>2014/08/08 12:08</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center">
-                                                    <i class="fa fa-truck"></i>
-                                                </td>
-                                                <td>
-                                                    John Doe changed order status from
-                                                    <span class="label label-primary">Pending</span> to
-                                                    <span class="label label-success">Completed</span>
-                                                </td>
-                                                <td>2014/08/08 12:08</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center">
-                                                    <i class="fa fa-users"></i>
-                                                </td>
-                                                <td>
-                                                    John Doe posted a comment in
-                                                    <a href="#">Avengers Initiative</a> project.
-                                                </td>
-                                                <td>2014/08/08 12:08</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

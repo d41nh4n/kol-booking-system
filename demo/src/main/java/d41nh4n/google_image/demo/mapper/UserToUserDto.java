@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public final class UserToUserDto {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
     public static UserDto mapToUserInfoResponse(User user) {
         UserDto userInfo = new UserDto();
@@ -31,6 +31,7 @@ public final class UserToUserDto {
         } else {
             userInfo.setGender(user.getGender().toString());
         }
+        userInfo.setCreateAt(dateFormat.format(user.getCreateAt()));
         userInfo.setBio(user.getProfile().getBio());
         userInfo.setRating(user.getProfile().getAverageRating());
         userInfo.setPricePost(user.getProfile().getPriceAPost());

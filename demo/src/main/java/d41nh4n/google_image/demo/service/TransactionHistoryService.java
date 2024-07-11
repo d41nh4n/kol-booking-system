@@ -1,5 +1,6 @@
 package d41nh4n.google_image.demo.service;
 
+import d41nh4n.google_image.demo.dto.TransactionDto;
 import d41nh4n.google_image.demo.entity.TransactionHistory;
 import d41nh4n.google_image.demo.entity.TypeTransaction;
 import d41nh4n.google_image.demo.entity.notification.Notification;
@@ -11,13 +12,20 @@ import d41nh4n.google_image.demo.repository.TransactionHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -87,8 +95,12 @@ public class TransactionHistoryService {
                 requester.setAccountBalance(totalMoneyAfterRefund);
                 userService.save(requester);
 
+                TransactionHistory transactionHistory = request.getTransactionHistory();
+                transactionHistory.setRefund(moneyAmount);
+                save(transactionHistory);
+
                 Notification notification = new Notification();
-                notification.setContent("Your account has been added " + totalMoneyAfterRefund);
+                notification.setContent("Your account has been added " + moneyAmount);
                 notification.setReferenceId(null);
                 notification.setCreateAt(ZonedDateTime.now());
                 notification.setType(TypeNotification.MONEY);
@@ -173,22 +185,24 @@ public class TransactionHistoryService {
                 long numberDays = ChronoUnit.DAYS.between(requestDate, LocalDate.now());
 
                 TransactionHistory transactionHistory = findByRequest(request);
-
+                Notification notification = new Notification();
                 if (numberDays < 30) {
-                    requesterAmountLeft = requesterAmount + (moneyAmount - (moneyAmount * 0.1)); // Giảm 10% nếu số ngày nhỏ hơn\
-                    transactionHistory.setSystemIncome((moneyAmount * 0.1));
+                    double moneyRefund = moneyAmount - (moneyAmount * 0.1);
+                    requesterAmountLeft = requesterAmount + moneyRefund; // Giảm 10% nếu số ngày nhỏ hơn 30
+                    transactionHistory.setRefund(moneyRefund);
+                    transactionHistory.setSystemIncome((moneyAmount - moneyRefund));
                     transactionHistoryRepository.save(transactionHistory);
+                    notification.setContent("Your account has been added " + moneyRefund);
                 } else {
-                    requesterAmountLeft = requesterAmount; // Không giảm nếu số ngày lớn hơn hoặc bằng 30
+                    requesterAmountLeft = requesterAmount; // Không giảm nếu số ngày lớn hơn hoặc bằng 30\
+                    transactionHistory.setRefund(requesterAmountLeft);
+                    transactionHistoryRepository.save(transactionHistory);
+                    notification.setContent("Your account has been added " + requesterAmountLeft);
                 }
-
                 double totalMoneyAfterRefund = requesterAmountLeft + moneyAmount;
-
+            
                 requester.setAccountBalance(totalMoneyAfterRefund);
                 userService.save(requester);
-
-                Notification notification = new Notification();
-                notification.setContent("Your account has been added " + requesterAmountLeft);
                 notification.setReferenceId(null);
                 notification.setCreateAt(ZonedDateTime.now());
                 notification.setType(TypeNotification.MONEY);
@@ -210,5 +224,60 @@ public class TransactionHistoryService {
         if (transactionHistory != null) {
             transactionHistoryRepository.save(transactionHistory);
         }
+    }
+
+    public Page<TransactionDto> findTransactionHistoryBySenderId(int senderId, int pageNumber) {
+        User user = userService.getUserById(senderId);
+        if (user == null) {
+            throw new RuntimeException("User not found!");
+        }
+
+        Pageable pageable = PageRequest.of(pageNumber, 6, Sort.by("transDate").descending());
+        Page<TransactionHistory> transactionHistories = transactionHistoryRepository.findBySender(user, pageable);
+        Page<TransactionDto> transactionDtos = transactionHistories
+                .map(transactionHistory -> new TransactionDto(transactionHistory));
+        return transactionDtos;
+    }
+
+    public Page<TransactionDto> findTransactionHistoryByReceiverId(int senderId, int pageNumber) {
+        User user = userService.getUserById(senderId);
+        if (user == null) {
+            throw new RuntimeException("User not found!");
+        }
+
+        Pageable pageable = PageRequest.of(pageNumber, 6, Sort.by("transDate").descending());
+        Page<TransactionHistory> transactionHistories = transactionHistoryRepository.findByReceiver(user, pageable);
+        Page<TransactionDto> transactionDtos = transactionHistories
+                .map(transactionHistory -> new TransactionDto(transactionHistory));
+        return transactionDtos;
+    }
+
+    public List<Double> getTotalPaymentPerMonth(int year) {
+        List<Double> totalPayments = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        for (int i = 0; i < 12; i++) {
+            calendar.set(year, i, 1, 0, 0, 0);
+            Date startDate = calendar.getTime();
+
+            calendar.set(Calendar.MONTH, i + 1); 
+            if (i == 11) { 
+                calendar.set(Calendar.YEAR, year + 1);
+            }
+            Date endDate = calendar.getTime();
+
+            List<TransactionHistory> transactions = transactionHistoryRepository.findByTransDateBetween(startDate, endDate);
+            System.out.println("getTotalPaymentPerMonth :" + startDate + ":" +endDate);
+            double totalPayment = 0.0;
+            for (TransactionHistory transaction : transactions) {
+                totalPayment += transaction.getSystemIncome();
+            }
+            totalPayments.add(totalPayment);
+        }
+        return totalPayments;
+    }
+
+    
+    public List<Integer> getYearsWithPayment() {
+        return transactionHistoryRepository.findYearsWithPayment();
     }
 }

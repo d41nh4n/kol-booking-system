@@ -2,24 +2,26 @@ package d41nh4n.google_image.demo.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
+
+import d41nh4n.google_image.demo.dto.UserDTO;
 import d41nh4n.google_image.demo.dto.userdto.UserDto;
 import d41nh4n.google_image.demo.dto.userdto.UserDtoFilter;
 import d41nh4n.google_image.demo.dto.userdto.UserFindedBySearch;
 import d41nh4n.google_image.demo.entity.Category;
-import d41nh4n.google_image.demo.entity.request.Request;
-import d41nh4n.google_image.demo.entity.request.RequestWaitList;
 import d41nh4n.google_image.demo.entity.user.Gender;
 import d41nh4n.google_image.demo.entity.user.Profile;
 import d41nh4n.google_image.demo.entity.user.ProfileCategories;
 import d41nh4n.google_image.demo.entity.user.User;
+import d41nh4n.google_image.demo.mapper.UserMapper;
 import d41nh4n.google_image.demo.mapper.UserToUserDto;
 import d41nh4n.google_image.demo.repository.CategoryRepository;
 import d41nh4n.google_image.demo.repository.ProfileCategoriesRepository;
 import d41nh4n.google_image.demo.repository.ProfileRepository;
-import d41nh4n.google_image.demo.repository.RequestWaitListRepository;
 import d41nh4n.google_image.demo.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +34,7 @@ public class UserService {
     private final ProfileRepository profileRepository;
     private final ProfileCategoriesRepository profileCategoriesRepository;
     private final CategoryRepository categoryRepository;
-
+    private final UserMapper userMapper;
     @Transactional
     public User registerUser(User user, Profile profile) {
         // Persist the User entity
@@ -248,5 +250,93 @@ public class UserService {
         double userBalance = user.getAccountBalance() + amountPaid;
         user.setAccountBalance(userBalance);
         save(user);
+    }
+
+
+
+    public User findById(Integer userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
+
+    
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    
+    
+    public List<UserDTO> getAllUserDTOs() {
+        return userRepository.findAll().stream()
+                .map(userMapper::toUserDTO)
+                .collect(Collectors.toList());
+    }
+    
+    public Page<UserDTO> findPaginated(Pageable pageable) {
+        Page<User> usersPage = userRepository.findAll(pageable);
+        return usersPage.map(user -> userMapper.toUserDTO(user));
+    }
+
+    
+    public UserDTO getUserDTOById(Integer id) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user != null) {
+            return userMapper.toUserDTO(user);
+        }
+        return null;
+    }
+    
+    
+    public void deleteUserById(Integer id) {
+        userRepository.deleteById(id);
+    }   
+    
+    
+    public Page<UserDTO> searchUsers(String keyword, Gender gender, Pageable pageable) {
+         return userRepository.searchUsers(keyword, gender, pageable).map(userMapper::toUserDTO);
+    }
+
+    
+    public Page<UserDTO> searchUsersWithBan(String keyword, Gender gender, Pageable pageable) {
+        return userRepository.searchUsersWithBan(keyword, gender, pageable).map(userMapper::toUserDTO);
+    }
+    
+    
+    public Page<UserDTO> searchUsersWithUnBan(String keyword, Gender gender, Pageable pageable) {
+        return userRepository.searchUsersWithUnBan(keyword, gender, pageable).map(userMapper::toUserDTO);
+    }
+    
+    
+    public List<Long> getUserCountByMonthAndYear(int year) {
+        List<Object[]> results = userRepository.findUserCountByMonthAndYear(year);
+        List<Long> userCounts = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            userCounts.add(0L); 
+        }
+        for (Object[] result : results) {
+            Long count = (Long) result[0];
+            int month = (int) result[1];
+            userCounts.set(month - 1, count);
+        }
+        return userCounts;
+    }
+    
+    
+    
+    public List<Integer> getYearsWithUsers() {
+        return userRepository.findYearsWithUsers();
+    }
+
+    
+    public boolean existsByEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    
+    public boolean existsByUsername(String username) {
+        return userRepository.findByUsername(username).isPresent();
+    }
+    
+    public void saveUser(User user) {
+        userRepository.save(user);
     }
 }

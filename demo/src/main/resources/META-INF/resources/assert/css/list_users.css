@@ -1,0 +1,100 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 36px; /* Increased font size for the heading */
+}
+
+.table-container {
+    overflow-x: auto;
+    margin-top: 20px;
+    padding: 0 20px;
+    max-width: 100%;
+}
+
+#searchResultTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 18px; /* Increased font size for table content */
+}
+
+#searchResultTable th {
+    background-color: #007bff;
+    color: white;
+    padding: 16px; /* Increased padding for more space */
+    text-align: center;
+}
+
+#searchResultTable td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 16px; /* Increased padding for more space */
+}
+
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pagination ul {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+}
+
+.pagination ul li {
+    display: inline;
+    margin: 0 5px;
+}
+
+.pagination ul li a {
+    text-decoration: none;
+    color: black;
+    padding: 10px 15px; /* Increased padding for larger buttons */
+    border: 1px solid #ddd;
+    transition: background-color 0.3s;
+    font-size: 18px; /* Increased font size for pagination links */
+}
+
+.pagination ul li a:hover {
+    background-color: #007bff;
+    color: white; /* White text on hover */
+}
+
+.search-container {
+    float: right;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    display: flex;
+}
+
+.search-container input[type=text] {
+    padding: 12px; /* Increased padding */
+    margin-top: 8px;
+    font-size: 17px;
+    border: 1px solid #ddd;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    width: 300px; /* Increased width */
+}
+
+.search-container button {
+    padding: 12px 20px; /* Increased padding */
+    margin-top: 8px;
+    background: #ddd;
+    font-size: 17px;
+    border: 1px solid #ddd;
+    border-left: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    outline: none;
+}
+
+.search-container button:hover {
+    background-color: #0069d9;
+    color: white; /* White text on hover */
+}

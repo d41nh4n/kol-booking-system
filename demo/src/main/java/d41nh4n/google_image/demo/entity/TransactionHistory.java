@@ -46,8 +46,11 @@ public class TransactionHistory {
     @Column(name = "transaction_id", unique = true, nullable = true)
     private String transactionId;
 
-    @Column(name = "system-income", nullable = true)
+    @Column(name = "system-income", nullable = false)
     private double systemIncome;
+
+    @Column(name = "refund", nullable = false)
+    private double refund;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id", referencedColumnName = "request_id")
@@ -56,5 +59,6 @@ public class TransactionHistory {
     @PrePersist
     protected void onCreate() {
         this.systemIncome = 0f;
+        this.refund = 0f;
     }
 }

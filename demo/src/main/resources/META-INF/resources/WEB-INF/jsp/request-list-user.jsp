@@ -86,6 +86,7 @@
                             <div class="row">
                                 <div class="col-sm-9">
                                     <h4 class="search-result-item-heading">
+                                    <p class="description">Request ID: ${request.requestId}</p>
                                         <a href="#">${request.sender.fullName}</a>
                                     </h4>
                                     <c:if test="${not empty request.requestDto}">

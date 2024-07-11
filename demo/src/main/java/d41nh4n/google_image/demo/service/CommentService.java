@@ -13,7 +13,6 @@ import d41nh4n.google_image.demo.exeption.InvalidRoleUser;
 import d41nh4n.google_image.demo.exeption.RatingNotFoundException;
 import d41nh4n.google_image.demo.repository.CommentRepository;
 import d41nh4n.google_image.demo.validation.Utils;
-import io.micrometer.core.instrument.config.validate.Validated.Invalid;
 import lombok.RequiredArgsConstructor;
 
 @Service

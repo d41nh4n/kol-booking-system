@@ -968,7 +968,7 @@ body {
   margin-right: 10px;
 }
 #hire-button{
-  margin-right: 10px;
+  margin: 5px 0 5px 0;
 }
 .hire-container {
   flex: 1; /* Chiếm 1 phần không gian */

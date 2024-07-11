@@ -31,6 +31,7 @@ import d41nh4n.google_image.demo.entity.request.RequestWaitList;
 import d41nh4n.google_image.demo.entity.user.User;
 import d41nh4n.google_image.demo.mapper.RequestDtoToRequest;
 import d41nh4n.google_image.demo.mapper.UserToUserDto;
+import d41nh4n.google_image.demo.service.ChatMessageService;
 import d41nh4n.google_image.demo.service.NotificationService;
 import d41nh4n.google_image.demo.service.ProvinceService;
 import d41nh4n.google_image.demo.service.RequestService;
@@ -53,6 +54,7 @@ public class RequestController {
     private final UserService userService;
     private final SimpMessagingTemplate messagingTemplate;
     private final TransactionHistoryService transactionHistoryService;
+
 
     @PostMapping("/private")
     public ResponseEntity<?> requestJob(@RequestBody Map<String, Object> request) {
@@ -641,7 +643,7 @@ public class RequestController {
 
             Notification notification = new Notification();
             notification.setContent(request.getRequester().getProfile().getFullName() +
-                    "accepted your result");
+                    " accepted your result");
             notification.setReferenceId(null);
             notification.setCreateAt(ZonedDateTime.now());
             notification.setType(TypeNotification.SUBMIT);

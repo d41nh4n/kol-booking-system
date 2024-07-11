@@ -1,5 +1,6 @@
 package d41nh4n.google_image.demo.service;
 
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,8 @@ import d41nh4n.google_image.demo.dto.requestJob.RequestByDay;
 import d41nh4n.google_image.demo.dto.requestJob.RequestDto;
 import d41nh4n.google_image.demo.dto.requestJob.RequestRepresentativeDto;
 import d41nh4n.google_image.demo.entity.TransactionHistory;
+import d41nh4n.google_image.demo.entity.notification.Notification;
+import d41nh4n.google_image.demo.entity.notification.TypeNotification;
 import d41nh4n.google_image.demo.entity.request.Request;
 import d41nh4n.google_image.demo.entity.request.RequestStatus;
 import d41nh4n.google_image.demo.entity.request.RequestWaitList;
@@ -36,6 +39,8 @@ public class RequestService {
     private final Utils utils;
     private final TransactionHistoryService transactionHistoryService;
     private final UserService userService;
+    private final ChatMessageService chatMessageService;
+    private final NotificationService notificationService;
 
     public Request save(Request request) {
         return requestRepository.save(request);
@@ -143,6 +148,14 @@ public class RequestService {
         save(request);
         transactionHistory.setRequest(request);
         transactionHistoryService.save(transactionHistory);
+
+        Notification notification = new Notification();
+        notification.setContent(request.getResponder().getProfile().getFullName() + " sent you a request");
+        notification.setCreateAt(ZonedDateTime.now());
+        notification.setType(TypeNotification.REQUEST);
+        notification.setUser(request.getRequester());
+        notificationService.save(notification);
+        chatMessageService.createAConversation(request.getRequester().getUserId(), request.getResponder().getUserId());
     }
 
     public void handleHireByDayPublic(RequestByDay requestDto, String typeRequest, Double money,
@@ -156,6 +169,14 @@ public class RequestService {
         save(request);
         transactionHistory.setRequest(request);
         transactionHistoryService.save(transactionHistory);
+
+        Notification notification = new Notification();
+        notification.setContent(request.getResponder().getProfile().getFullName() + " sent you a request");
+        notification.setCreateAt(ZonedDateTime.now());
+        notification.setType(TypeNotification.REQUEST);
+        notification.setUser(request.getRequester());
+        notificationService.save(notification);
+        chatMessageService.createAConversation(request.getRequester().getUserId(), request.getResponder().getUserId());
     }
 
     public void handleRepresentativePublic(RequestRepresentativeDto requestDto, String typeRequest, Double money,
@@ -169,6 +190,14 @@ public class RequestService {
         save(request);
         transactionHistory.setRequest(request);
         transactionHistoryService.save(transactionHistory);
+
+        Notification notification = new Notification();
+        notification.setContent(request.getResponder().getProfile().getFullName() + " sent you a request");
+        notification.setCreateAt(ZonedDateTime.now());
+        notification.setType(TypeNotification.REQUEST);
+        notification.setUser(request.getRequester());
+        notificationService.save(notification);
+        chatMessageService.createAConversation(request.getRequester().getUserId(), request.getResponder().getUserId());
     }
 
     public void handlePostOrVideo(RequesPostOrVideotDto requestDto, String typeRequest,
@@ -188,6 +217,15 @@ public class RequestService {
         save(request);
         transactionHistory.setRequest(request);
         transactionHistoryService.save(transactionHistory);
+
+        Notification notification = new Notification();
+        notification.setContent(request.getResponder().getProfile().getFullName() + " sent you a request");
+        notification.setCreateAt(ZonedDateTime.now());
+        notification.setType(TypeNotification.REQUEST);
+        notification.setUser(request.getRequester());
+        notificationService.save(notification);
+
+        chatMessageService.createAConversation(request.getRequester().getUserId(), request.getResponder().getUserId());
     }
 
     public void handleHireByDay(RequestByDay requestDto, String typeRequest, TransactionHistory transactionHistory) {
@@ -203,6 +241,14 @@ public class RequestService {
         save(request);
         transactionHistory.setRequest(request);
         transactionHistoryService.save(transactionHistory);
+
+        Notification notification = new Notification();
+        notification.setContent(request.getResponder().getProfile().getFullName() + " sent you a request");
+        notification.setCreateAt(ZonedDateTime.now());
+        notification.setType(TypeNotification.REQUEST);
+        notification.setUser(request.getRequester());
+        notificationService.save(notification);
+        chatMessageService.createAConversation(request.getRequester().getUserId(), request.getResponder().getUserId());
     }
 
     public void handleRepresentative(RequestRepresentativeDto requestDto, String typeRequest,
@@ -228,6 +274,14 @@ public class RequestService {
         save(request);
         transactionHistory.setRequest(request);
         transactionHistoryService.save(transactionHistory);
+
+        Notification notification = new Notification();
+        notification.setContent(request.getResponder().getProfile().getFullName() + " sent you a request");
+        notification.setCreateAt(ZonedDateTime.now());
+        notification.setType(TypeNotification.REQUEST);
+        notification.setUser(request.getRequester());
+        notificationService.save(notification);
+        chatMessageService.createAConversation(request.getRequester().getUserId(), request.getResponder().getUserId());
     }
 
     public void checkFinishRequest() {
