@@ -30,7 +30,7 @@
                             <td><input type="checkbox" name="kolIds" value="${kol.id}" /></td>
                             <td>${kol.name}</td>
                             <td>${kol.email}</td>
-                            <td>${kol.categories.split(',').join(', ')}</td>
+                            <td>${kol.categories}</td>
                             <td>${kol.description}</td>
                             <td>
                                 <c:forEach var="imageUrl" items="${kol.imageUrlsList}">

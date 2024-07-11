@@ -18,4 +18,6 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     @Query("select c from Category c where c.categoryName LIKE %?1% or c.description LIKE %?1%")
     Page<Category> searchCategories(String keyword, Pageable pageable);
+
+    
 }

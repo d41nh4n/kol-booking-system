@@ -538,7 +538,7 @@ public class RequestController {
         Map<String, String> res = new HashMap<>();
 
         try {
-            int reqId = utils.stringToInt(requestId);
+            int reqId = utils.stringToInt(requestId);   
             int userIdNumber = utils.stringToInt(userId);
 
             Request request = requestService.findRequestById(reqId);
@@ -556,7 +556,7 @@ public class RequestController {
                 // tạo thông báo
                 Notification notification = new Notification();
                 notification.setCreateAt(ZonedDateTime.now());
-                notification.setType(TypeNotification.REQUEST);
+                notification.setType(TypeNotification.ACCEPT_REQUEST);
                 notification.setContent("You was accepted in a request");
                 notification.setReferenceId(null);
                 notification.setUser(user);

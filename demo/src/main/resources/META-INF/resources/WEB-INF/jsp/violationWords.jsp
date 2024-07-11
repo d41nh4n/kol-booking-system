@@ -1,4 +1,4 @@
- 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -141,17 +141,20 @@
             </tr>
         </thead>
         <tbody>
-            <c:forEach var="violationWord" items="${violationWords}">
-                <tr>
-                    <td>${violationWord.wordId}</td>
-                    <td>${violationWord.word}</td>
-                    <td>${violationWord.violationLevel}</td>
-                    <td>
-                        <a href="/admin/violationWords/edit/${violationWord.wordId}">Edit</a>
-                        <a href="/admin/violationWords/delete/${violationWord.wordId}" class="delete" onclick="return confirm('Are you sure?')">Delete</a>
-                    </td>
-                </tr>
-            </c:forEach>
+        <c:if test="${not empty violationWords}">
+    <c:forEach var="violationWord" items="${violationWords}">
+        <tr>
+            <td>${violationWord.wordId}</td>
+            <td>${violationWord.word}</td>
+            <td>${violationWord.violationLevel}</td>
+            <td>
+                <a href="/admin/violationWords/edit/${violationWord.wordId}">Edit</a>
+                <a href="/admin/violationWords/delete/${violationWord.wordId}" class="delete" onclick="return confirm('Are you sure?')">Delete</a>
+            </td>
+        </tr>
+    </c:forEach>
+</c:if>
+
         </tbody>
     </table>
     <div class="pagination">

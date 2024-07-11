@@ -1,10 +1,10 @@
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Category List</title>
-    <link rel="stylesheet" href="/css/list_categories.css">
+    <link rel="stylesheet" href="../../assert/css/list_categories.css">
     <style>
         .notification {
             display: none;
@@ -43,7 +43,7 @@
                 </tr>
             </thead>
             <tbody>
-                <c:forEach var="category" items="${categoryPage.content}">
+                <c:forEach var="category" items="${categoryPage}">
                     <tr>
                         <td>${category.categoryId}</td>
                         <td>${category.categoryName}</td>

@@ -1,10 +1,10 @@
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <title>User List</title>
-        <link rel="stylesheet" type="text/css" href="/css/search_result.css">
+        <link rel="stylesheet" type="text/css" href="../../assert/css/search_result.css">
     </head>
     <body>
 
@@ -45,12 +45,11 @@
                                     <button class="ban-unban-btn" 
                                             data-id="${user.id}" 
                                             data-action="${user.banAction == 'Ban' ? 'ban' : 'unban'}" 
-                                            text="${user.banAction}">
+                                            text="">
+                                            ${user.banAction}
                                     </button>                          
                                     <!-- Button to view -->
-                                    <form action="/admin/users/view/${user.id}" method="GET">
-                                        <button type="submit">View</button>
-                                    </form>
+                                        <a href="/profile?userId=${user.id}">View</a>
                                 </c:if>
                             </td>
                         </tr>
@@ -82,6 +81,6 @@
                 </c:if>
             </ul>
         </div>
-        <script src="/js/search_result.js"></script>
+        <script src="../../assert/js/search_result.js"></script>
     </body>
 </html>

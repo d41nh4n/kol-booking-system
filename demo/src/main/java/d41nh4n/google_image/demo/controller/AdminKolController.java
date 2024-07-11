@@ -45,7 +45,7 @@ public class AdminKolController {
     @GetMapping("/kolList")
     public String showKolList(Model model) {
         List<KolRegistration> kolRegistrations = kolRegistrationService.getAllRegistrations();
-        
+
         // Thêm thuộc tính imageUrlsList cho từng KolRegistration để hiển thị nhiều ảnh
         for (KolRegistration kol : kolRegistrations) {
             if (kol.getImageUrls() != null && !kol.getImageUrls().isEmpty()) {
@@ -57,13 +57,14 @@ public class AdminKolController {
         }
 
         model.addAttribute("kolRegistrations", kolRegistrations);
-        model.addAttribute("viewName", "admin/KOL_List/kolList");
+        model.addAttribute("viewName", "kolList");
 
         return "admin-layout";
     }
 
     @PostMapping("/createAccounts")
-    public String createKolAccounts(@RequestParam(name = "kolIds", required = false) List<Long> kolIds, RedirectAttributes redirectAttributes) {
+    public String createKolAccounts(@RequestParam(name = "kolIds", required = false) List<Long> kolIds,
+            RedirectAttributes redirectAttributes) {
         if (kolIds == null || kolIds.isEmpty()) {
             redirectAttributes.addFlashAttribute("messageError", "No KOL IDs provided.");
             return "redirect:/admin/kolList";
@@ -105,7 +106,8 @@ public class AdminKolController {
         }
 
         if (!successfullyCreatedIds.isEmpty()) {
-            redirectAttributes.addFlashAttribute("message", "Accounts created successfully for IDs: " + successfullyCreatedIds);
+            redirectAttributes.addFlashAttribute("message",
+                    "Accounts created successfully for IDs: " + successfullyCreatedIds);
         }
 
         if (!failedIds.isEmpty()) {
@@ -131,12 +133,16 @@ public class AdminKolController {
 
     private void sendEmailWithCredentials(String email, String username, String password) {
         String subject = "Your KOL Account Credentials";
-        String body = "Dear " + username + ",\n\nYour KOL account has been created.\n\nUsername: " + username + "\nPassword: " + password + "\n\nPlease change your password after logging in for the first time.\n\nBest regards,\nAdmin Team";
+        String body = "Dear " + username + ",\n\nYour KOL account has been created.\n\nUsername: " + username
+                + "\nPassword: " + password
+                + "\n\nPlease change your password after logging in for the first time.\n\nBest regards,\nAdmin Team";
         emailService.sendEmail(email, subject, body);
     }
+
     private void sendRejectionEmail(String email, String username) {
         String subject = "KOL Registration Rejected";
-        String body = "Dear " + username + ",\n\nWe regret to inform you that your request to become a KOL has been rejected.\n\nBest regards,\nAdmin Team";
+        String body = "Dear " + username
+                + ",\n\nWe regret to inform you that your request to become a KOL has been rejected.\n\nBest regards,\nAdmin Team";
         emailService.sendEmail(email, subject, body);
     }
 

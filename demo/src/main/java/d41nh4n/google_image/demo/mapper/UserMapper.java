@@ -25,9 +25,9 @@ public class UserMapper {
                 user.getUserId(),
                 user.getUsername(),
                 user.getEmail(),
-                user.getGender().toString(),
+                user.getGender() == null ? null : user.getGender().toString(),
                 user.getRole(),
                 banAction,
-                viewAction);
+                viewAction);    
     }
 }

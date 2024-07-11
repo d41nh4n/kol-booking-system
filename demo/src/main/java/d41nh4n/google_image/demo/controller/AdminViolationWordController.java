@@ -3,10 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package d41nh4n.google_image.demo.controller;
+
 /**
  *
  * @author DAO
- */    
+ */
 
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,36 +30,36 @@ public class AdminViolationWordController {
     private ViolationWordService violationWordService;
 
     @GetMapping
-    public String getAllViolationWords(Model model, 
-                                       @RequestParam(defaultValue = "0") int page, 
-                                       @RequestParam(defaultValue = "10") int size) {
+    public String getAllViolationWords(Model model,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         Page<ViolationWord> violationWordsPage = violationWordService.findPaginated(PageRequest.of(page, size));
         model.addAttribute("violationWords", violationWordsPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", violationWordsPage.getTotalPages());
-        model.addAttribute("viewName", "admin/ViolationWords/violationWords");
+        model.addAttribute("viewName", "violationWords");
         return "admin-layout";
     }
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
         model.addAttribute("violationWord", new ViolationWord());
-        
-        model.addAttribute("viewName", "admin/ViolationWords/addForm");
+
+        model.addAttribute("viewName", "addForm");
         return "admin-layout";
     }
 
     @PostMapping("/save")
     public String saveViolationWord(@ModelAttribute("violationWord") ViolationWord violationWord, Model model,
-                               RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
         String result = violationWordService.saveViolationWord(violationWord);
         if ("Duplicate violation word".equals(result)) {
             model.addAttribute("violationWord", violationWord);
             model.addAttribute("duplicateMessage", "Violation word already exists.");
             if (violationWord.getWordId() == null) {
-                model.addAttribute("viewName", "admin/ViolationWords/addForm");
+                model.addAttribute("viewName", "addForm");
             } else {
-                model.addAttribute("viewName", "admin/ViolationWords/editForm");
+                model.addAttribute("viewName", "editForm");
             }
             return "admin-layout";
         }
@@ -68,10 +69,19 @@ public class AdminViolationWordController {
 
     @GetMapping("/edit/{id}")
     public String editViolationWord(@PathVariable("id") Integer id, Model model) {
-        Optional<ViolationWord> violationWord = violationWordService.findById(id);
-        model.addAttribute("violationWord", violationWord);
-        
-        model.addAttribute("viewName", "admin/ViolationWords/editForm");
+        Optional<ViolationWord> violationWordOptional = violationWordService.findById(id);
+
+        if (violationWordOptional.isPresent()) {
+            ViolationWord violationWord = violationWordOptional.get();
+            model.addAttribute("violationWord", violationWord); // Pass ViolationWord, not Optional<ViolationWord>
+        } else {
+            // Handle case where ViolationWord with given id is not found
+            // Example: Redirect to an error page or handle it based on your application's
+            // logic
+            return "redirect:/errorPage";
+        }
+
+        model.addAttribute("viewName", "editForm");
         return "admin-layout";
     }
 
@@ -82,5 +92,3 @@ public class AdminViolationWordController {
         return "redirect:/admin/violationWords";
     }
 }
-
-

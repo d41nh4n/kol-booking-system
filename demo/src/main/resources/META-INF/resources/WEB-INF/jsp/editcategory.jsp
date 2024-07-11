@@ -1,10 +1,10 @@
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Edit Category</title>
-    <link rel="stylesheet" type="text/css" href="/css/add_edit.css">
+    <link rel="stylesheet" href="../../assert/css/add_edit.css"> 
 </head>
 <body>
     <h1>Edit Category</h1>

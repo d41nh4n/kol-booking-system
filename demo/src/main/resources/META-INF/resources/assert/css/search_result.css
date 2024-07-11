@@ -12,7 +12,7 @@ h1 {
     border-collapse: collapse;
     margin-top: 20px;
 }
-#searchResultTable th{
+#searchResultTable th {
     color: white;
 }
 #searchResultTable th, #searchResultTable td {
@@ -83,4 +83,18 @@ h1 {
 
 .search-container button:hover {
     background-color: #0069d9;
+}
+
+.ban-unban-btn {
+    padding: 6px 10px; /* Add padding for better appearance */
+    margin-right: 5px; /* Add some margin to separate buttons */
+    background-color: #ddd; /* Background color */
+    border: 1px solid #ddd; /* Border color */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+.ban-unban-btn:hover {
+    background-color: #0069d9; /* Background color on hover */
+    color: white; /* Text color on hover */
 }

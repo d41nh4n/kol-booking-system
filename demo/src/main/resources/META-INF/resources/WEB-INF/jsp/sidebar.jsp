@@ -1,10 +1,10 @@
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="/css/sidebar.css">
     <title>Sidebar</title>
+        <link rel="stylesheet" type="text/css" href="../../assert/css/sidebar.css">
 </head>
 <body>
     <div class="sidebar">

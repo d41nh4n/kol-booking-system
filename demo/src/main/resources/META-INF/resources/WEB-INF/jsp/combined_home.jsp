@@ -240,57 +240,67 @@
             }
 
             function loadCategoryChartData() {
-                $.ajax({
-                    url: "/admin/home/categoryCount",
-                    type: "POST",
-                    success: function (response) {
-                        var categoryCounts = response.categoryCounts;
+    $.ajax({
+        url: "/admin/home/categoryCount",
+        type: "POST",
+        success: function (response) {
+            var categoryCounts = response.categoryCounts;
 
-                        if (!categoryCounts || categoryCounts.length === 0) {
-                            console.error("No category count data received.");
-                            return;
-                        }
-
-                        var labels = categoryCounts.map(c => c.categoryName);
-                        var data = categoryCounts.map(c => c.count);
-                        var backgroundColors = labels.map((_, i) => `hsl(${i * 360 / labels.length}, 70%, 50%)`);
-
-                        var ctx = document.getElementById('categoryChart').getContext('2d');
-
-                        if (window.categoryChart instanceof Chart) {
-                            window.categoryChart.destroy();
-                        }
-
-                        window.categoryChart = new Chart(ctx, {
-                            type: 'doughnut',
-                            data: {
-                                labels: labels,
-                                datasets: [{
-                                        label: 'Category Count',
-                                        data: data,
-                                        backgroundColor: backgroundColors,
-                                        hoverOffset: 4
-                                    }]
-                            },
-                            options: {
-                                responsive: true,
-                                plugins: {
-                                    legend: {
-                                        position: 'top'
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: 'Category Count'
-                                    }
-                                }
-                            }
-                        });
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Error: " + error);
-                    }
-                });
+            if (!categoryCounts || categoryCounts.length === 0) {
+                console.error("No category count data received.");
+                return;
             }
+
+            var labels = categoryCounts.map(c => c.categoryName);
+            var data = categoryCounts.map(c => c.count);
+            // Use fixed colors for doughnut chart segments
+            var backgroundColors = [
+                'rgba(255, 99, 132, 0.6)',
+                'rgba(54, 162, 235, 0.6)',
+                'rgba(255, 206, 86, 0.6)',
+                'rgba(75, 192, 192, 0.6)',
+                'rgba(153, 102, 255, 0.6)',
+                'rgba(255, 159, 64, 0.6)'
+                // Add more colors as needed
+            ];
+
+            var ctx = document.getElementById('categoryChart').getContext('2d');
+
+            if (window.categoryChart instanceof Chart) {
+                window.categoryChart.destroy();
+            }
+
+            window.categoryChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Category Count',
+                        data: data,
+                        backgroundColor: backgroundColors,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Category Count'
+                        }
+                    }
+                }
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error("Error: " + error);
+        }
+    });
+}
+
 
             $("#paymentYearForm").on("submit", function (event) {
                 event.preventDefault();

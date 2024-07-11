@@ -79,7 +79,7 @@ public class AdminReportController {
 
         model.addAttribute("reportPage", reportPage);
 
-        model.addAttribute("viewName", "admin/report/list_reports");
+        model.addAttribute("viewName", "list_reports");
 
         return "admin-layout";
     }  

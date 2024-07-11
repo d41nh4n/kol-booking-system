@@ -444,7 +444,7 @@ public class UserController {
         location = "".equals(location) ? null : location;
         nameSearch = "".equals(nameSearch) ? null : nameSearch;
         gender = "".equals(gender) ? null : gender;
-        category = "".equals(category) ? null : category;
+        category = "".equals(category.trim()) ? null : category;
         maxPrice = "".equals(maxPrice) ? null : maxPrice;
         minPrice = "".equals(minPrice) ? null : minPrice;
         aPost = "".equals(aPost) ? null : aPost;

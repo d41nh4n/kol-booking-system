@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>New Category</title>
-    <link rel="stylesheet" type="text/css" href="/css/add_edit.css">
-    <link rel="stylesheet" type="text/css" href="/css/header.css">
+    <link rel="stylesheet" type="text/css" href="../../assert/css/add_edit.css">
+    <link rel="stylesheet" type="text/css" href="../../assert/css/header.css">
 </head>
 <body>
     

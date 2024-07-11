@@ -22,9 +22,12 @@ public class AdminCategoryController {
 
     @GetMapping
     public String listCategories(Model model,
-            @RequestParam("page") Optional<Integer> page,
+            @RequestParam(name = "page", required = false) Integer page,
             @RequestParam(value = "keyword", required = false) String keyword) {
-        int currentPage = page.orElse(1);
+        int currentPage = 1;
+        if (page != null) {
+            currentPage = page;
+        }
         int pageSize = 10;
         Pageable pageable = PageRequest.of(currentPage - 1, pageSize);
 
@@ -36,10 +39,10 @@ public class AdminCategoryController {
             categoryPage = categoryService.findPaginated(pageable);
         }
 
-        model.addAttribute("categoryPage", categoryPage);
+        model.addAttribute("categoryPage", categoryPage.getContent());
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", categoryPage.getTotalPages());
-        model.addAttribute("viewName", "admin/category/listcategories");
+        model.addAttribute("viewName", "listcategories");
 
         return "admin-layout";
     }
@@ -48,7 +51,7 @@ public class AdminCategoryController {
     public String showNewCategoryForm(Model model) {
         Category category = new Category();
         model.addAttribute("category", category);
-        model.addAttribute("viewName", "admin/category/newcategory");
+        model.addAttribute("viewName", "newcategory");
         return "admin-layout";
     }
 
@@ -59,7 +62,7 @@ public class AdminCategoryController {
 
         if (isDuplicate) {
             model.addAttribute("duplicateMessage", "Category with the same name already exists!");
-            model.addAttribute("viewName", "admin/category/newcategory");
+            model.addAttribute("viewName", "newcategory");
             return "admin-layout";
         }
 
@@ -73,7 +76,7 @@ public class AdminCategoryController {
         Optional<Category> category = categoryService.getCategoryById(id);
         if (category.isPresent()) {
             model.addAttribute("category", category.get());
-            model.addAttribute("viewName", "admin/category/editcategory");
+            model.addAttribute("viewName", "editcategory");
             return "admin-layout";
         } else {
             return "redirect:/admin/categories";
@@ -91,7 +94,7 @@ public class AdminCategoryController {
                 if (isDuplicate) {
                     model.addAttribute("duplicateMessage", "Category with the same name already exists!");
                     model.addAttribute("category", existingCategory.get());
-                    model.addAttribute("viewName", "admin/category/editcategory");
+                    model.addAttribute("viewName", "editcategory");
                     return "admin-layout";
                 }
             }

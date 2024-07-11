@@ -24,7 +24,7 @@ public class ViolationWordService {
     @Autowired
     private ViolationWordRepository violationWordRepository;
 
-    public Optional<ViolationWord> findById(int id) {
+    public Optional<ViolationWord> findById(Integer id) {
         return violationWordRepository.findById(id);
     }
 

@@ -83,7 +83,7 @@ public class AdminListUsersController {
         model.addAttribute("users", userPage.getContent());
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", userPage.getTotalPages());
-        model.addAttribute("viewName", "admin/users/listusers");
+        model.addAttribute("viewName", "listusers");
 
         return "admin-layout";
     }
@@ -157,9 +157,9 @@ public class AdminListUsersController {
         if (userDTO != null && profileDTO != null) {
             model.addAttribute("profile", profileDTO);
             model.addAttribute("currentPage", currentPage); // Thêm currentPage vào model
-            return "admin/users/profile";
+            return "profile";
         } else {
-            return "admin/users/profile";
+            return "profile";
         }
     }
 }

@@ -14,7 +14,7 @@ function choiceCandidate(requestId, userId) {
     .then(data => {
         if (data.message) {
             alert(data.message);
-            location.href("/request/my-request");
+             window.location.href = `https://localhost/request/in-process`
         } else if (data.error) {
             alert(data.error);
         }
