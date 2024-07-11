@@ -1,0 +1,289 @@
+body {
+  margin-top: 20px;
+  background-color: #eee;
+}
+
+.search-result-categories > li > a {
+  color: #b6b6b6;
+  font-weight: 400;
+}
+
+.search-result-categories > li > a:hover {
+  background-color: #ddd;
+  color: #555;
+}
+
+.search-result-categories > li > a > .glyphicon {
+  margin-right: 5px;
+}
+
+.search-result-categories > li > a > .badge {
+  float: right;
+}
+
+.search-results-count {
+  margin-top: 10px;
+}
+
+.search-result-item {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+.search-result-item:after,
+.search-result-item:before {
+  content: " ";
+  display: table;
+}
+
+.search-result-item:after {
+  clear: both;
+}
+
+.search-result-item .image-link {
+  display: block;
+  overflow: hidden;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+@media (min-width: 768px) {
+  .search-result-item .image-link {
+      display: inline-block;
+      margin: -20px 0 -20px -20px;
+      float: left;
+      width: 200px;
+  }
+}
+
+@media (max-width: 767px) {
+  .search-result-item .image-link {
+      max-height: 200px;
+  }
+}
+
+.search-result-item .image {
+  max-height: 200px;
+  object-fit: cover;
+}
+
+.search-result-item .info {
+  margin-top: 2px;
+  font-size: 12px;
+  color: #999;
+}
+
+.search-result-item .description {
+  font-size: 13px;
+}
+
+.search-result-item + .search-result-item {
+  margin-top: 20px;
+}
+
+@media (min-width: 768px) {
+  .search-result-item-body {
+      margin-left: 200px;
+  }
+}
+
+.search-result-item-heading {
+  font-weight: 400;
+}
+
+.search-result-item-heading > a {
+  color: #555;
+}
+
+@media (min-width: 768px) {
+  .search-result-item-heading {
+      margin: 0;
+  }
+}
+
+.description {
+  max-height: 70px;
+  overflow: hidden;
+  position: relative;
+}
+
+.jobs-market {
+  margin-top: 80px;
+}
+
+.add-new {
+  border-radius: 10%;
+  margin-bottom: 50px;
+  margin-left: 10px; /* Adjust this value as needed */
+}
+
+.add-new {
+  margin-left: 20px; /* Adjust this value as needed */
+}
+
+.calendar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.calendar-header button {
+  padding: 5px 10px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.calendar-header button:hover {
+  background-color: #0056b3;
+}
+
+.month-name {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.weekdays, .days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  width: 100%;
+}
+
+.weekdays div {
+  text-align: center;
+  padding: 10px 0;
+  font-weight: bold;
+  background-color: #007bff;
+  color: white;
+  border: 1px solid #ddd;
+}
+
+.days div {
+  text-align: center;
+  padding: 10px 0;
+  border: 1px solid #ddd;
+  min-height: 40px;
+  box-sizing: border-box;
+}
+
+.day input {
+  display: none;
+}
+
+.day label {
+  display: block;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.day input[type="checkbox"]:checked + label {
+  background-color: #007bff;
+  color: white;
+  border-radius: 50%;
+}
+
+button.submit {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+button.submit:hover {
+  background-color: #0056b3;
+}
+
+.search-form {
+  background: #fff;
+  border: 1px solid #f5f2f2;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.search-form .form-control {
+  border-radius: 5px;
+  box-shadow: none;
+  border: 1px solid #ccc;
+  padding: 5px;
+}
+
+.search-form .form-control:focus {
+  border-color: #1aaceb;
+  box-shadow: 0 0 5px rgba(26, 172, 235, 0.5);
+}
+
+.search-form button.btn-base {
+  background: #1aaceb;
+  border: none;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+.search-form button.btn-base:hover {
+  background: #138fbc;
+}
+
+.search-form .form-check {
+  margin-right: 10px;
+}
+
+.search-form .form-check-input {
+  margin-top: 0.3rem;
+}
+
+.search-form .form-check-label {
+  margin-left: 3px;
+}
+
+/* Adjustments for small screens */
+@media (max-width: 768px) {
+  .search-form .row > div {
+      margin-bottom: 10px;
+
+  }
+}
+.Type-Request{
+  margin-top: 5px;
+display: flex;
+justify-content: space-evenly;
+}
+
+.search-form button.btn-base:hover, .search-form a.btn-reset:hover {
+  background: #138fbc;
+}
+
+.search-form a.btn-reset {
+  background: #e0e0e0;
+  color: #333;
+  border-radius: 7px;
+}
+
+.search-form a.btn-reset:hover {
+  background: #ccc;
+}

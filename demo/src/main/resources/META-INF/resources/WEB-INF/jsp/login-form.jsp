@@ -12,7 +12,7 @@
 
     <div class="container" id="container">
         <div class="form-container sign-up">
-            <form action="/login/register" method="post">
+            <form action="/login/register" method="post" id="registerForm">
                 <h1>Create Account</h1>
                 <div class="social-icons">
                     <a href="${pageContext.request.contextPath}/oauth2/authorization/google" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
@@ -22,7 +22,8 @@
                 </div>
                  <i id="username-check" class="icon-check"></i>
                 <input type="text" id="username" name="username" placeholder="Username" required>
-                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <input type="password" id="passwordConfirm" name="passwordConfirm" placeholder="Confirm password" required>
                 <button type="submit">Sign Up</button>
             </form>
         </div>
@@ -68,31 +69,40 @@
     <script src="../../assert/js/login.js"></script>
     <script>
        $(document).ready(function() {
-    $('#username').on('input', function() {
-        var username = $(this).val();
-        var iconCheck = $('#username-check');
-        
-        if (username.length > 0) {
-            $.ajax({
-                url: '${pageContext.request.contextPath}/userexist',
-                type: 'GET',
-                data: { username: username },
-                success: function(data) {
-                    if (data.userExist) {
-                       iconCheck.addClass('visible error').removeClass('success');
-                        iconCheck.html('<i class="fa fa-times"></i>');
-                    } else {
-                         iconCheck.addClass('visible success').removeClass('error');
-                        iconCheck.html('<i class="fa fa-check"></i>');
-                    }
+            $('#username').on('input', function() {
+                var username = $(this).val();
+                var iconCheck = $('#username-check');
+                
+                if (username.length > 0) {
+                    $.ajax({
+                        url: '${pageContext.request.contextPath}/userexist',
+                        type: 'GET',
+                        data: { username: username },
+                        success: function(data) {
+                            if (data.userExist) {
+                                iconCheck.addClass('visible error').removeClass('success');
+                                iconCheck.html('<i class="fa fa-times"></i>');
+                            } else {
+                                iconCheck.addClass('visible success').removeClass('error');
+                                iconCheck.html('<i class="fa fa-check"></i>');
+                            }
+                        }
+                    });
+                } else {
+                    iconCheck.removeClass('visible success error');
                 }
             });
-        } else {
-            iconCheck.removeClass('visible success error');
-        }
-    });
-});
 
+            $('#registerForm').on('submit', function(event) {
+                var password = $('#password').val();
+                var passwordConfirm = $('#passwordConfirm').val();
+                
+                if (password !== passwordConfirm) {
+                    event.preventDefault();
+                    alert('Passwords do not match!');
+                }
+            });
+        });
     </script>
 </body>
 
