@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import com.duc.vnpaydemo.Config.VNPayConfig;
+import com.duc.vnpaydemo.config.VNPayConfig;
 import com.duc.vnpaydemo.model.Request;
 import com.duc.vnpaydemo.model.TransactionHistory;
 import com.duc.vnpaydemo.model.Users;

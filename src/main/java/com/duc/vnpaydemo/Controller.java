@@ -1,6 +1,6 @@
 package com.duc.vnpaydemo;
 
-import com.duc.vnpaydemo.Config.VNPayService;
+import com.duc.vnpaydemo.config.VNPayService;
 import com.duc.vnpaydemo.model.TransactionHistory;
 import com.duc.vnpaydemo.repository.RequestRepository;
 import com.duc.vnpaydemo.repository.TransactionHistoryRepository;

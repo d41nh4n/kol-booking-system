@@ -1,4 +1,4 @@
-package com.duc.vnpaydemo.Config;
+package com.duc.vnpaydemo.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
