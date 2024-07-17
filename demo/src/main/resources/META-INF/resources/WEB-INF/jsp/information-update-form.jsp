@@ -69,7 +69,7 @@
                                     </c:forEach>
                                 </select>
                             </div>
-                            
+                            <c:if test="${userInfor.role == 'KOL'}">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
     <div>
         <label class="small mb-1" for="inputPriceAPost">Price per Post</label>
@@ -88,6 +88,7 @@
         <input name="representativePrice" class="form-control w-full p-2 border rounded" id="inputRepresentativePrice" type="text" placeholder="Enter representative price" value="<fmt:formatNumber value='${userInformation.representativePrice}' type='number' pattern='#,##0' />" />
     </div>
 </div>
+</c:if>
 
                             <button class="btn btn-primary mb-3 w-full md:w-auto" type="submit">Save changes</button>
                         </form>

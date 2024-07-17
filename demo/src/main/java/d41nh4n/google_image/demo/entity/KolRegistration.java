@@ -11,7 +11,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,4 +55,13 @@ public class KolRegistration {
     
     @Transient // Đánh dấu không phải cột trong database
     private List<String> imageUrlsList;
+
+    public List<String> getCategoryNames() {
+        if (this.categories == null || this.categories.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList(this.categories.split(",")).stream()
+                     .map(String::trim)
+                     .collect(Collectors.toList());
+    }
 }

@@ -55,7 +55,6 @@ public class RequestController {
     private final SimpMessagingTemplate messagingTemplate;
     private final TransactionHistoryService transactionHistoryService;
 
-
     @PostMapping("/private")
     public ResponseEntity<?> requestJob(@RequestBody Map<String, Object> request) {
         Logger logger = LoggerFactory.getLogger(RequestController.class);
@@ -441,7 +440,7 @@ public class RequestController {
             int reqIdNum = utils.stringToInt(requestId);
             Request request = requestService.findRequestById(reqIdNum);
             if (request == null) {
-                res.put("error", "RequestI not exsist!");
+                res.put("error", "RequestID not exsist!");
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
             }
             User user = userService.getUserById(utils.getPrincipal().getUserId());
@@ -538,7 +537,7 @@ public class RequestController {
         Map<String, String> res = new HashMap<>();
 
         try {
-            int reqId = utils.stringToInt(requestId);   
+            int reqId = utils.stringToInt(requestId);
             int userIdNumber = utils.stringToInt(userId);
 
             Request request = requestService.findRequestById(reqId);
@@ -553,6 +552,10 @@ public class RequestController {
                 request.setRequestStatus(RequestStatus.IN_PROGRESS);
                 requestService.save(request);
 
+                TransactionHistory transactionHistory = transactionHistoryService.findByRequest(request);
+                transactionHistory.setReceiver(user);
+                transactionHistoryService.save(transactionHistory);
+                
                 // tạo thông báo
                 Notification notification = new Notification();
                 notification.setCreateAt(ZonedDateTime.now());

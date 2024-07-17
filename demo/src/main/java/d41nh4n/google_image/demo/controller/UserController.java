@@ -208,39 +208,8 @@ public class UserController {
         return ResponseEntity.ok(res);
     }
 
-    @PostMapping("/verifyemail")
-    public String checkCodeForm(@RequestParam String email, HttpServletRequest request, Model model) {
-        if (!utils.isValidEmail(email)) {
-            return "redirect:/infor?invalidEmail=true";
-        }
-
-        if (userService.getUserByEmail(email) != null) {
-            return "redirect:/infor?emailExist=true";
-        }
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()
-                && !"anonymousUser".equals(authentication.getPrincipal())) {
-            UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
-            String id = utils.renderCode(8);
-            String code = utils.generateRandomCode();
-            int numberOfAttempts = 0;
-            VerifyCode verifyCode = new VerifyCode(id, userDetails.getUserId(), email, code, numberOfAttempts);
-            verifyCodeService.save(verifyCode);
-
-            Mail mail = new Mail();
-            mail.setMessage("Your code is: " + verifyCode.getCode());
-            mail.setSubject("Confirmation Code");
-            mailService.sendMail(verifyCode.getEmail(), mail);
-
-            model.addAttribute("idCode", id);
-            model.addAttribute("email", email);
-        }
-        return "checkcode";
-    }
-
     @PostMapping("/verifycode")
-    public ResponseEntity<VerifyStatus> checkValidCode(@RequestParam(value = "idCode", required = false) String idCode,
+    public ResponseEntity<VerifyStatus> checkValidCode(@RequestParam(value = "idCode", required = false) int idCode,
             @RequestParam(value = "verifyCode", required = false) String verifyCode) {
         VerifyCode code = verifyCodeService.getById(idCode);
         VerifyStatus status = new VerifyStatus();
@@ -257,7 +226,7 @@ public class UserController {
 
         if (verifyCode.equals(code.getCode())) {
 
-            User user = userService.getUserById(code.getUserId());
+            User user = userService.findByUserNameAndEmail(code.getUserName(), code.getEmail());
             user.setEmail(code.getEmail());
             userService.save(user);
             verifyCodeService.delete(code);
@@ -519,13 +488,14 @@ public class UserController {
 
     @PostMapping("/profile-media-add")
     public ResponseEntity<?> handleProfileMediaUpload(@RequestBody MediaProfileUpload content) {
-        System.out.println(content.getContent());
         try {
             ResponeUpload responeUpload = cloudinaryService.uploadFile(content.getContent());
+            System.out.println(responeUpload.toString());
             Profile profile = userService.getProfileById(getUserId());
             if (responeUpload.getStatus() == 200) {
                 MediaProfile mediaProfile = new MediaProfile();
                 mediaProfile.setUrl(responeUpload.getUrl());
+                mediaProfile.setPublicId(responeUpload.getPublicId());
                 String contentType = content.getContent().split(",")[0];
                 if (contentType.contains("video") || contentType.contains("mp4")) {
                     mediaProfile.setType("VIDEO");
@@ -586,7 +556,10 @@ public class UserController {
                         new ResponeJson(HttpStatus.OK.value(), "Image not found in database"));
             }
 
+            // detele in database
             mediaProfileService.delete(mediaProfile);
+            //delete on cloud
+            cloudinaryService.deleteByPublicId(mediaProfile.getPublicId());
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponeJson(HttpStatus.OK.value(), "Image deleted successfully"));
         } catch (NumberFormatException e) {

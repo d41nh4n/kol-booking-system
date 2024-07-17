@@ -1,21 +1,17 @@
-package d41nh4n.google_image.demo.dto.respone;
+package d41nh4n.google_image.demo.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Builder
-public class ResponeUpload {
-    private int status;
-    private String message;
+public class UploadRespone {
     private String url;
-    private String publicId;
+    private String public_id;
 }

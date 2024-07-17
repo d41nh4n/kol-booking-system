@@ -3,6 +3,7 @@ package d41nh4n.google_image.demo.service;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import d41nh4n.google_image.demo.entity.user.MediaProfile;
@@ -34,7 +35,7 @@ public class MediaProfileService {
         return new ArrayList<>();
     }
 
-    public MediaProfile getById(Long id){
+    public MediaProfile getById(Long id) {
         return mediaProfileRepository.findById(id).orElse(null);
     }
 }

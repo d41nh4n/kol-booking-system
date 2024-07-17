@@ -5,14 +5,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import d41nh4n.google_image.demo.dto.UserDTO;
+import d41nh4n.google_image.demo.dto.respone.ResponeJson;
 import d41nh4n.google_image.demo.dto.userdto.UserDto;
 import d41nh4n.google_image.demo.dto.userdto.UserDtoFilter;
 import d41nh4n.google_image.demo.dto.userdto.UserFindedBySearch;
 import d41nh4n.google_image.demo.entity.Category;
+import d41nh4n.google_image.demo.entity.VerifyCode;
 import d41nh4n.google_image.demo.entity.user.Gender;
 import d41nh4n.google_image.demo.entity.user.Profile;
 import d41nh4n.google_image.demo.entity.user.ProfileCategories;
@@ -23,6 +29,7 @@ import d41nh4n.google_image.demo.repository.CategoryRepository;
 import d41nh4n.google_image.demo.repository.ProfileCategoriesRepository;
 import d41nh4n.google_image.demo.repository.ProfileRepository;
 import d41nh4n.google_image.demo.repository.UserRepository;
+import d41nh4n.google_image.demo.validation.Utils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -35,6 +42,10 @@ public class UserService {
     private final ProfileCategoriesRepository profileCategoriesRepository;
     private final CategoryRepository categoryRepository;
     private final UserMapper userMapper;
+    private final Utils utils;
+    private final VerifyCodeService verifyCodeService;
+    private final PasswordEncoder passwordEncoder;
+
     @Transactional
     public User registerUser(User user, Profile profile) {
         // Persist the User entity
@@ -252,31 +263,25 @@ public class UserService {
         save(user);
     }
 
-
-
     public User findById(Integer userId) {
         return userRepository.findById(userId).orElse(null);
     }
 
-    
     public List<User> findAll() {
         return userRepository.findAll();
     }
 
-    
-    
     public List<UserDTO> getAllUserDTOs() {
         return userRepository.findAll().stream()
                 .map(userMapper::toUserDTO)
                 .collect(Collectors.toList());
     }
-    
+
     public Page<UserDTO> findPaginated(Pageable pageable) {
         Page<User> usersPage = userRepository.findAll(pageable);
         return usersPage.map(user -> userMapper.toUserDTO(user));
     }
 
-    
     public UserDTO getUserDTOById(Integer id) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
@@ -284,33 +289,28 @@ public class UserService {
         }
         return null;
     }
-    
-    
+
     public void deleteUserById(Integer id) {
         userRepository.deleteById(id);
-    }   
-    
-    
-    public Page<UserDTO> searchUsers(String keyword, Gender gender, Pageable pageable) {
-         return userRepository.searchUsers(keyword, gender, pageable).map(userMapper::toUserDTO);
     }
 
-    
+    public Page<UserDTO> searchUsers(String keyword, Gender gender, Pageable pageable) {
+        return userRepository.searchUsers(keyword, gender, pageable).map(userMapper::toUserDTO);
+    }
+
     public Page<UserDTO> searchUsersWithBan(String keyword, Gender gender, Pageable pageable) {
         return userRepository.searchUsersWithBan(keyword, gender, pageable).map(userMapper::toUserDTO);
     }
-    
-    
+
     public Page<UserDTO> searchUsersWithUnBan(String keyword, Gender gender, Pageable pageable) {
         return userRepository.searchUsersWithUnBan(keyword, gender, pageable).map(userMapper::toUserDTO);
     }
-    
-    
+
     public List<Long> getUserCountByMonthAndYear(int year) {
         List<Object[]> results = userRepository.findUserCountByMonthAndYear(year);
         List<Long> userCounts = new ArrayList<>();
         for (int i = 0; i < 12; i++) {
-            userCounts.add(0L); 
+            userCounts.add(0L);
         }
         for (Object[] result : results) {
             Long count = (Long) result[0];
@@ -319,24 +319,156 @@ public class UserService {
         }
         return userCounts;
     }
-    
-    
-    
+
     public List<Integer> getYearsWithUsers() {
         return userRepository.findYearsWithUsers();
     }
 
-    
     public boolean existsByEmail(String email) {
         return userRepository.findByEmail(email).isPresent();
     }
 
-    
     public boolean existsByUsername(String username) {
         return userRepository.findByUsername(username).isPresent();
     }
-    
+
     public void saveUser(User user) {
         userRepository.save(user);
+    }
+
+    public User findByUserNameAndEmail(String username, String email) {
+        return userRepository.findByUsernameAndEmail(username, email);
+    }
+
+    public User createAAccount(String userName, String email, String password) {
+        String encodedPassword = passwordEncoder.encode(password);
+
+        User user = new User();
+        user.setUsername(userName);
+        user.setPasswordHash(encodedPassword);
+        user.setRole("USER");
+        user.setGender(Gender.OTHER);
+        user = save(user);
+        Profile profile = new Profile();
+        profile.setUser(user);
+        profile.setProfileId(user.getUserId());
+        profile.setFullName(utils.renderUserName(10));
+        profile.setAvatarUrl(
+                "https://png.pngtree.com/element_our/20200610/ourlarge/pngtree-default-avatar-image_2237213.jpg");
+        user.setProfile(profile);
+        save(user);
+        save(profile);
+
+        return user;
+    }
+
+    public ResponseEntity<ResponeJson> registerUser(String userName, String password, String email, int codeId,
+            String code) {
+        ResponeJson responeJson = new ResponeJson();
+
+        VerifyCode verifyCode = verifyCodeService.getById(codeId);
+
+        if (verifyCode == null) {
+            responeJson.setMessage("Invalid Code Id!");
+            responeJson.setStatus(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.status(responeJson.getStatus()).body(responeJson);
+        }
+
+        if (verifyCodeService.isCodeExpired(verifyCode)) {
+            responeJson.setMessage("Code Out Of Date, Let Get Another Code!");
+            responeJson.setStatus(HttpStatus.LOCKED.value());
+            verifyCodeService.delete(verifyCode);
+            return ResponseEntity.status(responeJson.getStatus()).body(responeJson);
+        }
+
+        if (!verifyCode.getUserName().equals(userName)) {
+            responeJson.setMessage("Invalid UserName In Code Id!");
+            responeJson.setStatus(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.status(responeJson.getStatus()).body(responeJson);
+        } else if (!verifyCode.getEmail().equals(email)) {
+            responeJson.setMessage("Invalid Email In Code Id!");
+            responeJson.setStatus(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.status(responeJson.getStatus()).body(responeJson);
+        } else if (password.length() < 8) {
+            responeJson.setMessage("This Password Must Be At Least 8 Characters Long!");
+            responeJson.setStatus(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.status(responeJson.getStatus()).body(responeJson);
+        }
+
+        if (verifyCode.getCode().equalsIgnoreCase(code)) {
+            User user = createAAccount(userName, email, password);
+            if (user != null) {
+                responeJson.setMessage("Register Success!");
+                responeJson.setStatus(HttpStatus.CREATED.value());
+                return ResponseEntity.status(responeJson.getStatus()).body(responeJson);
+            } else {
+                responeJson.setMessage("Failed to create account!");
+                responeJson.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                return ResponseEntity.status(responeJson.getStatus()).body(responeJson);
+            }
+        }
+
+        if (verifyCode.getNumberOfAttempts() < 3) {
+            verifyCode.setNumberOfAttempts(verifyCode.getNumberOfAttempts() + 1);
+            verifyCodeService.save(verifyCode);
+            responeJson.setMessage("Code Invalid!");
+            responeJson.setStatus(HttpStatus.CONFLICT.value());
+            return ResponseEntity.status(responeJson.getStatus()).body(responeJson);
+        } else {
+            responeJson.setMessage("Code Out Of Date, Let Get Another Code!");
+            responeJson.setStatus(HttpStatus.LOCKED.value());
+            verifyCodeService.delete(verifyCode);
+            return ResponseEntity.status(responeJson.getStatus()).body(responeJson);
+        }
+    }
+
+    public ResponseEntity<ResponeJson> getRegisterCode(
+            String userName, String password, String email) {
+
+        ResponeJson responeJson = new ResponeJson();
+
+        if (userName == null || userName.isEmpty()) {
+            responeJson.setMessage("UserName is required!");
+            responeJson.setStatus(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.ok(responeJson);
+        }
+
+        if (password == null || password.isEmpty()) {
+            responeJson.setMessage("Password is required!");
+            responeJson.setStatus(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.ok(responeJson);
+        }
+
+        if (email == null || email.isEmpty()) {
+            responeJson.setMessage("Email is required!");
+            responeJson.setStatus(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.ok(responeJson);
+        }
+
+        if (existsByUsername(userName)) {
+            responeJson.setMessage("This UserName Is Exist!");
+            responeJson.setStatus(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.ok(responeJson);
+        } else if (existsByEmail(email)) {
+            responeJson.setMessage("This Email Is Exist!");
+            responeJson.setStatus(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.ok(responeJson);
+        } else if (password.length() < 8) {
+            responeJson.setMessage("This Password Must Be At Least 8 Characters Long!");
+            responeJson.setStatus(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.ok(responeJson);
+        }
+
+        int idCode = verifyCodeService.genarateCodeAndReturnId(email, userName);
+
+        if (idCode != -1) {
+            responeJson.setMessage(String.valueOf(idCode));
+            responeJson.setStatus(HttpStatus.ACCEPTED.value());
+        } else {
+            responeJson.setMessage("Failed to generate verification code!");
+            responeJson.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        return ResponseEntity.status(responeJson.getStatus()).body(responeJson);
     }
 }

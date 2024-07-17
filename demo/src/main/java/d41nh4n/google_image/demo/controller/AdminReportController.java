@@ -108,13 +108,13 @@ public class AdminReportController {
         return "redirect:/admin/reports"; // Điều hướng lại trang danh sách báo cáo sau khi gửi thông báo
     }
     
-    @GetMapping("/submit")
-    public String showReportForm(Model model) {
-        model.addAttribute("report", new Report());
-        return "reportForm";
-    }
+    // @GetMapping("/submit")
+    // public String showReportForm(Model model) {
+    //     model.addAttribute("report", new Report());
+    //     return "reportForm";
+    // }
 
-    @PostMapping("/submit1")
+    @PostMapping("/submit")
     public String submitReport(@ModelAttribute("report") Report report, Model model) {
         report.setCreateDate(new Date());
 

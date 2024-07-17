@@ -10,6 +10,7 @@ import d41nh4n.google_image.demo.repository.CategoryRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryService {
@@ -54,5 +55,10 @@ public class CategoryService {
             }
         }
         return false;
+    }
+
+    public List<Integer> getCategoryIdsByNames(List<String> categoryNames) {
+        List<Category> categories = categoryRepository.findByCategoryNameIn(categoryNames);
+        return categories.stream().map(Category::getCategoryId).collect(Collectors.toList());
     }
 }

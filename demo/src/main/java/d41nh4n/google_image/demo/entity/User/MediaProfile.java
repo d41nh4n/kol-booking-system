@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "MediaProfile")
+@Table(name = "media_profile")
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
@@ -23,6 +23,9 @@ public class MediaProfile {
 
     @Column(name = "url", length = 500, nullable = false)
     private String url;
+
+    @Column(name = "public_id", nullable = false)
+    private String publicId;
 
     @Column(name = "type", length = 50, nullable = false)
     private String type; // IMAGE or VIDEO

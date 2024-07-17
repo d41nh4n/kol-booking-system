@@ -25,8 +25,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Utils {
 
-    private final UserService service;
-
     private static final String DATE_FORMAT_1 = "MM/dd/yyyy";
     private static final String DATE_FORMAT_2 = "yyyy-MM-dd";
 
@@ -45,13 +43,7 @@ public class Utils {
     }
 
     public String renderUserName(int number) {
-
-        while (true) {
-            String name = "USER_" + renderCode(number);
-            if (service.getProfileByName(name) == null) {
-                return name;
-            }
-        }
+        return "USER_" + renderCode(number);
     }
 
     public String generateRandomCode() {

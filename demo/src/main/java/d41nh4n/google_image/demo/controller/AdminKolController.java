@@ -7,9 +7,14 @@ package d41nh4n.google_image.demo.controller;
 import d41nh4n.google_image.demo.entity.KolRegistration;
 import d41nh4n.google_image.demo.entity.user.Gender;
 import d41nh4n.google_image.demo.entity.user.User;
+import d41nh4n.google_image.demo.service.CategoryService;
+import d41nh4n.google_image.demo.service.CloudinaryService;
 import d41nh4n.google_image.demo.service.EmailService;
 import d41nh4n.google_image.demo.service.KolRegistrationService;
+import d41nh4n.google_image.demo.service.ProfileCategoryService;
 import d41nh4n.google_image.demo.service.UserService;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,15 +47,37 @@ public class AdminKolController {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private ProfileCategoryService profileCategoriesService;
+
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private CloudinaryService cloudinaryService;
+
     @GetMapping("/kolList")
     public String showKolList(Model model) {
         List<KolRegistration> kolRegistrations = kolRegistrationService.getAllRegistrations();
-
+        String startPublicId = "[";
+        String endPublicId = "]";
         // Thêm thuộc tính imageUrlsList cho từng KolRegistration để hiển thị nhiều ảnh
         for (KolRegistration kol : kolRegistrations) {
             if (kol.getImageUrls() != null && !kol.getImageUrls().isEmpty()) {
                 String[] imageUrls = kol.getImageUrls().split(",");
-                kol.setImageUrlsList(Arrays.asList(imageUrls)); // Chuyển mảng thành List và gán vào imageUrlsList
+                List<String> cleanedUrls = new ArrayList<>();
+
+                for (String stringUrl : imageUrls) {
+                    // Loại bỏ phần startPublicId và endPublicId
+                    if (stringUrl.contains(startPublicId) && stringUrl.contains(endPublicId)) {
+                        int startIndex = stringUrl.indexOf(endPublicId) + endPublicId.length();
+                        String cleanedUrl = stringUrl.substring(startIndex).trim();
+                        cleanedUrls.add(cleanedUrl);
+                    } else {
+                        cleanedUrls.add(stringUrl.trim()); // Thêm chuỗi đã loại bỏ khoảng trắng
+                    }
+                }
+                kol.setImageUrlsList(cleanedUrls); // Chuyển mảng thành List và gán vào imageUrlsList
             } else {
                 kol.setImageUrlsList(new ArrayList<>()); // Khởi tạo List rỗng nếu không có ảnh
             }
@@ -95,6 +122,11 @@ public class AdminKolController {
                 newUser.setRole("KOL");
                 newUser.setUsername(username);
                 userService.save(newUser);
+
+                // Get category names and convert them to IDs
+                List<String> categoryNames = kolRegistration.getCategoryNames();
+                List<Integer> categoryIds = categoryService.getCategoryIdsByNames(categoryNames);
+                profileCategoriesService.saveCategories(newUser, categoryIds);
 
                 sendEmailWithCredentials(email, username, password);
 
@@ -147,13 +179,25 @@ public class AdminKolController {
     }
 
     @PostMapping("/deleteKol")
-    public String deleteKol(@RequestParam("kolId") Long kolId, RedirectAttributes redirectAttributes) {
+    public String deleteKol(@RequestParam("kolId") Long kolId, RedirectAttributes redirectAttributes)
+            throws IOException {
         // Retrieve the KOL registration details before deleting
         Optional<KolRegistration> kolRegistration = kolRegistrationService.getRegistrationById(kolId);
 
-        if (kolRegistration != null) {
+        if (kolRegistration.isPresent()) {
             // Send rejection email
             sendRejectionEmail(kolRegistration.get().getEmail(), kolRegistration.get().getName());
+
+            String[] imgUrls = kolRegistration.get().getImageUrls().split(",");
+            for (String string : imgUrls) {
+                // Extract public ID from the format [publicId]
+                int startIdx = string.indexOf('[') + 1;
+                int endIdx = string.indexOf(']');
+                if (startIdx != -1 && endIdx != -1 && startIdx < endIdx) {
+                    String publicIdUrl = string.substring(startIdx, endIdx);
+                    cloudinaryService.deleteByPublicId(publicIdUrl);
+                }
+            }
 
             // Delete the registration
             kolRegistrationService.deleteRegistration(kolId);

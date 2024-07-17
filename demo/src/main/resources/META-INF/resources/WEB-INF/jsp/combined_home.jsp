@@ -165,7 +165,7 @@
                         }
 
                         window.paymentChart = new Chart(ctx, {
-                            type: 'line',
+                            type: 'bar',
                             data: {
                                 labels: labels,
                                 datasets: [{
@@ -213,7 +213,7 @@
                         }
 
                         window.userChart = new Chart(ctx, {
-                            type: 'bar',
+                            type: 'line',
                             data: {
                                 labels: labels,
                                 datasets: [{

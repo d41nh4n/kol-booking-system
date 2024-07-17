@@ -36,12 +36,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 if (decodedJwt.getExpiresAt().before(new Date())) {
                     utils.removeTokenCookie(response);
-                    System.err.println("JWT has expired.");
                 } else {
                     var principalFromDecodedJwt = converter.convert(decodedJwt);
-                    var userPrincipalAuthenticationToken = new UserPrincipalAuthenticationToken(
-                            principalFromDecodedJwt);
-                    SecurityContextHolder.getContext().setAuthentication(userPrincipalAuthenticationToken);
+                    if (!principalFromDecodedJwt.isLocked()) {
+                        var userPrincipalAuthenticationToken = new UserPrincipalAuthenticationToken(
+                                principalFromDecodedJwt);
+                        SecurityContextHolder.getContext().setAuthentication(userPrincipalAuthenticationToken);
+                    }
                 }
             } catch (Exception e) {
                 System.err.println("Failed to authenticate JWT: " + e.getMessage());

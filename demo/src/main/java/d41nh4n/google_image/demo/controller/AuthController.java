@@ -20,12 +20,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import d41nh4n.google_image.demo.dto.request.LoginDto;
+import d41nh4n.google_image.demo.dto.request.RegisterDto;
+import d41nh4n.google_image.demo.dto.respone.ResponeJson;
 import d41nh4n.google_image.demo.dto.userdto.UserInfo;
+import d41nh4n.google_image.demo.entity.VerifyCode;
 import d41nh4n.google_image.demo.entity.user.Profile;
 import d41nh4n.google_image.demo.entity.user.User;
 import d41nh4n.google_image.demo.security.UserPrincipal;
 import d41nh4n.google_image.demo.service.AuthService;
 import d41nh4n.google_image.demo.service.UserService;
+import d41nh4n.google_image.demo.service.VerifyCodeService;
 import d41nh4n.google_image.demo.validation.Utils;
 import d41nh4n.google_image.demo.validation.ValidTokenService;
 import jakarta.servlet.http.Cookie;
@@ -59,7 +63,16 @@ public class AuthController {
                 cookie.setMaxAge(24 * 60 * 60);
                 response.addCookie(cookie);
             }
-            return "redirect:/";
+            if (userPrincipal == null) {
+                return "redirect:/login/form?error=true";
+            }
+            if (userPrincipal.getRoles().equalsIgnoreCase("KOL") || userPrincipal.getRoles().equalsIgnoreCase("USER")) {
+                return "redirect:/";
+            } else if (userPrincipal.getRoles().equals("ADMIN")) {
+                return "redirect:/admin/home";
+            }
+            return "redirect:/login/form?error=true";
+
         } catch (AuthenticationException e) {
             return "redirect:/login/form?error=true";
         }
@@ -69,7 +82,8 @@ public class AuthController {
     public String loginForm(HttpServletRequest request, Model model,
             @RequestParam(value = "error", required = false) Boolean error,
             @RequestParam(value = "success", required = false) Boolean success,
-            @RequestParam(value = "userExist", required = false) Boolean userExist) {
+            @RequestParam(value = "userExist", required = false) Boolean userExist,
+            @RequestParam(value = "registerSuccess", required = false) Boolean registerSuccess) {
         String accessToken = utils.getTokenFromCookies(request);
 
         if (accessToken != null && !accessToken.isEmpty() && !validTokenService.isTokenExpired(accessToken)) {
@@ -85,6 +99,9 @@ public class AuthController {
         if (Boolean.TRUE.equals(userExist)) {
             model.addAttribute("errorMessage", "Username exist!");
         }
+        if (Boolean.TRUE.equals(registerSuccess)) {
+            model.addAttribute("success", "Check email to verify code!");
+        }
 
         return "login-form";
     }
@@ -95,36 +112,24 @@ public class AuthController {
         return "redirect:/login/form";
     }
 
-    @GetMapping("/register/form")
-    public String formRegister() {
-        return "register";
+    @PostMapping("/api/register-get-code")
+    public ResponseEntity<ResponeJson> getRegisterCode(
+            @RequestParam(name = "userName") String userName,
+            @RequestParam(name = "password") String password,
+            @RequestParam(name = "email") String email) {
+
+        return userService.getRegisterCode(userName, password, email);
     }
 
-    @PostMapping("/register")
-    public String register(@ModelAttribute LoginDto loginDto) {
-        if (userService.getUserByUsername(loginDto.getUsername()) != null || loginDto.getPassword().isEmpty()) {
-            return "redirect:/login/form?userExist=true";
-        }
+    @PostMapping("/api/register")
+    public ResponseEntity<ResponeJson> createAAccount(
+            @RequestParam(name = "userName") String userName,
+            @RequestParam(name = "password") String password,
+            @RequestParam(name = "email") String email,
+            @RequestParam(name = "codeId") int codeId,
+            @RequestParam(name = "code") String code) {
 
-        String encodedPassword = passwordEncoder.encode(loginDto.getPassword());
-
-        // Create and persist the User entity
-        User user = new User();
-        user.setUsername(loginDto.getUsername());
-        user.setPasswordHash(encodedPassword);
-        user.setRole("USER");
-        user = userService.save(user);
-        Profile profile = new Profile();
-        profile.setUser(user);
-        profile.setProfileId(user.getUserId());
-        profile.setFullName(utils.renderUserName(10));
-        profile.setAvatarUrl(
-                "https://png.pngtree.com/element_our/20200610/ourlarge/pngtree-default-avatar-image_2237213.jpg");
-        user.setProfile(profile);
-        userService.save(user);
-        userService.save(profile);
-
-        return "redirect:/login/form?success=true";
+        return userService.registerUser(userName, password, email, codeId, code);
     }
 
     @GetMapping("/change-password")

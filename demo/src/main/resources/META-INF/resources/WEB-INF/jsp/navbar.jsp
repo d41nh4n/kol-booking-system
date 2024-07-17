@@ -83,7 +83,7 @@
 <div class="navbar navbar-fixed-top header">
     <div class="col-md-12">
         <div class="navbar-header">
-            <a class="navbar-brand" href="/">KOL</a>
+            <a class="navbar-brand" href="/">TikTik</a>
             <button data-target="#navbar-collapse1" data-toggle="collapse" class="navbar-toggle" type="button">
                 <i class="glyphicon glyphicon-search"></i>
             </button>

@@ -392,60 +392,68 @@ document
   .getElementById("file-input")
   .addEventListener("change", handleFileSelect);
 
-function handleFileSelect(event) {
-  const file = event.target.files[0];
-  if (file) {
-    console.log("Send");
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const uploadData = {
-        content: e.target.result,
-        createAt: new Date().toISOString(),
-      };
-
-      fetch("https://localhost:443/profile-media-add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(uploadData),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          alert("Add Image Success");
-
-          const mediaElement = document.createElement(
-            file.type.startsWith("image/") ? "img" : "video"
-          );
-          mediaElement.src = e.target.result;
-          mediaElement.className = "superbox-img";
-          if (file.type.startsWith("video/")) {
-            mediaElement.controls = true;
-          }
-
-          const newSuperboxList = document.createElement("div");
-          newSuperboxList.className = "superbox-list";
-          newSuperboxList.appendChild(mediaElement);
-
-          const superbox = document.querySelector(".superbox");
-          const secondChild = superbox.children[1]; // Get the second child
-          if (secondChild) {
-            superbox.insertBefore(newSuperboxList, secondChild);
-          } else {
-            superbox.appendChild(newSuperboxList); // If no second child, append to end
-          }
-          $(".superbox-img").click(showImgage);
+  function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (file) {
+      console.log("Send");
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const uploadData = {
+          content: e.target.result,
+          createAt: new Date().toISOString(),
+        };
+  
+        fetch("https://localhost:443/profile-media-add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(uploadData),
         })
-        .catch((error) => {
-          alert("Add Image Fail!");
-        });
-
-      event.target.value = "";
-    };
-
-    reader.readAsDataURL(file);
+          .then((response) => {
+            if (!response.ok) {
+              return response.json().then((data) => {
+                throw new Error(data.result || "Unknown error occurred");
+              });
+            }
+            return response.json();
+          })
+          .then((data) => {
+            alert("Add Image Success");
+  
+            const mediaElement = document.createElement(
+              file.type.startsWith("image/") ? "img" : "video"
+            );
+            mediaElement.src = e.target.result;
+            mediaElement.className = "superbox-img";
+            if (file.type.startsWith("video/")) {
+              mediaElement.controls = true;
+            }
+  
+            const newSuperboxList = document.createElement("div");
+            newSuperboxList.className = "superbox-list";
+            newSuperboxList.appendChild(mediaElement);
+  
+            const superbox = document.querySelector(".superbox");
+            const secondChild = superbox.children[1]; // Get the second child
+            if (secondChild) {
+              superbox.insertBefore(newSuperboxList, secondChild);
+            } else {
+              superbox.appendChild(newSuperboxList); // If no second child, append to end
+            }
+            $(".superbox-img").click(showImgage);
+          })
+          .catch((error) => {
+            alert("Add Image Fail: " + error.message);
+          });
+  
+        event.target.value = "";
+      };
+  
+      reader.readAsDataURL(file);
+    }
   }
-}
+  
 // ================================================
 function getTotalComment(totalNumber) {
   const totalComment = $(".total-comment");
@@ -476,9 +484,7 @@ function getComment(numberPage) {
           var commentHtml = `
             <div class="media">
               <a class="pull-left" href="#">
-                <img class="media-object" src="${
-                  comment.urlAvatarSender
-                }" alt="Avatar">
+                <img class="media-object" src="${comment.urlAvatarSender}" alt="Avatar">
               </a>
               <div class="media-body">
                 <h4 class="media-heading">${comment.nameSender}</h4>
@@ -487,15 +493,17 @@ function getComment(numberPage) {
                 </div>
                 <p>${comment.content}</p>
                 <ul class="list-unstyled list-inline media-detail pull-left">
-                  <li><i class="fa fa-calendar"></i>${new Date(
-                    comment.createAt
-                  ).toLocaleDateString()}</li>
+                  <li><i class="fa fa-calendar"></i>${new Date(comment.createAt).toLocaleDateString()}</li>
                 </ul>
+                <div class="report-comment">
+                   <button class="report-btn" onclick="openReportModal(${comment.commentId}, ${comment.idSender})">Report</button>
+                </div>
               </div>
             </div>
           `;
           // Append comment to container
           $("#comments-list").append(commentHtml);
+          console.log(comment.commentId, comment.idSender);
         });
         createPagination(data.totalPages, data.number);
       } else {
@@ -507,6 +515,18 @@ function getComment(numberPage) {
       $("#comments-list").append("<p>Failed to load comments.</p>");
     });
 }
+
+function openReportModal(commentId, reportedUserId) {
+  document.getElementById('reportedComment').value = commentId;
+  document.getElementById('reportedUser').value = reportedUserId;
+  $("#reportModal").modal("show");
+}
+
+$(document).on('click', '.close', function () {
+  $(this).closest('.modal').modal('hide');
+});
+
+
 
 function createPagination(totalPages, currentPage) {
   const pagination = $("#pagination");

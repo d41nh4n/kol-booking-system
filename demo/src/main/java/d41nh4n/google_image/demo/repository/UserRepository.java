@@ -95,4 +95,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
         @Query("SELECT DISTINCT FUNCTION('YEAR', u.createAt) FROM User u WHERE u.locked = false AND u.role <> 'Admin' ORDER BY FUNCTION('YEAR', u.createAt)")
         List<Integer> findYearsWithUsers();
 
+        User findByUsernameAndEmail(String username, String email);
 }

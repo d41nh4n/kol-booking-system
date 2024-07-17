@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -112,4 +114,24 @@ public class CloudinaryImageUploadController {
         }
         return new ResponseEntity<>("No valid accessToken found in cookies", HttpStatus.UNAUTHORIZED);
     }
+
+    // @PostMapping("/test")
+    // public ResponseEntity<Map<String, Object>> uploadFile(@RequestParam("file") MultipartFile file) {
+    //     try {
+    //         Map<String, Object> result = cloudinaryService.upload(file);
+    //         return ResponseEntity.ok(result);
+    //     } catch (IOException e) {
+    //         return ResponseEntity.status(500).body(Map.of("error", "Upload failed", "message", e.getMessage()));
+    //     }
+    // }
+
+    // @DeleteMapping("/{publicId}")
+    // public ResponseEntity<?> deleteFile(@PathVariable String publicId) {
+    //     try {
+    //         cloudinaryService.deleteByPublicId(publicId);
+    //         return ResponseEntity.ok().build();
+    //     } catch (IOException e) {
+    //         return ResponseEntity.status(500).body(Map.of("error", "Deletion failed", "message", e.getMessage()));
+    //     }
+    // }
 }

@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import d41nh4n.google_image.demo.dto.respone.ResponeUpload;
 import d41nh4n.google_image.demo.entity.Category;
 import d41nh4n.google_image.demo.entity.KolRegistration;
 import d41nh4n.google_image.demo.service.CategoryService;
+import d41nh4n.google_image.demo.service.CloudinaryService;
 import d41nh4n.google_image.demo.service.KolRegistrationService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -38,20 +41,9 @@ public class KolRegistrationController {
     @Autowired
     private CategoryService categoryService;
 
-    private static String UPLOAD_DIR;
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
-    @Value("${upload.dir}")
-    public void setUploadDir(String uploadDir) {
-        UPLOAD_DIR = uploadDir;
-    }
-
-    @PostConstruct
-    public void init() {
-        File uploadDir = new File(UPLOAD_DIR);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
-        }
-    }
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
@@ -62,19 +54,21 @@ public class KolRegistrationController {
     }
 
     @PostMapping("/register")
-    public String registerKol(@ModelAttribute KolRegistration kolRegistration, @RequestParam("images") MultipartFile[] images, @RequestParam("categories") List<String> categories, RedirectAttributes redirectAttributes) {
-        String imageUrls = "";
+    public String registerKol(@ModelAttribute KolRegistration kolRegistration,
+            @RequestParam("images") MultipartFile[] images, @RequestParam("categories") List<String> categories,
+            RedirectAttributes redirectAttributes) {
+        List<String> imageUrls = new ArrayList<>();
+
         for (MultipartFile image : images) {
             if (!image.isEmpty()) {
                 try {
-                    byte[] bytes = image.getBytes();
-                    Path path = Paths.get(UPLOAD_DIR + File.separator + image.getOriginalFilename());
-                    Files.write(path, bytes);
-
-                    if (!imageUrls.isEmpty()) {
-                        imageUrls += ",";
+                    ResponeUpload responeUpload = cloudinaryService.uploadAndGetUrl(image);
+                    System.out.println(responeUpload.toString());
+                    if (responeUpload != null) {
+                        String imageUrl = "[" + responeUpload.getPublicId() + "]" + responeUpload.getUrl();
+                        imageUrls.add(imageUrl);
                     }
-                    imageUrls += path.toString();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                     // Log the exception
@@ -84,7 +78,18 @@ public class KolRegistrationController {
                 }
             }
         }
-        kolRegistration.setImageUrls(imageUrls);
+
+        StringBuilder imageUrlsString = new StringBuilder();
+
+        for (String string : imageUrls) {
+            if (imageUrlsString.length() > 0) {
+                imageUrlsString.append(",");
+            }
+
+            imageUrlsString.append(string);
+        }
+
+        kolRegistration.setImageUrls(imageUrlsString.toString());
 
         kolRegistration.setCategories(String.join(",", categories));
 

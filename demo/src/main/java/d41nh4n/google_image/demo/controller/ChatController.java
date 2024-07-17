@@ -26,6 +26,7 @@ import d41nh4n.google_image.demo.entity.conversation.TypeConversation;
 import d41nh4n.google_image.demo.entity.conversation.UserConversation;
 import d41nh4n.google_image.demo.entity.user.User;
 import d41nh4n.google_image.demo.mapper.MessageToMessageDto;
+import d41nh4n.google_image.demo.model.UploadRespone;
 import d41nh4n.google_image.demo.security.UserPrincipal;
 import d41nh4n.google_image.demo.service.ChatMessageService;
 import d41nh4n.google_image.demo.service.CloudinaryService;
@@ -177,12 +178,12 @@ public class ChatController {
 
         conversation.setUpdatedAt(zonedDateTime);
         conversationService.save(conversation);
-        String urlFile = cloudinaryService.handleFileMessage(fileMessage.getContent());
-        Message message = new Message(null, urlFile, fileMessage.getType(), zonedDateTime, userSender,
+        UploadRespone urlFile = cloudinaryService.handleFileMessage(fileMessage.getContent());
+        Message message = new Message(null, urlFile.getUrl(), fileMessage.getType(), zonedDateTime, userSender,
                 userRecipient, conversation);
         chatMessageService.save(message);
         fileMessage.setTimeStamp(zonedDateTime.toString());
-        fileMessage.setContent(urlFile);
+        fileMessage.setContent(urlFile.getUrl());
         messagingTemplate.convertAndSendToUser(String.valueOf(fileMessage.getRecipient()), "/queue/messages",
                 fileMessage);
     }

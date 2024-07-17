@@ -8,6 +8,16 @@
     <title>KOL List</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
+<style>
+        /* CSS tùy chỉnh cho ảnh trong modal */
+        #imageModal .modal-dialog {
+            max-width: 50%; /* Chiều rộng tối đa là 80% chiều rộng viewport */
+        }
+        #imageModal .modal-body img {
+            max-width: 100%;
+            min-height: 300px; 
+        }
+    </style>
 <body>
     <div class="container">
         <h1 class="my-4">KOL List</h1>
@@ -34,7 +44,7 @@
                             <td>${kol.description}</td>
                             <td>
                                 <c:forEach var="imageUrl" items="${kol.imageUrlsList}">
-                                    <img src="${imageUrl.trim()}" alt="Image" style="max-width: 100px; max-height: 100px; margin-right: 5px;" />
+                                    <img src="${imageUrl.trim()}" alt="Image" style="max-width: 100px; max-height: 100px; margin-right: 5px; cursor: pointer;" onclick="showImageModal('${imageUrl.trim()}')" />
                                 </c:forEach>
                             </td>
                             <td>
@@ -58,15 +68,38 @@
         <input type="hidden" name="kolId" id="kolId" />
     </form>
 
+    <!-- Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" alt="Image" class="img-fluid" />
+            </div>
+        </div>
+    </div>
+</div>
+
+
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script>
-        function deleteKol(kolId) {
-            if (confirm('Are you sure you want to delete this KOL?')) {
-                document.getElementById('kolId').value = kolId;
-                document.getElementById('deleteKolForm').submit();
-            }
+        function showImageModal(imageUrl) {
+        document.getElementById('modalImage').src = imageUrl;
+        $('#imageModal').modal('show');
+    }
+
+    function deleteKol(kolId) {
+        if (confirm('Are you sure you want to delete this KOL?')) {
+            document.getElementById('kolId').value = kolId;
+            document.getElementById('deleteKolForm').submit();
         }
+    }
     </script>
 </body>
 </html>

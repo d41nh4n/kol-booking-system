@@ -25,6 +25,7 @@ public class WebSecurityConfig {
 
         private final JwtAuthenticationFilter jwtAuthenticationFilter;
         private final CustomUserDetailService customUserDetailService;
+        private final PasswordEncoder passwordEncoder;
         // private final CustomCheckExsistTokenFilter customCheckExsistTokenFilter;
 
         @Bean
@@ -71,16 +72,11 @@ public class WebSecurityConfig {
         }
 
         @Bean
-        public PasswordEncoder passwordEncoder() {
-                return new BCryptPasswordEncoder();
-        }
-
-        @Bean
         public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
                 var builder = http.getSharedObject(AuthenticationManagerBuilder.class);
                 builder
                                 .userDetailsService(customUserDetailService)
-                                .passwordEncoder(passwordEncoder());
+                                .passwordEncoder(passwordEncoder);
                 return builder.build();
         }
 }

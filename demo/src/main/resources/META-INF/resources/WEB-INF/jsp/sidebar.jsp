@@ -45,7 +45,7 @@
                 </a>
             </li>
             <li class="nav-item logout">
-                <a class="nav-link" href="/logout">
+                <a class="nav-link" href="/login/logout">
                     <p>Logout</p>
                 </a>
             </li>
