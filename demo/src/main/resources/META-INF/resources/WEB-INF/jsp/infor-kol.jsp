@@ -434,33 +434,34 @@
 </c:if>
 </section>
 
-<div id="reportModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h1>Submit Report</h1>
-    <form>
-      <label for="description">Description:</label>
-      <input type="text" id="description" name="description" required>
+    <div id="reportModal" class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <span class="closeReportModel">&times;</span>
+          <h1>Report</h1>
+          <form>
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description" required>
 
-      <label for="reason">Reason:</label>
-      <select id="reason" name="reason" required>
-        <option value="Offensive comments">Offensive comments</option>
-        <option value="Comments inciting violence">Comments inciting violence</option>
-        <option value="Comments against the government">Comments against the government</option>
-        <option value="Spam or misleading information">Spam or misleading information</option>
-        <option value="Hate speech">Hate speech</option>
-        <option value="Harassment or bullying">Harassment or bullying</option>
-        <option value="Promoting illegal activities">Promoting illegal activities</option>
-        <option value="Misinformation or fake news">Misinformation or fake news</option>
-        <option value="Graphic or violent content">Graphic or violent content</option>
-      </select>
-      <input type="hidden" id="reportedUser" name="reportedUser" required>
-      <input type="hidden" id="reportedComment" name="reportedComment">
-      <button type="submit" class="submit-btn">Submit Report</button>
-    </form>
-  </div>
-</div>
-
+            <label for="reason">Reason:</label>
+            <select id="reason" name="reason" required>
+              <option value="Offensive comments">Offensive comments</option>
+              <option value="Comments inciting violence">Comments inciting violence</option>
+              <option value="Comments against the government">Comments against the government</option>
+              <option value="Spam or misleading information">Spam or misleading information</option>
+              <option value="Hate speech">Hate speech</option>
+              <option value="Harassment or bullying">Harassment or bullying</option>
+              <option value="Promoting illegal activities">Promoting illegal activities</option>
+              <option value="Misinformation or fake news">Misinformation or fake news</option>
+              <option value="Graphic or violent content">Graphic or violent content</option>
+            </select>
+            <input type="hidden" id="reportedUser" name="reportedUser" required>
+            <input type="hidden" id="reportedComment" name="reportedComment" required>
+            <button type="button" class="submit-btn" onclick="sendReport()">Submit Report</button>
+          </form>
+        </div>
+      </div>
+    </div>
 
 
 

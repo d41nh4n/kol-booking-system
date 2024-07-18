@@ -29,7 +29,7 @@ public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "report_id")
-    private int reportId;
+    private Integer reportId;
 
     @Column(name = "description", length = 50, nullable = false)
     private String description;

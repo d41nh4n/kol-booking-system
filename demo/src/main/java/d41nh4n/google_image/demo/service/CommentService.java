@@ -64,4 +64,8 @@ public class CommentService {
         }
         return commentRepository.findTotalRatingByReceiverId(userId);
     }
+
+    public Comment findById(int commentId) {
+        return commentRepository.findById(commentId).orElse(null);
+    }
 }
