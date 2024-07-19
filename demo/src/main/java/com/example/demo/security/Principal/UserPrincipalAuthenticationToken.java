@@ -1,8 +1,10 @@
-package com.example.demo.security.Principal;
+package d41nh4n.google_image.demo.security.Principal;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
-import com.example.demo.security.UserPrincipal;
+import d41nh4n.google_image.demo.security.UserPrincipal;
+
+
 
 public class UserPrincipalAuthenticationToken extends AbstractAuthenticationToken {
 

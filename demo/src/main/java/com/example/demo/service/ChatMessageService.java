@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package d41nh4n.google_image.demo.service;
 
 import java.time.ZonedDateTime;
 import java.util.Collections;
@@ -10,13 +10,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.entity.conversation.Conversation;
-import com.example.demo.entity.conversation.Message;
-import com.example.demo.entity.conversation.TypeConversation;
-import com.example.demo.entity.conversation.UserConversation;
-import com.example.demo.entity.user.User;
-import com.example.demo.repository.ChatMessageRepository;
-import com.example.demo.validation.Utils;
+import d41nh4n.google_image.demo.entity.conversation.Conversation;
+import d41nh4n.google_image.demo.entity.conversation.Message;
+import d41nh4n.google_image.demo.entity.conversation.TypeConversation;
+import d41nh4n.google_image.demo.entity.conversation.UserConversation;
+import d41nh4n.google_image.demo.entity.user.User;
+import d41nh4n.google_image.demo.repository.ChatMessageRepository;
+import d41nh4n.google_image.demo.validation.Utils;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -28,7 +28,6 @@ public class ChatMessageService {
     private final UserConversationService userConversationService;
     private final UserService userService;
     private final Utils utils;
-
     public void save(Message chatMessage) {
         chatMessageRepository.save(chatMessage);
     }

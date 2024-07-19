@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package d41nh4n.google_image.demo.model;
 
 import java.util.List;
 import lombok.AllArgsConstructor;

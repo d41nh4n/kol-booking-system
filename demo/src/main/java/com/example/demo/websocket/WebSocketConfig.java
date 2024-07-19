@@ -1,4 +1,4 @@
-package com.example.demo.websocket;
+package d41nh4n.google_image.demo.websocket;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
         registration.setMessageSizeLimit(200 * 1024 * 1024);
-        registration.setSendBufferSizeLimit(200 * 1024 * 1024);
-        registration.setSendTimeLimit(20 * 10000);
+        registration.setSendBufferSizeLimit(200 * 1024 * 1024); 
+        registration.setSendTimeLimit(20 * 10000); 
     }
 }

@@ -1,4 +1,4 @@
-package com.example.demo;
+package d41nh4n.google_image.demo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

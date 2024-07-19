@@ -1,7 +1,7 @@
-package com.example.demo.dto.requestJob;
+package d41nh4n.google_image.demo.dto.requestJob;
 
 import java.util.List;
-import com.example.demo.dto.userdto.UserInfo;
+import d41nh4n.google_image.demo.dto.userdto.UserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

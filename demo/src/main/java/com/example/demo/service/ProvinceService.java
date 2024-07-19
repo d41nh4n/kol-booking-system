@@ -1,10 +1,10 @@
-package com.example.demo.service;
+package d41nh4n.google_image.demo.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.example.demo.model.Province;
-import com.example.demo.model.ProvinceApiRespone;
+import d41nh4n.google_image.demo.model.Province;
+import d41nh4n.google_image.demo.model.ProvinceApiRespone;
 
 import java.util.ArrayList;
 import java.util.List;

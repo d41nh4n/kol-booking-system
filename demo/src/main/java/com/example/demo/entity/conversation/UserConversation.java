@@ -1,6 +1,6 @@
-package com.example.demo.entity.conversation;
+package d41nh4n.google_image.demo.entity.conversation;
 
-import com.example.demo.entity.user.User;
+import d41nh4n.google_image.demo.entity.user.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;

@@ -1,4 +1,4 @@
-package com.example.demo.api;
+package d41nh4n.google_image.demo.api;
 
 import java.io.IOException;
 import java.util.Date;
@@ -7,21 +7,23 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.demo.dto.respone.ResponeUpload;
-import com.example.demo.dto.userdto.UserDto;
-import com.example.demo.entity.user.User;
-import com.example.demo.security.JwtDecoder;
-import com.example.demo.security.JwtIssuer;
-import com.example.demo.security.JwtToPrincipalConverter;
-import com.example.demo.security.UserPrincipal;
-import com.example.demo.service.CloudinaryService;
-import com.example.demo.service.UserService;
+import d41nh4n.google_image.demo.dto.respone.ResponeUpload;
+import d41nh4n.google_image.demo.dto.userdto.UserDto;
+import d41nh4n.google_image.demo.entity.user.User;
+import d41nh4n.google_image.demo.security.JwtDecoder;
+import d41nh4n.google_image.demo.security.JwtIssuer;
+import d41nh4n.google_image.demo.security.JwtToPrincipalConverter;
+import d41nh4n.google_image.demo.security.UserPrincipal;
+import d41nh4n.google_image.demo.service.CloudinaryService;
+import d41nh4n.google_image.demo.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -112,4 +114,24 @@ public class CloudinaryImageUploadController {
         }
         return new ResponseEntity<>("No valid accessToken found in cookies", HttpStatus.UNAUTHORIZED);
     }
+
+    // @PostMapping("/test")
+    // public ResponseEntity<Map<String, Object>> uploadFile(@RequestParam("file") MultipartFile file) {
+    //     try {
+    //         Map<String, Object> result = cloudinaryService.upload(file);
+    //         return ResponseEntity.ok(result);
+    //     } catch (IOException e) {
+    //         return ResponseEntity.status(500).body(Map.of("error", "Upload failed", "message", e.getMessage()));
+    //     }
+    // }
+
+    // @DeleteMapping("/{publicId}")
+    // public ResponseEntity<?> deleteFile(@PathVariable String publicId) {
+    //     try {
+    //         cloudinaryService.deleteByPublicId(publicId);
+    //         return ResponseEntity.ok().build();
+    //     } catch (IOException e) {
+    //         return ResponseEntity.status(500).body(Map.of("error", "Deletion failed", "message", e.getMessage()));
+    //     }
+    // }
 }

@@ -1,4 +1,4 @@
-package com.example.demo.dto.chatdto;
+package d41nh4n.google_image.demo.dto.chatdto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

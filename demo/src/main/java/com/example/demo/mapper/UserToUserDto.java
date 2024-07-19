@@ -1,20 +1,20 @@
-package com.example.demo.mapper;
+package d41nh4n.google_image.demo.mapper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.demo.dto.userdto.UserDto;
-import com.example.demo.entity.Category;
-import com.example.demo.entity.user.Gender;
-import com.example.demo.entity.user.ProfileCategories;
-import com.example.demo.entity.user.User;
+import d41nh4n.google_image.demo.dto.userdto.UserDto;
+import d41nh4n.google_image.demo.entity.Category;
+import d41nh4n.google_image.demo.entity.user.Gender;
+import d41nh4n.google_image.demo.entity.user.ProfileCategories;
+import d41nh4n.google_image.demo.entity.user.User;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public final class UserToUserDto {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
     public static UserDto mapToUserInfoResponse(User user) {
         UserDto userInfo = new UserDto();
@@ -31,6 +31,7 @@ public final class UserToUserDto {
         } else {
             userInfo.setGender(user.getGender().toString());
         }
+        userInfo.setCreateAt(dateFormat.format(user.getCreateAt()));
         userInfo.setBio(user.getProfile().getBio());
         userInfo.setRating(user.getProfile().getAverageRating());
         userInfo.setPricePost(user.getProfile().getPriceAPost());

@@ -1,4 +1,4 @@
-package com.example.demo.repository;
+package d41nh4n.google_image.demo.repository;
 
 import jakarta.transaction.Transactional;
 
@@ -8,11 +8,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.example.demo.entity.request.Request;
-import com.example.demo.entity.request.RequestStatus;
+import d41nh4n.google_image.demo.entity.request.Request;
+import d41nh4n.google_image.demo.entity.request.RequestStatus;
 
 import java.util.List;
-import com.example.demo.entity.user.User;
+import d41nh4n.google_image.demo.entity.user.User;
 import java.util.Date;
 
 public interface RequestRepository extends JpaRepository<Request, Integer> {

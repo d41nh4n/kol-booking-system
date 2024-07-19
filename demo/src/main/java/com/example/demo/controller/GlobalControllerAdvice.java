@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package d41nh4n.google_image.demo.controller;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -7,11 +7,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import com.example.demo.dto.userdto.UserInfo;
-import com.example.demo.security.UserPrincipal;
-import com.example.demo.service.UserService;
-import com.example.demo.validation.Utils;
-import com.example.demo.validation.ValidTokenService;
+import d41nh4n.google_image.demo.dto.userdto.UserInfo;
+import d41nh4n.google_image.demo.security.UserPrincipal;
+import d41nh4n.google_image.demo.service.UserService;
+import d41nh4n.google_image.demo.validation.Utils;
+import d41nh4n.google_image.demo.validation.ValidTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +33,7 @@ public class GlobalControllerAdvice {
                     principal.getAvatar());
 
             Double balance = userService.getAccountBalanceByUserId(principal.getUserId());
-            System.out.println("Balance " + balance);
+            System.out.println("Balance "+balance);
             request.setAttribute("balance", balance);
             request.setAttribute("userInfor", info);
         }

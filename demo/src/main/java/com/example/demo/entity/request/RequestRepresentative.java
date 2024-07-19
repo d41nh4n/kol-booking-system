@@ -1,4 +1,4 @@
-package com.example.demo.entity.request;
+package d41nh4n.google_image.demo.entity.request;
 
 import java.util.Date;
 
@@ -28,7 +28,7 @@ public class RequestRepresentative {
     private Date startDate;
     @Nullable
     private Date endDate;
-
+    
     private int months;
 
     @JsonIgnore

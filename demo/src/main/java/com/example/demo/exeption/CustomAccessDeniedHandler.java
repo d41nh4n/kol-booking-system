@@ -1,4 +1,4 @@
-package com.example.demo.exeption;
+package d41nh4n.google_image.demo.exeption;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;

@@ -1,4 +1,4 @@
-package com.example.demo.entity.request;
+package d41nh4n.google_image.demo.entity.request;
 
 import jakarta.persistence.*;
 import java.util.Date;
@@ -8,8 +8,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 
-import com.example.demo.entity.TransactionHistory;
-import com.example.demo.entity.user.User;
+import d41nh4n.google_image.demo.entity.TransactionHistory;
+import d41nh4n.google_image.demo.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

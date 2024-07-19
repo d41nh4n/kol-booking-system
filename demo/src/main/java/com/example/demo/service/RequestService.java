@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package d41nh4n.google_image.demo.service;
 
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -10,22 +10,23 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.dto.requestJob.RequesPostOrVideotDto;
-import com.example.demo.dto.requestJob.RequestByDay;
-import com.example.demo.dto.requestJob.RequestDto;
-import com.example.demo.dto.requestJob.RequestRepresentativeDto;
-import com.example.demo.entity.TransactionHistory;
-import com.example.demo.entity.notification.Notification;
-import com.example.demo.entity.notification.TypeNotification;
-import com.example.demo.entity.request.Request;
-import com.example.demo.entity.request.RequestStatus;
-import com.example.demo.entity.request.RequestWaitList;
-import com.example.demo.entity.user.User;
-import com.example.demo.exeption.InvalidNumber;
-import com.example.demo.mapper.RequestDtoToRequest;
-import com.example.demo.repository.RequestRepository;
-import com.example.demo.repository.RequestWaitListRepository;
-import com.example.demo.validation.Utils;
+import d41nh4n.google_image.demo.dto.requestJob.RequesPostOrVideotDto;
+import d41nh4n.google_image.demo.dto.requestJob.RequestByDay;
+import d41nh4n.google_image.demo.dto.requestJob.RequestDto;
+import d41nh4n.google_image.demo.dto.requestJob.RequestRepresentativeDto;
+import d41nh4n.google_image.demo.entity.TransactionHistory;
+import d41nh4n.google_image.demo.entity.notification.Notification;
+import d41nh4n.google_image.demo.entity.notification.TypeNotification;
+import d41nh4n.google_image.demo.entity.request.Request;
+import d41nh4n.google_image.demo.entity.request.RequestStatus;
+import d41nh4n.google_image.demo.entity.request.RequestWaitList;
+import d41nh4n.google_image.demo.entity.user.User;
+import d41nh4n.google_image.demo.exeption.InvalidNumber;
+import d41nh4n.google_image.demo.mapper.RequestDtoToRequest;
+import d41nh4n.google_image.demo.repository.RequestRepository;
+import d41nh4n.google_image.demo.repository.RequestWaitListRepository;
+import d41nh4n.google_image.demo.validation.Utils;
+import io.micrometer.core.instrument.config.validate.Validated.Invalid;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -147,14 +148,6 @@ public class RequestService {
         save(request);
         transactionHistory.setRequest(request);
         transactionHistoryService.save(transactionHistory);
-
-        Notification notification = new Notification();
-        notification.setContent(request.getResponder().getProfile().getFullName() + " sent you a request");
-        notification.setCreateAt(ZonedDateTime.now());
-        notification.setType(TypeNotification.REQUEST);
-        notification.setUser(request.getRequester());
-        notificationService.save(notification);
-        chatMessageService.createAConversation(request.getRequester().getUserId(), request.getResponder().getUserId());
     }
 
     public void handleHireByDayPublic(RequestByDay requestDto, String typeRequest, Double money,
@@ -169,13 +162,6 @@ public class RequestService {
         transactionHistory.setRequest(request);
         transactionHistoryService.save(transactionHistory);
 
-        Notification notification = new Notification();
-        notification.setContent(request.getResponder().getProfile().getFullName() + " sent you a request");
-        notification.setCreateAt(ZonedDateTime.now());
-        notification.setType(TypeNotification.REQUEST);
-        notification.setUser(request.getRequester());
-        notificationService.save(notification);
-        chatMessageService.createAConversation(request.getRequester().getUserId(), request.getResponder().getUserId());
     }
 
     public void handleRepresentativePublic(RequestRepresentativeDto requestDto, String typeRequest, Double money,
@@ -190,13 +176,7 @@ public class RequestService {
         transactionHistory.setRequest(request);
         transactionHistoryService.save(transactionHistory);
 
-        Notification notification = new Notification();
-        notification.setContent(request.getResponder().getProfile().getFullName() + " sent you a request");
-        notification.setCreateAt(ZonedDateTime.now());
-        notification.setType(TypeNotification.REQUEST);
-        notification.setUser(request.getRequester());
-        notificationService.save(notification);
-        chatMessageService.createAConversation(request.getRequester().getUserId(), request.getResponder().getUserId());
+    
     }
 
     public void handlePostOrVideo(RequesPostOrVideotDto requestDto, String typeRequest,
@@ -217,12 +197,6 @@ public class RequestService {
         transactionHistory.setRequest(request);
         transactionHistoryService.save(transactionHistory);
 
-        Notification notification = new Notification();
-        notification.setContent(request.getResponder().getProfile().getFullName() + " sent you a request");
-        notification.setCreateAt(ZonedDateTime.now());
-        notification.setType(TypeNotification.REQUEST);
-        notification.setUser(request.getRequester());
-        notificationService.save(notification);
 
         chatMessageService.createAConversation(request.getRequester().getUserId(), request.getResponder().getUserId());
     }

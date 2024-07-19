@@ -1,9 +1,11 @@
-package com.example.demo.repository;
+package d41nh4n.google_image.demo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.demo.entity.conversation.Conversation;
+import d41nh4n.google_image.demo.entity.conversation.Conversation;
+
 
 public interface ConversationRepository extends JpaRepository<Conversation, String> {
 
+    
 }

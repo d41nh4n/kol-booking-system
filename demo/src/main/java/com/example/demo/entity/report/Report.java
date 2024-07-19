@@ -1,8 +1,8 @@
-/*
-* Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-* Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
-*/
-package com.example.demo.entity.report;
+        /*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package d41nh4n.google_image.demo.entity.report;
 
 /**
  *
@@ -12,8 +12,8 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-import com.example.demo.entity.Comment;
-import com.example.demo.entity.user.User;
+import d41nh4n.google_image.demo.entity.Comment;
+import d41nh4n.google_image.demo.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +29,7 @@ public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "report_id")
-    private int reportId;
+    private Integer reportId;
 
     @Column(name = "description", length = 50, nullable = false)
     private String description;
@@ -47,9 +47,9 @@ public class Report {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reported_user")
     private User reportedUser;
-
+    
     @ManyToOne
-    @JoinColumn(name = "comment_id", nullable = false)
+    @JoinColumn(name = "comment_id", nullable = true)
     private Comment reportedComment;
 
     // Getters and setters

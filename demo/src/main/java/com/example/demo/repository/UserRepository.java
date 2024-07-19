@@ -1,4 +1,4 @@
-package com.example.demo.repository;
+package d41nh4n.google_image.demo.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,9 +7,9 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import com.example.demo.dto.userdto.UserFindedBySearch;
-import com.example.demo.entity.user.Gender;
-import com.example.demo.entity.user.User;
+import d41nh4n.google_image.demo.dto.userdto.UserFindedBySearch;
+import d41nh4n.google_image.demo.entity.user.Gender;
+import d41nh4n.google_image.demo.entity.user.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
         Optional<User> findByResetPasswordToken(String token);
 
-        @Query("SELECT new com.example.demo.dto.userdto.UserFindedBySearch(" +
+        @Query("SELECT new d41nh4n.google_image.demo.dto.userdto.UserFindedBySearch(" +
                         "u.userId, p.fullName, p.avatarUrl, u.role) " +
                         "FROM User u JOIN u.profile p " +
                         "WHERE p.fullName LIKE %:searchTerm%")
@@ -61,4 +61,39 @@ public interface UserRepository extends JpaRepository<User, Integer> {
                         @Param("gender") Gender gender,
                         Pageable pageable);
 
+        @Query("select u  from User u ")
+        Page<User> pageUser(Pageable pageable);
+
+        @Query("SELECT u FROM User u WHERE " +
+                        "LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+                        "LOWER(u.username) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+                        "u.gender = :gender OR " +
+                        "LOWER(u.role) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+        Page<User> searchUsers(@Param("keyword") String keyword, @Param("gender") Gender gender, Pageable pageable);
+
+        @Query("SELECT u FROM User u WHERE " +
+                        "(LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+                        "LOWER(u.username) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+                        "u.gender = :gender OR " +
+                        "LOWER(u.role) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND " +
+                        "u.locked = true")
+        Page<User> searchUsersWithBan(@Param("keyword") String keyword, @Param("gender") Gender gender,
+                        Pageable pageable);
+
+        @Query("SELECT u FROM User u WHERE " +
+                        "(LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+                        "LOWER(u.username) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+                        "u.gender = :gender OR " +
+                        "LOWER(u.role) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND " +
+                        "u.locked = false")
+        Page<User> searchUsersWithUnBan(@Param("keyword") String keyword, @Param("gender") Gender gender,
+                        Pageable pageable);
+
+        @Query("SELECT COUNT(u), FUNCTION('MONTH', u.createAt) FROM User u WHERE u.locked = false AND u.role <> 'Admin' AND FUNCTION('YEAR', u.createAt) = :year GROUP BY FUNCTION('MONTH', u.createAt)")
+        List<Object[]> findUserCountByMonthAndYear(int year);
+
+        @Query("SELECT DISTINCT FUNCTION('YEAR', u.createAt) FROM User u WHERE u.locked = false AND u.role <> 'Admin' ORDER BY FUNCTION('YEAR', u.createAt)")
+        List<Integer> findYearsWithUsers();
+
+        User findByUsernameAndEmail(String username, String email);
 }

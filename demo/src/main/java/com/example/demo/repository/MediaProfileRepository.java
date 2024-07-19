@@ -1,9 +1,9 @@
-package com.example.demo.repository;
+package d41nh4n.google_image.demo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.demo.entity.user.MediaProfile;
-import com.example.demo.entity.user.Profile;
+import d41nh4n.google_image.demo.entity.user.MediaProfile;
+import d41nh4n.google_image.demo.entity.user.Profile;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 

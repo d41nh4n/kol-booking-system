@@ -1,8 +1,8 @@
-package com.example.demo.entity.notification;
+package d41nh4n.google_image.demo.entity.notification;
 
 import java.time.ZonedDateTime;
 
-import com.example.demo.entity.user.User;
+import d41nh4n.google_image.demo.entity.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -40,7 +40,7 @@ public class Notification {
     @Column(name = "reference_id", nullable = true)
     private String referenceId;
 
-    @Column(name = "content", columnDefinition = "NVARCHAR(100)")
+    @Column(name = "content",  columnDefinition = "NVARCHAR(100)")
     private String content;
 
     @Column(name = "create_at")

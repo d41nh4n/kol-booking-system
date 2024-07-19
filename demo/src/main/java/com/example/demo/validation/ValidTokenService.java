@@ -1,12 +1,12 @@
-package com.example.demo.validation;
+package d41nh4n.google_image.demo.validation;
 
 import java.util.Date;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.security.JwtDecoder;
-import com.example.demo.security.JwtToPrincipalConverter;
-import com.example.demo.security.UserPrincipal;
+import d41nh4n.google_image.demo.security.JwtDecoder;
+import d41nh4n.google_image.demo.security.JwtToPrincipalConverter;
+import d41nh4n.google_image.demo.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 
 @Service

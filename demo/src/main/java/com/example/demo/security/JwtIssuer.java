@@ -1,4 +1,4 @@
-package com.example.demo.security;
+package d41nh4n.google_image.demo.security;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -19,7 +19,7 @@ public class JwtIssuer {
     public String createAccessToken(int id, String fullname, String role, boolean isLocked, String avatar) {
         return JWT.create()
                 .withClaim("id", id)
-                .withExpiresAt(Instant.now().plus(java.time.Duration.of(1, ChronoUnit.HOURS)))
+                .withExpiresAt(Instant.now().plus(java.time.Duration.of(2, ChronoUnit.HOURS)))
                 .withClaim("name", fullname)
                 .withClaim("role", role)
                 .withClaim("isLocked", isLocked)

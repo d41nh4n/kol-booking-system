@@ -1,4 +1,4 @@
-package com.example.demo.repository;
+package d41nh4n.google_image.demo.repository;
 
 import java.util.Optional;
 
@@ -7,9 +7,9 @@ import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 
-import com.example.demo.entity.request.Request;
-import com.example.demo.entity.request.RequestWaitList;
-import com.example.demo.entity.user.User;
+import d41nh4n.google_image.demo.entity.request.Request;
+import d41nh4n.google_image.demo.entity.request.RequestWaitList;
+import d41nh4n.google_image.demo.entity.user.User;
 import jakarta.transaction.Transactional;
 
 import java.util.List;

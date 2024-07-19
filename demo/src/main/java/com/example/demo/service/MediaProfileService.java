@@ -1,16 +1,14 @@
-package com.example.demo.service;
+package d41nh4n.google_image.demo.service;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.entity.user.MediaProfile;
-import com.example.demo.entity.user.Profile;
-import com.example.demo.repository.MediaProfileRepository;
+import d41nh4n.google_image.demo.entity.user.MediaProfile;
+import d41nh4n.google_image.demo.entity.user.Profile;
+import d41nh4n.google_image.demo.repository.MediaProfileRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service

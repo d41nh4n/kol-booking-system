@@ -1,11 +1,11 @@
-package com.example.demo.websocket;
+package d41nh4n.google_image.demo.websocket;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-import com.example.demo.validation.ValidTokenService;
+import d41nh4n.google_image.demo.validation.ValidTokenService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.concurrent.ConcurrentHashMap;

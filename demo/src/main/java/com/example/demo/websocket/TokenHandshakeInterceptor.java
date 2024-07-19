@@ -1,4 +1,4 @@
-package com.example.demo.websocket;
+package d41nh4n.google_image.demo.websocket;
 
 import java.util.Map;
 
@@ -8,7 +8,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
-import com.example.demo.validation.ValidTokenService;
+import d41nh4n.google_image.demo.validation.ValidTokenService;
 
 public class TokenHandshakeInterceptor implements HandshakeInterceptor {
 
@@ -22,8 +22,7 @@ public class TokenHandshakeInterceptor implements HandshakeInterceptor {
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
             Map<String, Object> attributes) throws Exception {
         String token = request.getHeaders().getFirst("token");
-        if (token == null
-                || (!validTokenService.isTokenExpired(token) && validTokenService.principalFromToken(token) == null)) {
+        if (token == null || (!validTokenService.isTokenExpired(token) && validTokenService.principalFromToken(token) == null)) {
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
             return false;
         }

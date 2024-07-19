@@ -1,4 +1,4 @@
-package com.example.demo.security;
+package d41nh4n.google_image.demo.security;
 
 import java.util.List;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import com.example.demo.service.UserService;
+import d41nh4n.google_image.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 @Component

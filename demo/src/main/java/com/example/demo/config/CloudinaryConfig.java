@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package d41nh4n.google_image.demo.config;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +11,7 @@ import com.cloudinary.Cloudinary;
 
 @Configuration
 public class CloudinaryConfig {
-
+    
     @Value("${cloudinary.cloud-name}")
     private String cloudName;
 
@@ -22,7 +22,7 @@ public class CloudinaryConfig {
     private String apiSecret;
 
     @Bean
-    public Cloudinary getCloudinary() {
+    public Cloudinary getCloudinary(){
         Map config = new HashMap();
         config.put("cloud_name", cloudName);
         config.put("api_key", apiKey);

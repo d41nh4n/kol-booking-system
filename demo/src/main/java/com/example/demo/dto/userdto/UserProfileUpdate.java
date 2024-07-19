@@ -1,4 +1,4 @@
-package com.example.demo.dto.userdto;
+package d41nh4n.google_image.demo.dto.userdto;
 
 import java.util.Date;
 
@@ -25,5 +25,5 @@ public class UserProfileUpdate {
     private String priceAVideo;
     private String priceAToHireADay;
     private String representativePrice;
-
+    
 }

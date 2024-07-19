@@ -1,5 +1,5 @@
 
-package com.example.demo.controller;
+package d41nh4n.google_image.demo.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -17,23 +17,24 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.example.demo.dto.chatdto.ChatMessage;
-import com.example.demo.dto.chatdto.FileMessage;
-import com.example.demo.dto.respone.ConversationExsisted;
-import com.example.demo.dto.respone.ResponeUpload;
-import com.example.demo.entity.conversation.Conversation;
-import com.example.demo.entity.conversation.TypeConversation;
-import com.example.demo.entity.conversation.UserConversation;
-import com.example.demo.entity.user.User;
-import com.example.demo.mapper.MessageToMessageDto;
-import com.example.demo.security.UserPrincipal;
-import com.example.demo.service.ChatMessageService;
-import com.example.demo.service.CloudinaryService;
-import com.example.demo.service.ConversationService;
-import com.example.demo.service.UserConversationService;
-import com.example.demo.service.UserService;
-import com.example.demo.validation.Utils;
-import com.example.demo.entity.conversation.Message;
+import d41nh4n.google_image.demo.dto.chatdto.ChatMessage;
+import d41nh4n.google_image.demo.dto.chatdto.FileMessage;
+import d41nh4n.google_image.demo.dto.respone.ConversationExsisted;
+import d41nh4n.google_image.demo.dto.respone.ResponeUpload;
+import d41nh4n.google_image.demo.entity.conversation.Conversation;
+import d41nh4n.google_image.demo.entity.conversation.TypeConversation;
+import d41nh4n.google_image.demo.entity.conversation.UserConversation;
+import d41nh4n.google_image.demo.entity.user.User;
+import d41nh4n.google_image.demo.mapper.MessageToMessageDto;
+import d41nh4n.google_image.demo.model.UploadRespone;
+import d41nh4n.google_image.demo.security.UserPrincipal;
+import d41nh4n.google_image.demo.service.ChatMessageService;
+import d41nh4n.google_image.demo.service.CloudinaryService;
+import d41nh4n.google_image.demo.service.ConversationService;
+import d41nh4n.google_image.demo.service.UserConversationService;
+import d41nh4n.google_image.demo.service.UserService;
+import d41nh4n.google_image.demo.validation.Utils;
+import d41nh4n.google_image.demo.entity.conversation.Message;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
@@ -81,13 +82,16 @@ public class ChatController {
     public String chatBox(@RequestParam(value = "userId", required = false) String userId, HttpServletRequest request,
             Model model) {
         try {
-            int userRecipient = utils.stringToInt(userId);
-            User userRecepient = userService.getUserById(userRecipient);
+
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
             int userSender = principal.getUserId();
             if (userId != null) {
-                chatMessageService.createAConversation(userSender, userRecipient);
+                int userRecepientId = utils.stringToInt(userId);
+                User userRecepient = userService.getUserById(userRecepientId);
+                if (userRecepient.getRole().equalsIgnoreCase("USER")) {
+                    chatMessageService.createAConversation(userSender, userRecepientId);
+                }
             }
             List<ConversationExsisted> userConversations = userConversationService.findConversationByUserId(userSender);
             model.addAttribute("conversations", userConversations);
@@ -174,12 +178,12 @@ public class ChatController {
 
         conversation.setUpdatedAt(zonedDateTime);
         conversationService.save(conversation);
-        String urlFile = cloudinaryService.handleFileMessage(fileMessage.getContent());
-        Message message = new Message(null, urlFile, fileMessage.getType(), zonedDateTime, userSender,
+        UploadRespone urlFile = cloudinaryService.handleFileMessage(fileMessage.getContent());
+        Message message = new Message(null, urlFile.getUrl(), fileMessage.getType(), zonedDateTime, userSender,
                 userRecipient, conversation);
         chatMessageService.save(message);
         fileMessage.setTimeStamp(zonedDateTime.toString());
-        fileMessage.setContent(urlFile);
+        fileMessage.setContent(urlFile.getUrl());
         messagingTemplate.convertAndSendToUser(String.valueOf(fileMessage.getRecipient()), "/queue/messages",
                 fileMessage);
     }

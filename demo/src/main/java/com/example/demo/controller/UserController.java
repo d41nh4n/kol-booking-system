@@ -1,10 +1,11 @@
-package com.example.demo.controller;
+package d41nh4n.google_image.demo.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,32 +24,32 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.example.demo.dto.respone.ResponeJson;
-import com.example.demo.dto.respone.ResponeUpload;
-import com.example.demo.dto.respone.VerifyStatus;
-import com.example.demo.dto.userdto.UserDto;
-import com.example.demo.dto.userdto.UserDtoFilter;
-import com.example.demo.dto.userdto.UserFindedBySearch;
-import com.example.demo.dto.userdto.UserProfileUpdate;
-import com.example.demo.dto.userdto.MediaProfileDto;
-import com.example.demo.dto.userdto.MediaProfileUpload;
-import com.example.demo.entity.VerifyCode;
-import com.example.demo.entity.user.Gender;
-import com.example.demo.entity.user.MediaProfile;
-import com.example.demo.entity.user.Profile;
-import com.example.demo.entity.user.User;
-import com.example.demo.model.Mail;
-import com.example.demo.security.JwtIssuer;
-import com.example.demo.security.UserPrincipal;
-import com.example.demo.service.CategoryService;
-import com.example.demo.service.MailService;
-import com.example.demo.service.MediaProfileService;
-import com.example.demo.service.ProvinceService;
-import com.example.demo.service.CloudinaryService;
-import com.example.demo.service.CommentService;
-import com.example.demo.service.UserService;
-import com.example.demo.service.VerifyCodeService;
-import com.example.demo.validation.Utils;
+import d41nh4n.google_image.demo.dto.respone.ResponeJson;
+import d41nh4n.google_image.demo.dto.respone.ResponeUpload;
+import d41nh4n.google_image.demo.dto.respone.VerifyStatus;
+import d41nh4n.google_image.demo.dto.userdto.UserDto;
+import d41nh4n.google_image.demo.dto.userdto.UserDtoFilter;
+import d41nh4n.google_image.demo.dto.userdto.UserFindedBySearch;
+import d41nh4n.google_image.demo.dto.userdto.UserProfileUpdate;
+import d41nh4n.google_image.demo.dto.userdto.MediaProfileDto;
+import d41nh4n.google_image.demo.dto.userdto.MediaProfileUpload;
+import d41nh4n.google_image.demo.entity.VerifyCode;
+import d41nh4n.google_image.demo.entity.user.Gender;
+import d41nh4n.google_image.demo.entity.user.MediaProfile;
+import d41nh4n.google_image.demo.entity.user.Profile;
+import d41nh4n.google_image.demo.entity.user.User;
+import d41nh4n.google_image.demo.model.Mail;
+import d41nh4n.google_image.demo.security.JwtIssuer;
+import d41nh4n.google_image.demo.security.UserPrincipal;
+import d41nh4n.google_image.demo.service.CategoryService;
+import d41nh4n.google_image.demo.service.MailService;
+import d41nh4n.google_image.demo.service.MediaProfileService;
+import d41nh4n.google_image.demo.service.ProvinceService;
+import d41nh4n.google_image.demo.service.CloudinaryService;
+import d41nh4n.google_image.demo.service.CommentService;
+import d41nh4n.google_image.demo.service.UserService;
+import d41nh4n.google_image.demo.service.VerifyCodeService;
+import d41nh4n.google_image.demo.validation.Utils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -78,8 +79,17 @@ public class UserController {
         List<UserDtoFilter> listUser = userService.getUserListHomePage();
         List<UserDtoFilter> listTop = userService.getTop6UsersForHomePage();
         List<String> provinces = provinceService.getProvinceNames();
+
+        List<UserDtoFilter> randomUsers = listUser.stream()
+                .collect(Collectors.collectingAndThen(Collectors.toList(), collected -> {
+                    Collections.shuffle(collected);
+                    return collected.stream();
+                }))
+                .limit(12)
+                .collect(Collectors.toList());
+
         model.addAttribute("topUsers", listTop);
-        model.addAttribute("users", listUser);
+        model.addAttribute("users", randomUsers);
         model.addAttribute("categories", categoies);
         model.addAttribute("provinces", provinces);
         return "home";
@@ -198,39 +208,8 @@ public class UserController {
         return ResponseEntity.ok(res);
     }
 
-    @PostMapping("/verifyemail")
-    public String checkCodeForm(@RequestParam String email, HttpServletRequest request, Model model) {
-        if (!utils.isValidEmail(email)) {
-            return "redirect:/infor?invalidEmail=true";
-        }
-
-        if (userService.getUserByEmail(email) != null) {
-            return "redirect:/infor?emailExist=true";
-        }
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()
-                && !"anonymousUser".equals(authentication.getPrincipal())) {
-            UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
-            String id = utils.renderCode(8);
-            String code = utils.generateRandomCode();
-            int numberOfAttempts = 0;
-            VerifyCode verifyCode = new VerifyCode(id, userDetails.getUserId(), email, code, numberOfAttempts);
-            verifyCodeService.save(verifyCode);
-
-            Mail mail = new Mail();
-            mail.setMessage("Your code is: " + verifyCode.getCode());
-            mail.setSubject("Confirmation Code");
-            mailService.sendMail(verifyCode.getEmail(), mail);
-
-            model.addAttribute("idCode", id);
-            model.addAttribute("email", email);
-        }
-        return "checkcode";
-    }
-
     @PostMapping("/verifycode")
-    public ResponseEntity<VerifyStatus> checkValidCode(@RequestParam(value = "idCode", required = false) String idCode,
+    public ResponseEntity<VerifyStatus> checkValidCode(@RequestParam(value = "idCode", required = false) int idCode,
             @RequestParam(value = "verifyCode", required = false) String verifyCode) {
         VerifyCode code = verifyCodeService.getById(idCode);
         VerifyStatus status = new VerifyStatus();
@@ -247,7 +226,7 @@ public class UserController {
 
         if (verifyCode.equals(code.getCode())) {
 
-            User user = userService.getUserById(code.getUserId());
+            User user = userService.findByUserNameAndEmail(code.getUserName(), code.getEmail());
             user.setEmail(code.getEmail());
             userService.save(user);
             verifyCodeService.delete(code);
@@ -434,7 +413,7 @@ public class UserController {
         location = "".equals(location) ? null : location;
         nameSearch = "".equals(nameSearch) ? null : nameSearch;
         gender = "".equals(gender) ? null : gender;
-        category = "".equals(category) ? null : category;
+        category = "".equals(category.trim()) ? null : category;
         maxPrice = "".equals(maxPrice) ? null : maxPrice;
         minPrice = "".equals(minPrice) ? null : minPrice;
         aPost = "".equals(aPost) ? null : aPost;
@@ -509,13 +488,13 @@ public class UserController {
 
     @PostMapping("/profile-media-add")
     public ResponseEntity<?> handleProfileMediaUpload(@RequestBody MediaProfileUpload content) {
-        System.out.println(content.getContent());
         try {
             ResponeUpload responeUpload = cloudinaryService.uploadFile(content.getContent());
             Profile profile = userService.getProfileById(getUserId());
             if (responeUpload.getStatus() == 200) {
                 MediaProfile mediaProfile = new MediaProfile();
                 mediaProfile.setUrl(responeUpload.getUrl());
+                mediaProfile.setPublicId(responeUpload.getPublicId());
                 String contentType = content.getContent().split(",")[0];
                 if (contentType.contains("video") || contentType.contains("mp4")) {
                     mediaProfile.setType("VIDEO");
@@ -576,7 +555,10 @@ public class UserController {
                         new ResponeJson(HttpStatus.OK.value(), "Image not found in database"));
             }
 
+            // detele in database
             mediaProfileService.delete(mediaProfile);
+            //delete on cloud
+            cloudinaryService.deleteByPublicId(mediaProfile.getPublicId());
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponeJson(HttpStatus.OK.value(), "Image deleted successfully"));
         } catch (NumberFormatException e) {

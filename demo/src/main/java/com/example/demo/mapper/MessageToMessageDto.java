@@ -1,7 +1,7 @@
-package com.example.demo.mapper;
+package d41nh4n.google_image.demo.mapper;
 
-import com.example.demo.dto.chatdto.ChatMessage;
-import com.example.demo.entity.conversation.Message;
+import d41nh4n.google_image.demo.dto.chatdto.ChatMessage;
+import d41nh4n.google_image.demo.entity.conversation.Message;
 
 public final class MessageToMessageDto {
 

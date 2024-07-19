@@ -1,4 +1,4 @@
-package com.example.demo.security;
+package d41nh4n.google_image.demo.security;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,7 +17,7 @@ import lombok.Getter;
 public class UserPrincipal implements UserDetails {
 
     private final int userId;
-
+    
     @JsonIgnore
     private final String userName;
     @JsonIgnore

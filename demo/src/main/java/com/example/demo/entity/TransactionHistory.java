@@ -1,10 +1,10 @@
-package com.example.demo.entity;
+package d41nh4n.google_image.demo.entity;
 
 import jakarta.persistence.*;
 import java.util.Date;
 
-import com.example.demo.entity.request.Request;
-import com.example.demo.entity.user.User;
+import d41nh4n.google_image.demo.entity.request.Request;
+import d41nh4n.google_image.demo.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,8 +46,11 @@ public class TransactionHistory {
     @Column(name = "transaction_id", unique = true, nullable = true)
     private String transactionId;
 
-    @Column(name = "system-income", nullable = true)
+    @Column(name = "system-income", nullable = false)
     private double systemIncome;
+
+    @Column(name = "refund", nullable = false)
+    private double refund;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id", referencedColumnName = "request_id")
@@ -56,5 +59,6 @@ public class TransactionHistory {
     @PrePersist
     protected void onCreate() {
         this.systemIncome = 0f;
+        this.refund = 0f;
     }
 }

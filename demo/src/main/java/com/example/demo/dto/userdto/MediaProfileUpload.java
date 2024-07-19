@@ -1,4 +1,4 @@
-package com.example.demo.dto.userdto;
+package d41nh4n.google_image.demo.dto.userdto;
 
 import org.springframework.web.multipart.MultipartFile;
 

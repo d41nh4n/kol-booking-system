@@ -1,4 +1,4 @@
-package com.example.demo.entity.conversation;
+package d41nh4n.google_image.demo.entity.conversation;
 
 import java.time.ZonedDateTime;
 

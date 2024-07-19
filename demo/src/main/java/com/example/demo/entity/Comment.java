@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.example.demo.entity;
+package d41nh4n.google_image.demo.entity;
 
 /**
  *
@@ -13,7 +13,7 @@ import jakarta.persistence.*;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
-import com.example.demo.entity.user.User;
+import d41nh4n.google_image.demo.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +32,7 @@ public class Comment {
 
     @Column(nullable = false, columnDefinition = "NVARCHAR(MAX)")
     private String commentContent;
-
+    
     @ManyToOne
     @JoinColumn(name = "commenter_id", nullable = false)
     private User commenter;

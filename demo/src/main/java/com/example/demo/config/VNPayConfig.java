@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package d41nh4n.google_image.demo.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;

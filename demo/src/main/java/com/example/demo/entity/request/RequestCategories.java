@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.example.demo.entity.request;
+package d41nh4n.google_image.demo.entity.request;
 
-import com.example.demo.entity.Category;
+import d41nh4n.google_image.demo.entity.Category;
 /**
  *
  * @author DAO
@@ -41,3 +41,4 @@ public class RequestCategories {
     @JoinColumn(name = "category_id", insertable = false, updatable = false)
     private Category category;
 }
+

@@ -1,9 +1,9 @@
-package com.example.demo.service;
+package d41nh4n.google_image.demo.service;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.entity.conversation.Conversation;
-import com.example.demo.repository.ConversationRepository;
+import d41nh4n.google_image.demo.entity.conversation.Conversation;
+import d41nh4n.google_image.demo.repository.ConversationRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service

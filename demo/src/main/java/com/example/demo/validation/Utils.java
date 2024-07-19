@@ -1,4 +1,4 @@
-package com.example.demo.validation;
+package d41nh4n.google_image.demo.validation;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,8 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.example.demo.security.UserPrincipal;
-import com.example.demo.service.UserService;
+import d41nh4n.google_image.demo.security.UserPrincipal;
+import d41nh4n.google_image.demo.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,8 +24,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class Utils {
-
-    private final UserService service;
 
     private static final String DATE_FORMAT_1 = "MM/dd/yyyy";
     private static final String DATE_FORMAT_2 = "yyyy-MM-dd";
@@ -45,13 +43,7 @@ public class Utils {
     }
 
     public String renderUserName(int number) {
-
-        while (true) {
-            String name = "USER_" + renderCode(number);
-            if (service.getProfileByName(name) == null) {
-                return name;
-            }
-        }
+        return "USER_" + renderCode(number);
     }
 
     public String generateRandomCode() {

@@ -1,6 +1,6 @@
-package com.example.demo.dto.userdto;
+package d41nh4n.google_image.demo.dto.userdto;
 
-import com.example.demo.entity.user.User;
+import d41nh4n.google_image.demo.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

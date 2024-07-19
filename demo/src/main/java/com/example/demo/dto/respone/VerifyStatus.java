@@ -1,4 +1,4 @@
-package com.example.demo.dto.respone;
+package d41nh4n.google_image.demo.dto.respone;
 
 import lombok.Getter;
 import lombok.Setter;

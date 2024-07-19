@@ -1,4 +1,4 @@
-package com.example.demo.dto.respone;
+package d41nh4n.google_image.demo.dto.respone;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +10,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class ResponeJson {
     private int status;
     private String message;

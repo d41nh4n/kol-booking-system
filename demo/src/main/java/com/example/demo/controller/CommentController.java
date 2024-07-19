@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package d41nh4n.google_image.demo.controller;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,16 +19,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.dto.CommentDto;
-import com.example.demo.dto.CommentRatingDto;
-import com.example.demo.dto.userdto.UserInfo;
-import com.example.demo.entity.Comment;
-import com.example.demo.entity.request.Request;
-import com.example.demo.entity.user.User;
-import com.example.demo.service.CommentService;
-import com.example.demo.service.RequestService;
-import com.example.demo.service.UserService;
-import com.example.demo.validation.Utils;
+import d41nh4n.google_image.demo.dto.CommentDto;
+import d41nh4n.google_image.demo.dto.CommentRatingDto;
+import d41nh4n.google_image.demo.dto.userdto.UserInfo;
+import d41nh4n.google_image.demo.entity.Comment;
+import d41nh4n.google_image.demo.entity.request.Request;
+import d41nh4n.google_image.demo.entity.user.User;
+import d41nh4n.google_image.demo.service.CommentService;
+import d41nh4n.google_image.demo.service.RequestService;
+import d41nh4n.google_image.demo.service.UserService;
+import d41nh4n.google_image.demo.validation.Utils;
 import lombok.RequiredArgsConstructor;
 
 @Controller

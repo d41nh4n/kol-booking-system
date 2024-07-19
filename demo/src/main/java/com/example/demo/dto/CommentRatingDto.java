@@ -1,4 +1,4 @@
-package com.example.demo.dto;
+package d41nh4n.google_image.demo.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

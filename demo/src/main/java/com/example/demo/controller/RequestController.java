@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package d41nh4n.google_image.demo.controller;
 
 import java.util.*;
 import java.time.ZonedDateTime;
@@ -17,27 +17,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.example.demo.dto.requestJob.RequesPostOrVideotDto;
-import com.example.demo.dto.requestJob.RequestByDay;
-import com.example.demo.dto.requestJob.RequestDto;
-import com.example.demo.dto.requestJob.RequestRepresentativeDto;
-import com.example.demo.dto.userdto.UserDto;
-import com.example.demo.entity.TransactionHistory;
-import com.example.demo.entity.notification.Notification;
-import com.example.demo.entity.notification.TypeNotification;
-import com.example.demo.entity.request.Request;
-import com.example.demo.entity.request.RequestStatus;
-import com.example.demo.entity.request.RequestWaitList;
-import com.example.demo.entity.user.User;
-import com.example.demo.mapper.RequestDtoToRequest;
-import com.example.demo.mapper.UserToUserDto;
-import com.example.demo.service.ChatMessageService;
-import com.example.demo.service.NotificationService;
-import com.example.demo.service.ProvinceService;
-import com.example.demo.service.RequestService;
-import com.example.demo.service.TransactionHistoryService;
-import com.example.demo.service.UserService;
-import com.example.demo.validation.Utils;
+import d41nh4n.google_image.demo.dto.requestJob.RequesPostOrVideotDto;
+import d41nh4n.google_image.demo.dto.requestJob.RequestByDay;
+import d41nh4n.google_image.demo.dto.requestJob.RequestDto;
+import d41nh4n.google_image.demo.dto.requestJob.RequestRepresentativeDto;
+import d41nh4n.google_image.demo.dto.userdto.UserDto;
+import d41nh4n.google_image.demo.entity.TransactionHistory;
+import d41nh4n.google_image.demo.entity.notification.Notification;
+import d41nh4n.google_image.demo.entity.notification.TypeNotification;
+import d41nh4n.google_image.demo.entity.request.Request;
+import d41nh4n.google_image.demo.entity.request.RequestStatus;
+import d41nh4n.google_image.demo.entity.request.RequestWaitList;
+import d41nh4n.google_image.demo.entity.user.User;
+import d41nh4n.google_image.demo.mapper.RequestDtoToRequest;
+import d41nh4n.google_image.demo.mapper.UserToUserDto;
+import d41nh4n.google_image.demo.service.ChatMessageService;
+import d41nh4n.google_image.demo.service.NotificationService;
+import d41nh4n.google_image.demo.service.ProvinceService;
+import d41nh4n.google_image.demo.service.RequestService;
+import d41nh4n.google_image.demo.service.TransactionHistoryService;
+import d41nh4n.google_image.demo.service.UserService;
+import d41nh4n.google_image.demo.validation.Utils;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -54,7 +54,6 @@ public class RequestController {
     private final UserService userService;
     private final SimpMessagingTemplate messagingTemplate;
     private final TransactionHistoryService transactionHistoryService;
-    private final ChatMessageService chatMessageService;
 
     @PostMapping("/private")
     public ResponseEntity<?> requestJob(@RequestBody Map<String, Object> request) {
@@ -441,7 +440,7 @@ public class RequestController {
             int reqIdNum = utils.stringToInt(requestId);
             Request request = requestService.findRequestById(reqIdNum);
             if (request == null) {
-                res.put("error", "RequestI not exsist!");
+                res.put("error", "RequestID not exsist!");
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
             }
             User user = userService.getUserById(utils.getPrincipal().getUserId());
@@ -464,9 +463,9 @@ public class RequestController {
             notification.setUser(request.getRequester());
             notificationService.save(notification);
 
-            messagingTemplate.convertAndSendToUser(String.valueOf(request.getRequester().getUserId()),
-                    "/queue/notification",
-                    "You have new notification");
+            // messagingTemplate.convertAndSendToUser(String.valueOf(request.getRequester().getUserId()),
+            // "/queue/notification",
+            // "You have new notification");
 
             res.put("message", "Apply Success!");
             return ResponseEntity.status(HttpStatus.OK).body(res);
@@ -553,10 +552,14 @@ public class RequestController {
                 request.setRequestStatus(RequestStatus.IN_PROGRESS);
                 requestService.save(request);
 
+                TransactionHistory transactionHistory = transactionHistoryService.findByRequest(request);
+                transactionHistory.setReceiver(user);
+                transactionHistoryService.save(transactionHistory);
+
                 // tạo thông báo
                 Notification notification = new Notification();
                 notification.setCreateAt(ZonedDateTime.now());
-                notification.setType(TypeNotification.REQUEST);
+                notification.setType(TypeNotification.ACCEPT_REQUEST);
                 notification.setContent("You was accepted in a request");
                 notification.setReferenceId(null);
                 notification.setUser(user);
@@ -608,9 +611,9 @@ public class RequestController {
                 notification.setUser(request.getRequester());
                 notificationService.save(notification);
 
-                messagingTemplate.convertAndSendToUser(String.valueOf(request.getRequester().getUserId()),
-                        "/queue/notification",
-                        "You have new notification");
+                // messagingTemplate.convertAndSendToUser(String.valueOf(request.getRequester().getUserId()),
+                // "/queue/notification",
+                // "You have new notification");
 
                 res.put("message", "Result submitted successfully");
                 return ResponseEntity.ok(res);
@@ -643,7 +646,7 @@ public class RequestController {
 
             Notification notification = new Notification();
             notification.setContent(request.getRequester().getProfile().getFullName() +
-                    "accepted your result");
+                    " accepted your result");
             notification.setReferenceId(null);
             notification.setCreateAt(ZonedDateTime.now());
             notification.setType(TypeNotification.SUBMIT);

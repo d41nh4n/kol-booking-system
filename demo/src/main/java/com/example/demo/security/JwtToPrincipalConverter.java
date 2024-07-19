@@ -1,4 +1,4 @@
-package com.example.demo.security;
+package d41nh4n.google_image.demo.security;
 
 import java.util.Collections;
 import java.util.List;

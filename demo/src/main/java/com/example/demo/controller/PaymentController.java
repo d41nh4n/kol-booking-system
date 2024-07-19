@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package d41nh4n.google_image.demo.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.entity.TransactionHistory;
-import com.example.demo.entity.TypeTransaction;
-import com.example.demo.entity.user.User;
-import com.example.demo.repository.RequestRepository;
-import com.example.demo.repository.TransactionHistoryRepository;
-import com.example.demo.service.UserService;
-import com.example.demo.service.VNPayService;
-import com.example.demo.validation.Utils;
+import d41nh4n.google_image.demo.entity.TransactionHistory;
+import d41nh4n.google_image.demo.entity.TypeTransaction;
+import d41nh4n.google_image.demo.entity.user.User;
+import d41nh4n.google_image.demo.repository.RequestRepository;
+import d41nh4n.google_image.demo.repository.TransactionHistoryRepository;
+import d41nh4n.google_image.demo.service.UserService;
+import d41nh4n.google_image.demo.service.VNPayService;
+import d41nh4n.google_image.demo.validation.Utils;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -38,7 +38,7 @@ public class PaymentController {
 
     @GetMapping
     public String index(Model model) {
-        List<com.example.demo.entity.request.Request> requests = requestRepository.findAll();
+        List<d41nh4n.google_image.demo.entity.request.Request> requests = requestRepository.findAll();
         model.addAttribute("requests", requests);
         return "payment-detail";
     }

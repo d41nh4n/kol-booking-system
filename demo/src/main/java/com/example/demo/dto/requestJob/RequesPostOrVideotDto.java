@@ -1,4 +1,4 @@
-package com.example.demo.dto.requestJob;
+package d41nh4n.google_image.demo.dto.requestJob;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

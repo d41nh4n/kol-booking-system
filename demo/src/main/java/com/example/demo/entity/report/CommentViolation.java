@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.example.demo.entity.report;
+package d41nh4n.google_image.demo.entity.report;
 
-import com.example.demo.entity.Comment;
+import d41nh4n.google_image.demo.entity.Comment;
 /**
  *
  * @author DAO
@@ -21,7 +21,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-public class CommentViolation {
+public class CommentViolation{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer commentViolationId;
@@ -39,3 +39,4 @@ public class CommentViolation {
 
     // Getters and setters
 }
+

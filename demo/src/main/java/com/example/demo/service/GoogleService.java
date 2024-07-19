@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package d41nh4n.google_image.demo.service;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -8,7 +8,7 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 
-import com.example.demo.dto.respone.ResponeUpload;
+import d41nh4n.google_image.demo.dto.respone.ResponeUpload;
 
 import java.io.File;
 import java.io.FileInputStream;

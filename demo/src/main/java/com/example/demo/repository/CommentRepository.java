@@ -1,4 +1,4 @@
-package com.example.demo.repository;
+package d41nh4n.google_image.demo.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.example.demo.entity.Comment;
-import com.example.demo.entity.user.User;
+import d41nh4n.google_image.demo.entity.Comment;
+import d41nh4n.google_image.demo.entity.user.User;
 
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
 

@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package d41nh4n.google_image.demo.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -6,13 +6,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.entity.Comment;
-import com.example.demo.entity.user.User;
-import com.example.demo.exeption.InvalidNumber;
-import com.example.demo.exeption.InvalidRoleUser;
-import com.example.demo.exeption.RatingNotFoundException;
-import com.example.demo.repository.CommentRepository;
-import com.example.demo.validation.Utils;
+import d41nh4n.google_image.demo.entity.Comment;
+import d41nh4n.google_image.demo.entity.user.User;
+import d41nh4n.google_image.demo.exeption.InvalidNumber;
+import d41nh4n.google_image.demo.exeption.InvalidRoleUser;
+import d41nh4n.google_image.demo.exeption.RatingNotFoundException;
+import d41nh4n.google_image.demo.repository.CommentRepository;
+import d41nh4n.google_image.demo.validation.Utils;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -63,5 +63,9 @@ public class CommentService {
             throw new InvalidRoleUser("Invalid user role!");
         }
         return commentRepository.findTotalRatingByReceiverId(userId);
+    }
+
+    public Comment findById(int commentId) {
+        return commentRepository.findById(commentId).orElse(null);
     }
 }

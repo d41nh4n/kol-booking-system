@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package d41nh4n.google_image.demo.service;
 
 import java.util.Date;
 
@@ -8,14 +8,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import com.auth0.jwt.exceptions.JWTVerificationException;
-
-import com.example.demo.dto.userdto.UserDto;
-import com.example.demo.security.JwtDecoder;
-import com.example.demo.security.JwtIssuer;
-import com.example.demo.security.JwtToPrincipalConverter;
-import com.example.demo.security.UserPrincipal;
+import d41nh4n.google_image.demo.entity.user.User;
+import d41nh4n.google_image.demo.security.JwtDecoder;
+import d41nh4n.google_image.demo.security.JwtIssuer;
+import d41nh4n.google_image.demo.security.JwtToPrincipalConverter;
+import d41nh4n.google_image.demo.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -26,7 +23,6 @@ public class AuthService {
     private final JwtDecoder decoder;
     private final JwtIssuer issuer;
     private final AuthenticationManager authenticationManager;
-    private final UserService userService;
 
     public String login(String username, String password) {
         try {
@@ -39,23 +35,26 @@ public class AuthService {
                     principal.isLocked(), principal.getAvatar());
             return token;
         } catch (AuthenticationException e) {
-            System.out.println("Authentication failed: " + e.getMessage());
             throw new BadCredentialsException("Invalid username or password", e);
         }
     }
 
-    // public String generateAccessTokenFromRefreshToken(String refreshToken) throws
-    // JWTVerificationException {
+    public String loginByEmail(User user) {
+        String email = user.getEmail();
+        String password = user.getPasswordHash();
+        try {
+            var authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, password));
 
-    // var principal = principalFromToken(refreshToken);
-    // if (principal == null) {
-    // return null;
-    // }
-    // String id = principal.getUserId();
-    // User user = userService.getUserById(id);
-    // return issuer.createAccessToken(id, user.getUsername(), user.getRole(),
-    // !user.isLocked());
-    // }
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            var principal = (UserPrincipal) authentication.getPrincipal();
+            var token = issuer.createAccessToken(principal.getUserId(), principal.getFullName(), principal.getRoles(),
+                    principal.isLocked(), principal.getAvatar());
+            return token;
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException("Invalid username or password", e);
+        }
+    }
 
     public UserPrincipal principalFromToken(String tokenString) {
         try {

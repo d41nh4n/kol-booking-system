@@ -1,21 +1,19 @@
-package com.example.demo.security;
+package d41nh4n.google_image.demo.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.example.demo.exeption.CustomAccessDeniedHandler;
+import d41nh4n.google_image.demo.oauth2.OAuth2AuthenticationSuccessHandler;
+import d41nh4n.google_image.demo.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -25,7 +23,9 @@ public class WebSecurityConfig {
 
         private final JwtAuthenticationFilter jwtAuthenticationFilter;
         private final CustomUserDetailService customUserDetailService;
-        // private final CustomCheckExsistTokenFilter customCheckExsistTokenFilter;
+        private final PasswordEncoder passwordEncoder;
+        private final CustomOAuth2UserService oauth2UserService;
+        private final OAuth2AuthenticationSuccessHandler auth2AuthenticationSuccessHandler;
 
         @Bean
         public SecurityFilterChain applicationSecurity(HttpSecurity http) throws Exception {
@@ -62,6 +62,11 @@ public class WebSecurityConfig {
                                                 .anyRequest().permitAll())
                                 .formLogin(formLogin -> formLogin
                                                 .loginPage("/login/form"))
+                                .oauth2Login(oauth2Login -> oauth2Login
+                                                .loginPage("/login/form")
+                                                .userInfoEndpoint().userService(oauth2UserService)
+                                                .and()
+                                                .successHandler(auth2AuthenticationSuccessHandler))
                                 .addFilterBefore(jwtAuthenticationFilter,
                                                 UsernamePasswordAuthenticationFilter.class)
                                 .exceptionHandling(exceptionHandling -> exceptionHandling
@@ -71,16 +76,11 @@ public class WebSecurityConfig {
         }
 
         @Bean
-        public PasswordEncoder passwordEncoder() {
-                return new BCryptPasswordEncoder();
-        }
-
-        @Bean
         public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
                 var builder = http.getSharedObject(AuthenticationManagerBuilder.class);
                 builder
                                 .userDetailsService(customUserDetailService)
-                                .passwordEncoder(passwordEncoder());
+                                .passwordEncoder(passwordEncoder);
                 return builder.build();
         }
 }

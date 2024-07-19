@@ -1,9 +1,9 @@
-package com.example.demo.dto;
+package d41nh4n.google_image.demo.dto;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.example.demo.entity.notification.Notification;
+import d41nh4n.google_image.demo.entity.notification.Notification;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,7 +20,6 @@ public class NotificationDto {
     private String createAt;
     private String type;
     private String urlAvatar;
-
     public NotificationDto(Notification notification) {
         this.id = notification.getNotificationId();
         this.referenceId = notification.getReferenceId();

@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.example.demo.entity;
+package d41nh4n.google_image.demo.entity;
 
-import com.example.demo.entity.request.Request;
-import com.example.demo.entity.user.User;
+import d41nh4n.google_image.demo.entity.request.Request;
+import d41nh4n.google_image.demo.entity.user.User;
 /**
  *
  * @author DAO

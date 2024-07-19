@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package d41nh4n.google_image.demo.model;
 
 import lombok.Getter;
 import lombok.Setter;

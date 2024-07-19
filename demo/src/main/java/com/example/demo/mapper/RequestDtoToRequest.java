@@ -1,4 +1,4 @@
-package com.example.demo.mapper;
+package d41nh4n.google_image.demo.mapper;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -10,16 +10,16 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.example.demo.dto.requestJob.RequesPostOrVideotDto;
-import com.example.demo.dto.requestJob.RequestByDay;
-import com.example.demo.dto.requestJob.RequestDto;
-import com.example.demo.dto.requestJob.RequestRepresentativeDto;
-import com.example.demo.dto.userdto.UserInfo;
-import com.example.demo.entity.request.Request;
-import com.example.demo.entity.request.RequestRepresentative;
-import com.example.demo.entity.user.User;
-import com.example.demo.service.UserService;
-import com.example.demo.validation.Utils;
+import d41nh4n.google_image.demo.dto.requestJob.RequesPostOrVideotDto;
+import d41nh4n.google_image.demo.dto.requestJob.RequestByDay;
+import d41nh4n.google_image.demo.dto.requestJob.RequestDto;
+import d41nh4n.google_image.demo.dto.requestJob.RequestRepresentativeDto;
+import d41nh4n.google_image.demo.dto.userdto.UserInfo;
+import d41nh4n.google_image.demo.entity.request.Request;
+import d41nh4n.google_image.demo.entity.request.RequestRepresentative;
+import d41nh4n.google_image.demo.entity.user.User;
+import d41nh4n.google_image.demo.service.UserService;
+import d41nh4n.google_image.demo.validation.Utils;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -52,12 +52,7 @@ public class RequestDtoToRequest {
         List<Date> days = requestByDay.getDaysRequire().stream().map(day -> utils.stringToDate(day))
                 .collect(Collectors.toList());
         Collections.sort(days);
-        if (!days.isEmpty()) {
-            Date lastDay = days.get(days.size() - 1);
-            if (lastDay.compareTo(requireDate) >= 0) {
-                request.setRequestDateEnd(lastDay);
-            }
-        }
+        request.setRequestDateEnd(days.getLast());
         request.setDaysRequest(days);
         return request;
     }

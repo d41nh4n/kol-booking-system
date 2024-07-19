@@ -1,6 +1,6 @@
-package com.example.demo.entity.request;
+package d41nh4n.google_image.demo.entity.request;
 
-import com.example.demo.entity.user.User;
+import d41nh4n.google_image.demo.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

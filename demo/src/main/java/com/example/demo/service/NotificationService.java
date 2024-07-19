@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package d41nh4n.google_image.demo.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,10 +10,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dto.NotificationDto;
-import com.example.demo.entity.notification.Notification;
-import com.example.demo.entity.user.User;
-import com.example.demo.repository.NotificationRepository;
+import d41nh4n.google_image.demo.dto.NotificationDto;
+import d41nh4n.google_image.demo.entity.notification.Notification;
+import d41nh4n.google_image.demo.entity.user.User;
+import d41nh4n.google_image.demo.repository.NotificationRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -35,4 +35,7 @@ public class NotificationService {
         return notificationRepository.save(notification);
     }
 
+    public Notification createNotification(Notification notification) {
+        return notificationRepository.save(notification);
+    }
 }

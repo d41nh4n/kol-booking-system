@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package d41nh4n.google_image.demo.config;
 
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

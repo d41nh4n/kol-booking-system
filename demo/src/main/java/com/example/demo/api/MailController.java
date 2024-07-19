@@ -1,4 +1,4 @@
-package com.example.demo.api;
+package d41nh4n.google_image.demo.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.model.Mail;
-import com.example.demo.service.MailService;
+import d41nh4n.google_image.demo.model.Mail;
+import d41nh4n.google_image.demo.service.MailService;
 
 @RestController
 @RequestMapping("/mail")
