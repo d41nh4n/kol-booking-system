@@ -9,23 +9,35 @@ import d41nh4n.google_image.demo.validation.ValidTokenService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
 @RequiredArgsConstructor
 public class WebSocketEventListener {
+    private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
     private final ValidTokenService validTokenService;
-    private static ConcurrentHashMap<String, String> userSessionMap = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<Integer, String> userSessionMap = new ConcurrentHashMap<>();
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
-        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());    
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String token = accessor.getFirstNativeHeader("token");
-        String userId = validTokenService.principalFromToken(token).getUserId();
-        System.out.println("HandleConnect: " + userId);
-        String sessionId = accessor.getSessionId();
-        System.out.println(sessionId);
-        if (userId != null) {
-            userSessionMap.put(userId, sessionId);
+        if (token != null) {
+            try {
+                Integer userId = validTokenService.principalFromToken(token).getUserId();
+                if (userId != null) {
+                    String sessionId = accessor.getSessionId();
+                    userSessionMap.put(userId, sessionId);
+                    logger.info("User connected: userId={}, sessionId={}", userId, sessionId);
+                } else {
+                    logger.warn("Invalid userId from token.");
+                }
+            } catch (Exception e) {
+                logger.error("Error while processing token: {}", e.getMessage());
+            }
+        } else {
+            logger.warn("Token is missing.");
         }
     }
 
@@ -33,9 +45,10 @@ public class WebSocketEventListener {
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         String sessionId = event.getSessionId();
         userSessionMap.entrySet().removeIf(entry -> sessionId.equals(entry.getValue()));
+        logger.info("User disconnected: sessionId={}", sessionId);
     }
 
-    public static String getSessionIdByUserId(String userId) {
+    public static String getSessionIdByUserId(Integer userId) {
         return userSessionMap.get(userId);
     }
 }

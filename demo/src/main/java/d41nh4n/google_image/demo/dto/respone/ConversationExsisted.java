@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ConversationExsisted {
     private String conversationId;
-    private String recipientId;
+    private int recipientId;
     private String recipientName;
     private String avatarUrl;
     private String lastMessage;

@@ -1,0 +1,229 @@
+.homepage-body {
+  margin-top: 58px;
+}
+/* -------------------------------------------------------------- Box Product -------------------------------------------------------------- */
+.box-product-outer {
+  margin-bottom: 5px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.box-product-outer:hover {
+  outline: 1px solid #aaa;
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+}
+.tab-content .box-product-outer {
+  margin-bottom: 0;
+}
+.box-product-slider-outer {
+  padding: 10px;
+}
+.box-product .img-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+.box-product .img-wrapper img {
+  border-radius: 8px; /* Bo tròn các góc của ảnh */
+}
+.box-product .img-wrapper > :first-child {
+  position: relative;
+  display: block;
+}
+.box-product .img-wrapper > a > img {
+  width: 100%;
+}
+
+.box-product h6 a {
+  line-height: 1.4;
+}
+.rating i {
+  color: #fc0;
+}
+.product-sorting-bar {
+  border: 1px solid #e5e5e5;
+}
+/* -------------------------------------------------------------- End of Box Product -------------------------------------------------------------- */
+
+.sidenav {
+  height: 100%; /* Full-height: remove this if you want "auto" height */
+  width: 160px; /* Set the width of the sidebar */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  left: 0;
+  background-color: #f8f8f8; /* Black */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The navigation menu links */
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  color: #818181;
+  display: block;
+  padding: 12px 0 12px 0;
+  font-weight: bold;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #1aaceb;
+}
+
+/* Style page content */
+.main {
+  margin-left: 160px; /* Same as the width of the sidebar */
+  padding: 0px 10px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidenav {
+    padding-top: 15px;
+  }
+  .sidenav a {
+    font-size: 18px;
+  }
+}
+
+.wrapper {
+  margin-left: 160px; /* Width of the sidebar */
+  padding: 20px;
+}
+@media screen and (max-width: 768px) {
+  .wrapper {
+    margin-left: 0;
+    padding: 20px;
+  }
+}
+.box-product {
+  min-height: 470px; /* Thay đổi giá trị này theo nhu cầu của bạn */
+  max-height: 470px; /* Thay đổi giá trị này theo nhu cầu của bạn */
+
+}
+
+.img-wrapper img {
+  max-height: 200px; /* Thiết lập chiều cao tối đa cho hình ảnh */
+  width: 100%; /* Đảm bảo hình ảnh chiếm toàn bộ chiều rộng của container */
+  object-fit: cover; /* Đảm bảo hình ảnh bao phủ container mà không bị biến dạng */
+}
+
+.price-item, .rating, .location {
+  margin-top: 10px; /* Thêm khoảng cách giữa các phần tử */
+}
+
+.row .hot-kol{
+   margin-top: 20px;
+}
+
+.section-margin {
+  margin-bottom: 40px;
+  margin-left: 120px;/* Khoảng cách giữa hai phần (Top Products và List Products) */
+}
+
+
+.price div span {
+margin-right: 5px; /* Khoảng cách giữa dấu chấm và số */
+color: #333; /* Màu sắc của dấu chấm */
+}
+.price {
+display: flex;
+flex-direction: column;
+}
+.price-item {
+display: flex;
+align-items: center;
+}
+.dot {
+width: 10px;
+height: 10px;
+background-color: #28a745;
+border-radius: 50%;
+margin-right: 10px;
+}
+
+.box-product h5 {
+margin: 0; /* Xóa khoảng trắng xung quanh */
+font-size: 16px; /* Kích cỡ font chữ */
+line-height: 1.4; /* Độ cao dòng */
+padding: 7px 0 7px 0;
+}
+
+.box-product h5 a {
+text-decoration: none; /* Loại bỏ gạch chân */
+color: #333; /* Màu chữ */
+display: block; /* Hiển thị dưới dạng khối để căn chỉnh và chiếm toàn bộ chiều rộng */
+overflow: hidden; /* Ẩn phần vượt quá khối */
+white-space: nowrap; /* Ngăn văn bản dài xuống dòng mới */
+max-width: 100%; /* Chiều rộng tối đa */
+font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.price-item {
+font-family: Arial, sans-serif; /* Chọn font chữ */
+}
+
+.price-item span.price-down {
+font-weight: bold; /* Đặt độ đậm cho giá cả */
+color: #333; /* Màu chữ */
+}
+
+.price-item span.dot {
+display: inline-block;
+width: 5px;
+height: 5px;
+background-color: #007bff; /* Màu chấm */
+border-radius: 50%; /* Bo góc */
+margin-right: 5px; /* Khoảng cách phía bên phải */
+}
+
+
+h2.my-4 {
+text-align: center; /* Căn giữa nội dung */
+margin-top: 4rem; /* Khoảng cách từ phía trên */
+margin-bottom: 4rem; /* Khoảng cách từ phía dưới */
+font-weight: bold;
+color: #f86161;
+}
+
+.box-product-outer {
+border: 1px solid #ccc; /* Đường viền 1px dày và màu xám */
+margin-bottom: 10px; /* Khoảng cách dưới giữa các sản phẩm */
+padding: 15px; /* Khoảng cách nội dung bên trong khung */
+
+}
+
+.rating .fa-star {
+font-size: 18px; /* Kích thước biểu tượng sao */
+}
+
+/* Điều chỉnh kích thước và kiểu chữ của số điểm */
+.rating span {
+font-size: 14px; /* Kích thước chữ */
+font-weight: bold; /* Độ đậm của chữ */
+}
+
+.tags {
+max-height: 20px;
+min-height: 20px;
+width: 100%; /* Đảm bảo phần tử chiếm toàn bộ chiều rộng của khối chứa nó */
+}
+
+.rating-location{
+display: flex;
+font-size: 14px; /* Kích thước chữ */
+font-weight: bold; /* Độ đậm của chữ */
+padding: 5px;
+justify-content: space-between;
+}
+
+.location{
+display: inline-block;
+background-color: #c5c3c3;
+padding: 3px;
+border-radius: 1  0%;
+}

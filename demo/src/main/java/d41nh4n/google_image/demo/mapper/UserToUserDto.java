@@ -1,43 +1,69 @@
 package d41nh4n.google_image.demo.mapper;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
-import d41nh4n.google_image.demo.dto.respone.UserFindedBySearch;
-import d41nh4n.google_image.demo.dto.respone.UserInfoRespone;
-import d41nh4n.google_image.demo.entity.User.User;
+import d41nh4n.google_image.demo.dto.userdto.UserDto;
+import d41nh4n.google_image.demo.entity.Category;
+import d41nh4n.google_image.demo.entity.user.Gender;
+import d41nh4n.google_image.demo.entity.user.ProfileCategories;
+import d41nh4n.google_image.demo.entity.user.User;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public final class UserToUserDto {
-    private UserToUserDto() {
-    }
 
-    public static UserInfoRespone mapToUserInfoResponse(User user) {
-        UserInfoRespone userInfoRespone = new UserInfoRespone();
-        userInfoRespone.setId(user.getUserId());
-        userInfoRespone.setUsername(user.getUsername());
-        userInfoRespone.setRole(user.getRole());
-        userInfoRespone.setEmail(user.getEmail());
-        userInfoRespone.setPhone(user.getPhone());
-        userInfoRespone.setDateOfBirth(formatDateOfBirth(user.getDob()));
-        userInfoRespone.setAvatarUrl(user.getAvatarUrl());
-        userInfoRespone.setAddress(user.getAddress());
-        userInfoRespone.setGender(user.isGender());
-        userInfoRespone.setProfileDesc(user.getProfileDesc());
-        return userInfoRespone;
-    }
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
-    private static String formatDateOfBirth(Date dateOfBirth) {
-        if (dateOfBirth == null) {
-            return null;
+    public static UserDto mapToUserInfoResponse(User user) {
+        UserDto userInfo = new UserDto();
+        userInfo.setUserId(user.getUserId());
+        userInfo.setFullName(user.getProfile().getFullName());
+        userInfo.setRole(user.getRole());
+        userInfo.setAvatarUrl(user.getProfile().getAvatarUrl());
+        if (user.getProfile().getBirthday() != null) {
+            userInfo.setBirthday(dateFormat.format(user.getProfile().getBirthday()));
         }
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        return formatter.format(dateOfBirth);
+        userInfo.setLocation(user.getProfile().getLocation());
+        if (user.getGender() == null) {
+            userInfo.setGender(Gender.OTHER.toString());
+        } else {
+            userInfo.setGender(user.getGender().toString());
+        }
+        userInfo.setCreateAt(dateFormat.format(user.getCreateAt()));
+        userInfo.setBio(user.getProfile().getBio());
+        userInfo.setRating(user.getProfile().getAverageRating());
+        userInfo.setPricePost(user.getProfile().getPriceAPost());
+        userInfo.setPriceVideo(user.getProfile().getPriceAVideo());
+        userInfo.setPriceHireByDay(user.getProfile().getPriceAToHireADay());
+        userInfo.setRepresentativePrice(user.getProfile().getRepresentativePrice());
+        userInfo.setAverageRating(user.getProfile().getAverageRating());
+        List<ProfileCategories> profileCategories = user.getProfile().getProfileCategories();
+        List<String> categoryNames = new ArrayList<>();
+        for (ProfileCategories profileCategory : profileCategories) {
+            Category category = profileCategory.getCategory();
+            if (category != null) {
+                categoryNames.add(category.getCategoryName());
+            }
+        }
+        userInfo.setCategories(categoryNames);
+
+        return userInfo;
     }
 
-    public static UserFindedBySearch mapToUserFindedBySearch(User user) {
-        UserFindedBySearch userFindedBySearch = new UserFindedBySearch();
-        userFindedBySearch.setId(user.getUserId());
-        userFindedBySearch.setUsername(user.getUsername());
-        return userFindedBySearch;
-    }
+    // private static String formatDateOfBirth(Date dateOfBirth) {
+    // if (dateOfBirth == null) {
+    // return null;
+    // }
+    // SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    // return formatter.format(dateOfBirth);
+    // }
+
+    // public static UserFindedBySearch mapToUserFindedBySearch(User user) {
+    // UserFindedBySearch userFindedBySearch = new UserFindedBySearch();
+    // userFindedBySearch.setId(user.getUserId());
+    // userFindedBySearch.setUsername(user.getUsername());
+    // return userFindedBySearch;
+    // }
 }

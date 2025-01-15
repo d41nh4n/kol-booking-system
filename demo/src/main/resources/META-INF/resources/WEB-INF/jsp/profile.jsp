@@ -1,46 +1,55 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
     <title>User Profile</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* CSS để thiết lập vị trí và kiểu dáng cho nút Back */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding-top: 50px;
+        }
+        .back-button {
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
-<%@ include file="navbar.jsp" %>
-<body class="bg-gray-100">
-    <c:if test="${not empty UserNotExsist}"> 
-        <h2>${UserNotExsist}</h2>
-    </c:if>
-    <div class="flex flex-col items-start container mx-auto mt-10 bg-white rounded-lg shadow-lg ">
-        <div class="flex space-x-5 my-4 items-center w-full">
-            <img class="w-24 h-24 rounded-full" src="${user.avatarUrl}" alt="User Avatar">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">${user.username}</h1>
-                <p class="text-gray-600">${user.role}</p>
-            </div>
-            <div class="ml-auto">
-                <a href="/chatbox?userId=${user.id}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Chat</a>
-            </div>
-        </div>
-        <div class="mt-5">
-            <h2 class="text-2xl font-semibold text-gray-800">Personal Information</h2>
-            <ul class="mt-2 text-gray-700">
-                <li><strong>Email:</strong> ${user.email}</li>
-                <li><strong>Phone:</strong> ${user.phone}</li>
-                <li><strong>Date of Birth:</strong> ${user.dateOfBirth}</li>
-                <li><strong>Gender:</strong> 
-                    <c:choose>
-                        <c:when test="${user.gender == 'Male'}">Male</c:when>
-                        <c:when test="${user.gender == 'Female'}">Female</c:when>
-                        <c:otherwise>Unspecified</c:otherwise>
-                    </c:choose>
-                </li>
-                <li><strong>Address:</strong> ${user.address}</li>
-            </ul>
-        </div>
-        <div class="my-5">
-            <h2 class="text-2xl font-semibold text-gray-800">Profile Description</h2>
-            <p class="mt-2 text-gray-700">${user.profileDesc}</p>
-        </div>
+<body>
+    <div class="container">
+        <h1>User Profile</h1>
+        <c:if test="${profile == null}">
+            <p>User profile not found.</p>
+        </c:if>
+        <c:if test="${profile != null}">
+            <p>ID: <span>${profile.id}</span></p>
+            <p>Name: <span>${profile.name}</span></p>
+            <p>Full Name: <span>${profile.fullName}</span></p>
+            <p>Email: <span>${profile.email}</span></p>
+            <p>Role: <span>${profile.role}</span></p>
+            <p>Created At: <span>${profile.createdAt}</span></p>
+            <p>Ban: <span>${profile.banAction == 'Ban' ? 'False' : 'True'}</span></p>
+            <p>Bio: <span>${profile.bio}</span></p>
+            <p>Phone Number: <span>${profile.phoneNumber}</span></p>
+            <p>Address: <span>${profile.address}</span></p>
+            <p>Birthday: <span>${profile.birthday}</span></p>
+            
+            <!-- Add display for avatar if needed -->
+
+            <!-- Nút trở về -->
+            <a href="/admin/list_users?page=${currentPage}" class="back-button">Back</a>
+        </c:if>
     </div>
 </body>
 </html>

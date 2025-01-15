@@ -1,11 +1,20 @@
 package d41nh4n.google_image.demo.validation;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import d41nh4n.google_image.demo.security.UserPrincipal;
 import d41nh4n.google_image.demo.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +25,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Utils {
 
-    private final UserService service;
+    private static final String DATE_FORMAT_1 = "MM/dd/yyyy";
+    private static final String DATE_FORMAT_2 = "yyyy-MM-dd";
 
     public String renderCode(int number) {
 
@@ -32,14 +42,8 @@ public class Utils {
         return userID.toString();
     }
 
-    public String renderUserId(int number) {
-
-        while (true) {
-            String id = "USER" + renderCode(number);
-            if (service.getUserById(id) == null) {
-                return id;
-            }
-        }
+    public String renderUserName(int number) {
+        return "USER_" + renderCode(number);
     }
 
     public String generateRandomCode() {
@@ -54,18 +58,18 @@ public class Utils {
         return codeBuilder.toString();
     }
 
-    public Optional<String> getTokenFromCookies(HttpServletRequest request) {
+    public String getTokenFromCookies(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
 
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("accessToken".equals(cookie.getName())) {
-                    return Optional.of(cookie.getValue());
+                    return cookie.getValue();
                 }
             }
         }
 
-        return Optional.empty();
+        return null;
     }
 
     public void removeTokenCookie(HttpServletResponse response) {
@@ -87,10 +91,80 @@ public class Utils {
     }
 
     public String generateChatRoomId(String userIdA, String userIdB) {
-        String[] array = { userIdA, userIdB };
+        String[] array = { String.valueOf(userIdA), String.valueOf(userIdB) };
         Arrays.sort(array);
-        String combie = array[0] + array[1];
-        System.out.println(combie);
+        String combie = array[0] + ":" + array[1];
         return combie;
+    }
+
+    public UserPrincipal getPrincipal() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()
+                && !"anonymousUser".equals(authentication.getPrincipal())) {
+            return (UserPrincipal) authentication.getPrincipal();
+        }
+        return null;
+    }
+
+    public Date stringToDate(String dateString) {
+        Date date = null;
+        SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT_1);
+
+        try {
+            // Thử phân tích chuỗi ngày với định dạng DATE_FORMAT_1
+            date = formatter.parse(dateString);
+        } catch (ParseException e1) {
+            // Nếu không thành công, thử với định dạng DATE_FORMAT_2
+            formatter.applyPattern(DATE_FORMAT_2);
+            try {
+                date = formatter.parse(dateString);
+            } catch (ParseException e2) {
+                // Nếu vẫn không thành công, in ra lỗi và trả về null
+                e2.printStackTrace();
+            }
+        }
+        return date;
+    }
+
+    public LocalDate stringToLocalDate(String dateString) {
+        LocalDate localDate = null;
+
+        // Cố gắng phân tích chuỗi ngày với định dạng DATE_FORMAT_1
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT_1);
+            localDate = LocalDate.parse(dateString, formatter);
+        } catch (DateTimeParseException e1) {
+            // Nếu không thành công, thử với định dạng DATE_FORMAT_2
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT_2);
+                localDate = LocalDate.parse(dateString, formatter);
+            } catch (DateTimeParseException e2) {
+                // Nếu vẫn không thành công, in ra lỗi và trả về null
+                e2.printStackTrace();
+            }
+        }
+
+        return localDate;
+    }
+
+    public String dateToString(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT_1);
+        return formatter.format(date);
+    }
+
+    public int stringToInt(String number) {
+        return Integer.parseInt(number);
+    }
+
+    public Long stringParseToLong(String numberStr, Long defaultValue) {
+        try {
+            Long result = Long.parseLong(numberStr);
+            if (result < 0L) {
+                return defaultValue;
+            }
+            return result;
+        } catch (Exception e) {
+            return defaultValue;
+        }
     }
 }

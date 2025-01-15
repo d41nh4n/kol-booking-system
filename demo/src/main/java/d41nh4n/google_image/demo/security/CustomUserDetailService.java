@@ -21,8 +21,11 @@ public class CustomUserDetailService implements UserDetailsService {
         return UserPrincipal.builder()
                 .userId(user.getUserId())
                 .userName(user.getUsername())
-                .password(user.getPassword())
+                .fullName(user.getProfile().getFullName())
+                .password(user.getPasswordHash())
                 .authorities(List.of(new SimpleGrantedAuthority(user.getRole())))
+                .avatar(user.getProfile().getAvatarUrl())
+                .isLocked(user.isLocked())
                 .build();
     }
 }

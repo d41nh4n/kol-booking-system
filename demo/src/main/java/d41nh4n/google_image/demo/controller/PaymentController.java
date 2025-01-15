@@ -1,23 +1,23 @@
 package d41nh4n.google_image.demo.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import d41nh4n.google_image.demo.entity.Payment.Request;
-import d41nh4n.google_image.demo.entity.Payment.TransactionHistory;
-import d41nh4n.google_image.demo.entity.User.User;
+import d41nh4n.google_image.demo.entity.TransactionHistory;
+import d41nh4n.google_image.demo.entity.TypeTransaction;
+import d41nh4n.google_image.demo.entity.user.User;
 import d41nh4n.google_image.demo.repository.RequestRepository;
 import d41nh4n.google_image.demo.repository.TransactionHistoryRepository;
 import d41nh4n.google_image.demo.service.UserService;
 import d41nh4n.google_image.demo.service.VNPayService;
+import d41nh4n.google_image.demo.validation.Utils;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -34,47 +34,36 @@ public class PaymentController {
     private final VNPayService vnPayService;
     private final RequestRepository requestRepository;
     private final TransactionHistoryRepository transactionHistoryRepository;
-
-
+    private final Utils utils;
 
     @GetMapping
     public String index(Model model) {
-        List<Request> requests = requestRepository.findAll();
+        List<d41nh4n.google_image.demo.entity.request.Request> requests = requestRepository.findAll();
         model.addAttribute("requests", requests);
         return "payment-detail";
     }
 
-    @GetMapping("/order-save")
-    public String initiatePayment(HttpServletRequest request) {
+    @PostMapping("/order")
+    public String submitOrder(@RequestParam(name = "amount") String amount, HttpServletRequest request, Model model) {
+        int amountNumber;
+        try {
+            amountNumber = utils.stringToInt(amount);
+            if (amountNumber <= 0) {
+                throw new NumberFormatException("Amount must be greater than zero");
+            }
+        } catch (Exception e) {
+            return "redirect:/payment/recharge?invalidNumber=true";
+        }
         HttpSession session = request.getSession();
-        // Retrieve and store parameters in session
-        String amount = request.getParameter("amount");
-        String info = request.getParameter("info");
-        String requesterId = request.getParameter("requesterId");
-        String responderId = request.getParameter("responderId");
-        String requestId = request.getParameter("requestId");
-        String requestStatus = request.getParameter("requestStatus");
-        session.setAttribute("amount", amount);
-        session.setAttribute("info", info);
-        session.setAttribute("requesterId", requesterId);
-        session.setAttribute("responderId", responderId);
-        session.setAttribute("requestId", requestId);
-        session.setAttribute("requestStatus", requestStatus);
-        return "redirect:/payment/order";
-    }
-
-    @GetMapping("/order")
-    public String submidOrder(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        int orderTotal = Integer.parseInt((String) session.getAttribute("amount"));
-        String orderInfo = (String) session.getAttribute("info");
+        String orderInfo = "Recharge Account";
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        String vnpayUrl = vnPayService.createOrder(orderTotal, orderInfo, baseUrl);
+        String vnpayUrl = vnPayService.createOrder(amountNumber, orderInfo, baseUrl);
+        session.setAttribute("userId", utils.getPrincipal().getUserId());
         return "redirect:" + vnpayUrl;
     }
 
     @GetMapping("/order-status")
-    public String GetMapping(HttpServletRequest request, Model model) {
+    public String handlePaymentStatus(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
         int paymentStatus = vnPayService.orderReturn(request);
 
@@ -83,11 +72,23 @@ public class PaymentController {
         String transactionId = request.getParameter("vnp_TransactionNo");
         String totalPrice = request.getParameter("vnp_Amount");
 
-        String requesterId = (String) session.getAttribute("requesterId");
-        String responderId = (String) session.getAttribute("responderId");
-        String requestId = (String) session.getAttribute("requestId");
-        String requestStatus = (String) session.getAttribute("requestStatus");
-        int requestStatusInt = requestStatus.toLowerCase().equals("true") ? 1 : 0;
+        // Retrieve user ID from session
+        int userId = (int) session.getAttribute("userId");
+
+        // Convert totalPrice from string to double
+        double amountPaid = Double.parseDouble(totalPrice) / 100; // Assuming the amount is in minor units
+
+        // Check if the transaction has already been processed using the VNPay
+        // transaction ID
+        Optional<TransactionHistory> existingTransaction = transactionHistoryRepository
+                .findByTransactionId(transactionId);
+        if (existingTransaction.isPresent()) {
+            model.addAttribute("orderId", orderInfo);
+            model.addAttribute("totalPrice", totalPrice);
+            model.addAttribute("paymentTime", paymentTime);
+            model.addAttribute("transactionId", transactionId);
+            return "payment-success";
+        }
 
         Timestamp timestamp = null;
         try {
@@ -102,20 +103,20 @@ public class PaymentController {
         }
 
         if (paymentStatus == 1) {
-            User sender = userService.getUserById(requesterId);
-            User receiver = userService.getUserById(responderId);
-            Optional<Request> requestPayment = requestRepository.findById(Long.parseLong(requestId));
+            // Update user's balance
+            userService.updateUserBalance(userId, amountPaid);
+            User userReceiver = userService.getUserById(userId);
 
+            // Save transaction history
             TransactionHistory transaction = new TransactionHistory();
-            transaction.setTransPayment(Double.parseDouble(totalPrice));
+            transaction.setTransactionId(transactionId); // Set VNPay transaction ID
+            transaction.setReceiver(userReceiver);
+            transaction.setTransPayment(amountPaid);
+            transaction.setType(TypeTransaction.PAY_IN);
+            transaction.setTransStatus(true);
             transaction.setTransDate(timestamp);
-            transaction.setSenderId(sender);
-            transaction.setReceiverId(receiver);
-            transaction.setRequest(requestPayment.get());
-            transaction.setRequestStatus(requestStatusInt);
-            Long idRe = requestPayment.get().getRequestId();
             transactionHistoryRepository.save(transaction);
-            requestRepository.updateStatusById(idRe, true);
+
             model.addAttribute("orderId", orderInfo);
             model.addAttribute("totalPrice", totalPrice);
             model.addAttribute("paymentTime", paymentTime);
@@ -127,4 +128,10 @@ public class PaymentController {
         }
     }
 
+    @GetMapping("/recharge")
+    public String showRechargePage(@RequestParam(name = "invalidNumber", required = false) Boolean invalidNumber,
+            Model model) {
+        model.addAttribute("invalidNumber", invalidNumber);
+        return "recharge-page";
+    }
 }

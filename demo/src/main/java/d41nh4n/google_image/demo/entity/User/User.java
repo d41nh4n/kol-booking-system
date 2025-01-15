@@ -1,81 +1,69 @@
-package d41nh4n.google_image.demo.entity.User;
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package d41nh4n.google_image.demo.entity.user;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+/**
+ *
+ * @author DAO
+ */
+import jakarta.persistence.*;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Date;
-import java.util.List;
-
-import d41nh4n.google_image.demo.entity.Notification.UserNotification;
-
-@Getter
-@Setter
+@Entity
+@Table(name = "Users")
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "tb_User")
+@Setter
+@Getter
 @ToString
 public class User {
-
     @Id
-    @Column(name = "user_id", nullable = false, unique = true, length = 255)
-    private String userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int userId;
 
-    @Column(name = "username", unique = true, length = 255, nullable = false)
+    @Column(length = 50, nullable = false, unique = true)
     private String username;
 
-    @Column(name = "password", length = 255, nullable = false)
-    private String password;
+    @Column(length = 255, nullable = false)
+    private String passwordHash;
 
-    @Column(name = "fullname")
-    private String fullname;
-
-    @Column(name = "email", length = 255)
+    @Column(length = 100, nullable = true, unique = true)
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 6, nullable = true)
+    private Gender gender;
+
+    @Column(name = "is_locked")
+    private boolean locked;
 
     @Column(name = "create_at")
     private Date createAt;
 
-    @Column(name = "is_locked")
-    private boolean isLocked;
-
-    @Column(name = "role", length = 10)
+    @Column(name = "what_role", length = 20, nullable = false)
     private String role;
-
-    @Column(name = "profile_desc", length = 500)
-    private String profileDesc;
-
-    @Column(name = "avatar_url", length = 500)
-    private String avatarUrl;
-
-    @Column(name = "dob")
-    private Date dob;
-
-    @Column(name = "phone", length = 15)
-    private String phone;
-
-    @Column(name = "address", length = 255)
-    private String address;
-
-    @Column(name = "gender")
-    private boolean gender;
 
     @Column(name = "reset_password_token")
     private String resetPasswordToken;
-    
-      @PrePersist
+
+    @Column(name = "account_balance")
+    private Double accountBalance;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Profile profile;
+
+    @PrePersist
     protected void onCreate() {
         this.createAt = new Date();
+        if (this.accountBalance == null) {
+            this.accountBalance = 0.0;
+        }
     }
 }

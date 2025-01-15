@@ -11,11 +11,9 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import d41nh4n.google_image.demo.dto.NotificationDto;
-import d41nh4n.google_image.demo.entity.Notification.Notification;
-import d41nh4n.google_image.demo.entity.Notification.UserNotification;
-import d41nh4n.google_image.demo.entity.Notification.UserNotificationId;
+import d41nh4n.google_image.demo.entity.notification.Notification;
+import d41nh4n.google_image.demo.entity.user.User;
 import d41nh4n.google_image.demo.repository.NotificationRepository;
-import d41nh4n.google_image.demo.repository.UserRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -26,36 +24,18 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class NotificationService {
 
-    private final SimpMessagingTemplate messagingTemplate;
     private final NotificationRepository notificationRepository;
 
-    public void save(UserNotification notification) {
-        notificationRepository.save(notification);
+    public Page<Notification> findNotificationByUser(User user, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("createAt").descending());
+        return notificationRepository.findByUser(user, pageable);
     }
 
-    public UserNotification getById(UserNotificationId userNotificationId) {
-        return notificationRepository.findById(userNotificationId).orElseThrow(null);
+    public Notification save(Notification notification) {
+        return notificationRepository.save(notification);
     }
 
-    public List<UserNotification> getAll() {
-        List<UserNotification> notifications = notificationRepository.findAll();
-        if (notifications == null || notifications.isEmpty()) {
-            return new ArrayList<>();
-        }
-        return notifications;
-    }
-
-    public Page<NotificationDto> getUserNotificationById(String userId) {
-        Pageable sortedByCreateAtDesc = PageRequest.of(0, Integer.MAX_VALUE, Sort.by("createAt").descending());
-        Page<NotificationDto> notifications = notificationRepository.getUserNotificationById(userId,
-                sortedByCreateAtDesc);
-        if (notifications == null || notifications.isEmpty()) {
-            return Page.empty();
-        }
-        return notifications;
-    }
-
-    public void processNotification(String userId, NotificationDto notificationDto) {
-        messagingTemplate.convertAndSendToUser(userId, "/queue/notification", notificationDto);
+    public Notification createNotification(Notification notification) {
+        return notificationRepository.save(notification);
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import d41nh4n.google_image.demo.security.Principal.UserPrincipalAuthenticationToken;
+import d41nh4n.google_image.demo.validation.Utils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -22,52 +23,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtDecoder decoder;
     private final JwtToPrincipalConverter converter;
     private static final String TOKEN_COOKIE_NAME = "accessToken";
+    private final Utils utils;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        Optional<String> accessToken = getTokenFromCookies(request);
+        String accessToken = utils.getTokenFromCookies(request);
 
-        if (accessToken.isPresent()) {
+        if (accessToken != null && !accessToken.isEmpty()) {
             try {
-                var decodedJwt = decoder.decode(accessToken.get());
+                var decodedJwt = decoder.decode(accessToken);
 
                 if (decodedJwt.getExpiresAt().before(new Date())) {
-                    removeTokenCookie(response);
-                    System.err.println("JWT has expired.");
+                    utils.removeTokenCookie(response);
                 } else {
                     var principalFromDecodedJwt = converter.convert(decodedJwt);
-                    var userPrincipalAuthenticationToken = new UserPrincipalAuthenticationToken(principalFromDecodedJwt);
-                    SecurityContextHolder.getContext().setAuthentication(userPrincipalAuthenticationToken);
+                    if (!principalFromDecodedJwt.isLocked()) {
+                        var userPrincipalAuthenticationToken = new UserPrincipalAuthenticationToken(
+                                principalFromDecodedJwt);
+                        SecurityContextHolder.getContext().setAuthentication(userPrincipalAuthenticationToken);
+                    }
                 }
             } catch (Exception e) {
                 System.err.println("Failed to authenticate JWT: " + e.getMessage());
-                removeTokenCookie(response);
+                utils.removeTokenCookie(response);
             }
         }
 
         filterChain.doFilter(request, response);
-    }
-
-    private Optional<String> getTokenFromCookies(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (TOKEN_COOKIE_NAME.equals(cookie.getName())) {
-                    return Optional.of(cookie.getValue());
-                }
-            }
-        }
-
-        return Optional.empty();
-    }
-
-    private void removeTokenCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie(TOKEN_COOKIE_NAME, "");
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
     }
 }

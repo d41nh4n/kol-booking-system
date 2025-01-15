@@ -10,7 +10,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.css" rel="stylesheet">
   </head>
   <body>
-    <%@include file="navbar.jsp" %>
+
     <div class="container p-0">
       <div class="card px-4">
         <p class="h8 py-3">Payment Details</p>

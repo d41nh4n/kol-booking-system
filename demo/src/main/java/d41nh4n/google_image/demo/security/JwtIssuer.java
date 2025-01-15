@@ -16,13 +16,14 @@ public class JwtIssuer {
 
     private final JwtProperties jwtProperties;
 
-    public String createAccessToken(String id, String username, String role, boolean isLocked) {
+    public String createAccessToken(int id, String fullname, String role, boolean isLocked, String avatar) {
         return JWT.create()
-                .withSubject(id)
+                .withClaim("id", id)
                 .withExpiresAt(Instant.now().plus(java.time.Duration.of(1, ChronoUnit.HOURS)))
-                .withClaim("username", username)
+                .withClaim("name", fullname)
                 .withClaim("role", role)
                 .withClaim("isLocked", isLocked)
+                .withClaim("avatar", avatar)
                 .sign(Algorithm.HMAC256(jwtProperties.getSecretKey()));
     }
 

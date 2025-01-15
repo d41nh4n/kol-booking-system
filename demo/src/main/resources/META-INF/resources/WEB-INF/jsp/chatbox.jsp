@@ -1,9 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=US-ASCII" pageEncoding="US-ASCII" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="../../assert/css/chatbox.css">
@@ -62,12 +62,22 @@
                     </ul>
                 </div>
                 <div class="conversation-form">
+                    <div class="inputFile-part">
+                        <span id="fileInfo" style="display:none;">
+                        <span id="fileName"></span>
+                        (<span id="fileType"></span>)
+                        <button type="button" id="removeFileButton">X</button>
+                     </span>
+                    </div>
+                    <div class="inputText-Part">
                     <button type="button" class="conversation-form-button"><i class="ri-emotion-line"></i></button>
+                    <button type="button" id="fileInputButton" class="conversation-form-button"><i class="fa-solid fa-file-import"></i></button>
                     <div class="conversation-form-group">
-                        <textarea class="conversation-form-input" rows="1" placeholder="Type here..."></textarea>
-                        <button type="button" class="conversation-form-record"><i class="ri-mic-line"></i></button>
+                        <input type="file" id="fileInput" class="conversation-form-file" accept="image/*,video/*,audio/*">
+                        <textarea id="messageInput" class="conversation-form-input" rows="1" placeholder="Type here..."></textarea>
                     </div>
                     <button type="button" class="conversation-form-button conversation-form-submit"><i class="ri-send-plane-2-line"></i></button>
+                    </div>
                 </div>
             </div>
         </div>
